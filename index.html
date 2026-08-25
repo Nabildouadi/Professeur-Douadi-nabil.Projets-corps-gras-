@@ -1,0 +1,564 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Projets des stagiaires 2026</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="barreErreur" style="display:none;position:fixed;top:0;left:0;right:0;z-index:2000;background:#c0392b;color:#fff;padding:8px 14px;font-size:.85em;font-weight:600;"></div>
+
+<div id="ecranConnexion">
+  <div class="carte-login">
+    <div id="loginLogo" style="margin-bottom:8px;"></div>
+    <div class="ligne-photos-entete">
+      <div class="cadre-login-photo" id="cadrePhotoG" onclick="document.getElementById('fichierPhotoG').click()" title="Photo gauche — cliquer pour modifier">
+        <div id="boitePhotoG"></div>
+      </div>
+      <div class="entete-officielle" style="flex:1;">
+        <div class="rep">République Algérienne Démocratique et Populaire</div>
+        <div class="min">Ministère De La Formation et de l'Enseignement Professionnels</div>
+        <div class="ins">Institut National Spécialisé de la Formation Professionnelle (Haddadi Cherif EL Hidhab)</div>
+      </div>
+      <div class="cadre-login-photo" id="cadrePhotoD" onclick="document.getElementById('fichierPhotoD').click()" title="Photo droite — cliquer pour modifier">
+        <div id="boitePhotoD"></div>
+      </div>
+    </div>
+    <input type="file" id="fichierPhotoG" accept="image/*" hidden>
+    <input type="file" id="fichierPhotoD" accept="image/*" hidden>
+    <h2>Espace Professionnel</h2>
+    <p class="sous titre-modifiable" title="Cliquer pour modifier ce titre">Les Projets des stagiaires 2026</p>
+    <div class="tabs-login">
+      <button type="button" id="ongletConnexion" class="actif" onclick="basculerOnglet('connexion')">👤 Stagiaire</button>
+      <button type="button" id="ongletAdmin" onclick="basculerOnglet('admin')">👑 Admin</button>
+    </div>
+    <form id="formPrincipal">
+      <div class="champ-login">
+        <label>Numéro de téléphone</label>
+        <input type="tel" id="logTel" maxlength="14" autocomplete="username" placeholder="Ex : 0555 12 34 56">
+      </div>
+      <div class="champ-login">
+        <label>Mot de passe</label>
+        <input type="password" id="logMdp" maxlength="4" placeholder="••••">
+      </div>
+      <div id="erreurLogin"></div>
+      <button type="submit" class="btn btn-login" id="btnLogin">Se connecter</button>
+    </form>
+    <form id="formAdmin" style="display:none;">
+      <div class="champ-login">
+        <label>Nom d'utilisateur administrateur</label>
+        <input type="password" id="admUser" autocomplete="off" placeholder="Identifiant">
+      </div>
+      <div class="champ-login">
+        <label>Mot de passe</label>
+        <input type="password" id="admMdp" placeholder="••••••••">
+      </div>
+      <div id="erreurAdmin" style="color:var(--rouge);font-size:.85em;min-height:18px;text-align:center;margin-bottom:6px;font-weight:600;"></div>
+      <button type="submit" class="btn btn-login">Se connecter en tant qu'administrateur</button>
+      <p style="text-align:center;margin-top:10px;font-size:.78em;">
+        <a href="#" onclick="reinitialiserAdmin();return false;" style="color:#999;">Mot de passe oublié ?</a>
+      </p>
+    </form>
+    <p class="note-pedago" style="margin-top:12px;">
+      🔒 Les comptes sont enregistrés uniquement sur cet ordinateur (navigateur).
+    </p>
+    <div class="pied-login">
+      <div><b>Professeur : Douadi Nabil</b></div>
+      <div>© 2026 — Tous droits réservés</div>
+    </div>
+  </div>
+</div>
+
+<header class="entete">
+  <span class="badge-date" id="dateJour"></span>
+  <div class="badge-user" id="badgeUser" hidden>
+    <span id="texteUser"></span>
+    <button class="btn-sortie" onclick="deconnexion()">Quitter</button>
+  </div>
+  <div class="entete-flex">
+    <div class="cadre-media" id="cadreLogo" onclick="document.getElementById('fichierLogo').click()" title="Cliquer pour changer la photo 1">
+      <div id="boiteLogo"></div>
+      <span class="modif">🖼️ Photo 1</span>
+    </div>
+    <div class="titres-centre">
+      <h1>République Algérienne Démocratique et Populaire</h1>
+      <h2>Ministère De La Formation et de l'Enseignement Professionnels</h2>
+      <h3>Institut National Spécialisé de la Formation Professionnelle (EL Hidhab)</h3>
+      <div class="titre-app">🧼 Calculatrice de Saponification</div>
+      <div class="prof">Professeur : Douadi Nabil</div>
+    </div>
+  </div>
+  <input type="file" id="fichierLogo" accept="image/*" hidden>
+</header>
+
+<div class="entete-impression">
+  <div class="rep">République Algérienne Démocratique et Populaire</div>
+  <div class="min">Ministère De La Formation et de l'Enseignement Professionnels</div>
+  <div class="ins">Institut National Spécialisé de la Formation Professionnelle (EL Hidhab)</div>
+</div>
+
+<main class="conteneur">
+
+  <section class="carte pleine" id="blocProjets">
+    <h2>📋 Formulaire Projet</h2>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Titre du projet (à remplir)</label>
+        <input type="text" id="prjTitre" maxlength="140" placeholder="Ex : Fabrication artisanale du savon de Castille">
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Objectif du projet (à remplir)</label>
+        <textarea id="prjObjectif" rows="2" maxlength="300" placeholder="But principal du projet, résultats attendus..."></textarea>
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Nom de l'apprenant</label>
+        <input type="text" id="prjNom" placeholder="Nom">
+      </div>
+      <div class="champ">
+        <label>Prénom</label>
+        <input type="text" id="prjPrenom" placeholder="Prénom">
+      </div>
+      <div class="champ" style="max-width:110px;">
+        <label>Groupe</label>
+        <select id="prjGroupe">
+          <option value="">—</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="champ" style="max-width:120px;">
+        <label>Semestre</label>
+        <select id="prjSem">
+          <option value="">—</option>
+          <option value="S1">S1</option>
+          <option value="S2">S2</option>
+          <option value="S3">S3</option>
+          <option value="S4">S4</option>
+          <option value="S5">S5</option>
+        </select>
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Spécialité</label>
+        <input type="text" id="prjSpec" list="listeSpecs" placeholder="Ex : Cosmétologie">
+      </div>
+      <div class="champ">
+        <label>Encadreur / Formateur</label>
+        <input type="text" id="prjEncadrant" placeholder="Ex : Douadi Nabil">
+      </div>
+      <div class="champ" style="max-width:160px;">
+        <label>Année de formation</label>
+        <input type="text" id="prjAnnee" placeholder="Ex : 2025/2026">
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Description du projet</label>
+        <textarea id="prjDesc" rows="3" placeholder="Méthodes, étapes de fabrication, résultats obtenus..."></textarea>
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>📷 Photos du projet (max 3) — ajouter, modifier ou supprimer</label>
+        <div class="actions" style="margin-top:4px;">
+          <button type="button" class="mini-btn" onclick="document.getElementById('prjPhotos').click()">➕ Ajouter des photos</button>
+          <input type="file" id="prjPhotos" accept="image/*" multiple hidden>
+          <span id="prjPhotosInfo" style="font-size:.8em;color:#777;align-self:center;">Aucune photo</span>
+        </div>
+        <div id="prjPhotosApercu" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="ajouterProjet()">➕ Ajouter</button>
+      <button class="btn secondaire" onclick="modifierProjet()">✏️ Modifier</button>
+      <button class="btn danger" onclick="supprimerProjet()">🗑️ Supprimer</button>
+      <button class="btn secondaire" onclick="imprimerProjets()">🖨️ Imprimer la liste</button>
+    </div>
+    <table id="tblProjets">
+      <thead>
+        <tr>
+          <th style="width:4%;">#</th>
+          <th style="width:22%;">Titre du projet</th>
+          <th style="width:20%;">Objectif</th>
+          <th>Apprenant</th>
+          <th>Gr.</th>
+          <th>Sem.</th>
+          <th>Spécialité</th>
+          <th>Encadreur</th>
+          <th>Année</th>
+        </tr>
+      </thead>
+      <tbody id="corpsProjets"></tbody>
+    </table>
+    <div class="note-pedago" id="compteProjets">0 projet enregistré.</div>
+  
+
+
+  <section class="carte pleine" id="blocIngrParams">
+    <h2>🧪 Calculateur de saponification</h2>
+
+    <div class="ligne-champs">
+      <div class="champ" style="flex:3;">
+        <label>Choix de l'huile</label>
+        <select id="formHuile"></select>
+      </div>
+      <div class="champ" style="max-width:160px;">
+        <label>Quantité</label>
+        <input type="number" id="formPoids" min="1" step="1" placeholder="g">
+      </div>
+      <div style="display:flex;align-items:end;gap:6px;">
+        <button type="button" class="btn" onclick="ajouterIngredient()">➕ Ajouter</button>
+        <button type="button" class="btn secondaire" onclick="modifierIngredient()">✏️ Modifier</button>
+        <button type="button" class="btn danger" onclick="supprimerIngredient()">❌ Supprimer</button>
+      </div>
+    </div>
+
+    <div class="note-pedago" id="infoHuileSelect" style="display:none;background:var(--fond);padding:8px 12px;border-radius:8px;border:1px solid #ddd;margin-top:6px;">
+      <b id="infoHuileNom"></b> — SAP : <b id="infoHuileSAP"></b> —
+      Moussant : <b id="infoHuileMouss"></b> — Nettoyant : <b id="infoHuileNett"></b> —
+      Onctuosité : <b id="infoHuileOnct"></b> — Dureté : <b id="infoHuileDurt"></b> —
+      Longévité : <b id="infoHuileLong"></b> — Stabilité : <b id="infoHuileStab"></b>
+    </div>
+
+    <table style="margin-top:10px;">
+      <thead>
+        <tr>
+          <th style="width:30%;">Huile(s)</th>
+          <th style="width:20%;">Quantité (g)</th>
+          <th style="width:20%;">Quantité (%)</th>
+          <th style="width:15%;">SAP</th>
+          <th style="width:15%;">Supprimer</th>
+        </tr>
+      </thead>
+      <tbody id="corpsTable"></tbody>
+    </table>
+    <div class="erreur" id="msgErreur"></div>
+
+    <h2 style="margin-top:18px;">⚙️ Paramètres</h2>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Surgras (%)</label>
+        <input type="number" id="surgras" value="5" min="0" max="20" step="0.5">
+      </div>
+      <div class="champ">
+        <label>Pourcentage d'eau (%)</label>
+        <input type="number" id="eauPct" value="38" min="20" max="60" step="1">
+      </div>
+      <div class="champ">
+        <label>Huiles essentielles / fragrances (%)</label>
+        <input type="number" id="hePct" value="0" min="0" max="5" step="0.5">
+      </div>
+      <div class="champ">
+        <label>Pureté de la base (%)</label>
+        <input type="number" id="purete" value="98" min="80" max="100" step="1">
+      </div>
+    </div>
+    <div class="ligne-champs" style="margin-top:8px;">
+      <div class="champ">
+        <label>Type de base</label>
+        <select id="typeBase">
+          <option value="naoh">Solide - Soude caustique (NaOH)</option>
+          <option value="koh">Liquide - Potasse caustique (KOH)</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:10px;">
+      <button class="btn secondaire" onclick="preset('castille')">Castille 100% olive</button>
+      <button class="btn secondaire" onclick="preset('basique')">Recette basique</button>
+      <button class="btn danger" onclick="toutEffacer()">Réinitialiser</button>
+      <button class="btn" onclick="imprimerResultats()">🖨️ Imprimer</button>
+    </div>
+
+    <div id="blocResultats" style="display:none; margin-top:18px;">
+      <h2>📊 Résultats</h2>
+      <table>
+        <thead><tr><th>Propriété</th><th>Valeur</th><th>Recommandation</th></tr></thead>
+        <tbody id="corpsResultats"></tbody>
+      </table>
+    </div>
+
+    <div id="blocProprietes" style="display:none; margin-top:18px;">
+      <h2>🔬 Acides gras</h2>
+      <table>
+        <thead><tr><th style="width:35%;">Acide gras</th><th>Quantité (g)</th></tr></thead>
+        <tbody id="corpsAcides"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="carte" id="blocPerso">
+    <h2>🎨 Personnalisation</h2>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Couleur de fond</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+          <span class="swatch" data-fond="#f4f6f4" style="width:32px;height:32px;border-radius:50%;background:#f4f6f4;border:2px solid #ccc;cursor:pointer;"></span>
+          <span class="swatch" data-fond="#e8f5e9" style="width:32px;height:32px;border-radius:50%;background:#e8f5e9;border:2px solid #ccc;cursor:pointer;"></span>
+          <span class="swatch" data-fond="#fff8e1" style="width:32px;height:32px;border-radius:50%;background:#fff8e1;border:2px solid #ccc;cursor:pointer;"></span>
+          <span class="swatch" data-fond="#e3f2fd" style="width:32px;height:32px;border-radius:50%;background:#e3f2fd;border:2px solid #ccc;cursor:pointer;"></span>
+          <span class="swatch" data-fond="#fce4ec" style="width:32px;height:32px;border-radius:50%;background:#fce4ec;border:2px solid #ccc;cursor:pointer;"></span>
+          <span class="swatch" data-fond="#f3e5f5" style="width:32px;height:32px;border-radius:50%;background:#f3e5f5;border:2px solid #ccc;cursor:pointer;"></span>
+        </div>
+      </div>
+      <div class="champ">
+        <label>Couleur personnalisée</label>
+        <input type="color" id="apercuFond" value="#f4f6f4">
+      </div>
+    </div>
+    <div class="note-pedago">Vos choix (couleur) sont enregistrés automatiquement dans ce navigateur.</div>
+  </section>
+
+  <section class="carte" id="blocEvaluation">
+    <h2>📝 Grille d'évaluation</h2>
+    <div class="ligne-champs">
+      <div class="champ" style="flex:3;">
+        <label>Critère</label>
+        <input type="text" id="evCritNom" placeholder="Nom du critère">
+      </div>
+      <div class="champ" style="max-width:120px;">
+        <label>Barème (/20)</label>
+        <input type="number" id="evCritMax" min="0.5" max="20" step="0.5" value="3">
+      </div>
+      <div style="display:flex;align-items:end;gap:6px;">
+        <button type="button" class="btn" onclick="ajouterCritere()">➕ Ajouter</button>
+        <button type="button" class="btn secondaire" onclick="modifierCritere()">✏️ Modifier</button>
+        <button type="button" class="btn danger" onclick="supprimerCritere()">❌ Supprimer</button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:6%;">N°</th>
+          <th style="width:44%;">Critère</th>
+          <th style="width:14%;">Note</th>
+          <th style="width:14%;">Barème</th>
+          <th style="width:22%;">Appréciation</th>
+        </tr>
+      </thead>
+      <tbody id="corpsEval"></tbody>
+    </table>
+    <div class="ligne-champs" style="margin-top:10px;">
+      <div class="champ">
+        <label>Total</label>
+        <div id="totalSur20" style="font-weight:800;font-size:1.1em;">0 / 0</div>
+      </div>
+      <div class="champ">
+        <label>Sur 100</label>
+        <div id="totalSur100" style="font-weight:800;font-size:1.1em;">0 / 100</div>
+      </div>
+      <div class="champ" style="flex:2;">
+        <label>Mention</label>
+        <div id="mentionEval" style="font-weight:800;font-size:1.1em;">-</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn danger" onclick="toutZeroEval()">Tout mettre à zéro</button>
+      <button class="btn secondaire" onclick="viderEval()">Vider tout</button>
+      <button class="btn" onclick="imprimerEvaluation()">🖨️ Imprimer la grille</button>
+    </div>
+  </section>
+
+<section class="carte pleine" id="blocProfils">
+    <h2>👥 Gestion des profils</h2>
+        <div class="ligne-champs">
+      <div class="champ">
+        <label>1 — Nom</label>
+        <input type="text" id="proNom" placeholder="Nom de famille">
+      </div>
+      <div class="champ">
+        <label>Prénom</label>
+        <input type="text" id="proPrenom" placeholder="Prénom">
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>2 — Spécialité (à remplir)</label>
+        <input type="text" id="proSpec" list="listeSpecs" placeholder="Ex : Cosmétologie">
+        <datalist id="listeSpecs">
+          <option value="Cosmétologie"></option>
+          <option value="Esthétique"></option>
+          <option value="Coiffure"></option>
+          <option value="Couture"></option>
+          <option value="Cuisine"></option>
+          <option value="Pàtisserie"></option>
+        </datalist>
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ" style="max-width:130px;">
+        <label>3 — Semestre</label>
+        <select id="proSem">
+          <option value="">—</option>
+          <option value="S1">S1</option>
+          <option value="S2">S2</option>
+          <option value="S3">S3</option>
+          <option value="S4">S4</option>
+          <option value="S5">S5</option>
+        </select>
+      </div>
+      <div class="champ" style="max-width:110px;">
+        <label>4 — Groupe</label>
+        <select id="proGroupe">
+          <option value="">—</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="champ">
+        <label>5 — Numéro de téléphone</label>
+        <input type="tel" id="proTel" maxlength="14" placeholder="05XX XX XX XX" oninput="document.getElementById('proMdp').value=this.value.replace(/\D/g,'').slice(-4);">
+      </div>
+      <div class="champ" style="max-width:150px;">
+        <label>6 — Mot de passe</label>
+        <input type="text" id="proMdp" maxlength="4" placeholder="4 chiffres">
+      </div>
+    </div>
+    <div class="actions" style="margin-top:10px;">
+      <button class="btn" onclick="ajouterProfil()">➕ Ajouter</button>
+      <button class="btn secondaire" onclick="modifierProfil()">✏️ Modifier</button>
+      <button class="btn danger" onclick="supprimerProfil()">🗑️ Supprimer</button>
+      <span style="align-self:center;font-size:.85em;color:#666;">
+        4 — Mot de passe : <b>automatique</b>, les 4 derniers chiffres du téléphone
+        (il se met à jour si le numéro change).
+      </span>
+    </div>
+    <div class="ligne-champs" style="align-items:flex-end;">
+      <div class="champ" style="max-width:230px;">
+        <label>🗂️ Organiser / filtrer par groupe</label>
+        <select id="filtreGroupe" class="mini-select" style="margin-top:0;" onchange="rendreProfils()">
+          <option value="">Tous les groupes</option>
+          <option value="1">Groupe 1</option>
+          <option value="2">Groupe 2</option>
+          <option value="3">Groupe 3</option>
+          <option value="4">Groupe 4</option>
+          <option value="5">Groupe 5</option>
+          <option value="6">Groupe 6</option>
+          <option value="7">Groupe 7</option>
+          <option value="8">Groupe 8</option>
+          <option value="9">Groupe 9</option>
+          <option value="10">Groupe 10</option>
+        </select>
+      </div>
+      <div class="champ">
+        <label>🗂️ Filtrer par spécialité</label>
+        <select id="filtreSpec" class="mini-select" style="margin-top:0;" onchange="rendreProfils()"></select>
+      </div>
+      <div class="champ" style="max-width:140px;">
+        <label>🗓️ Filtrer par semestre</label>
+        <select id="filtreSem" class="mini-select" style="margin-top:0;" onchange="rendreProfils()">
+          <option value="">Tous les semestres</option>
+          <option value="S1">S1</option>
+          <option value="S2">S2</option>
+          <option value="S3">S3</option>
+          <option value="S4">S4</option>
+          <option value="S5">S5</option>
+        </select>
+      </div>
+      <div class="actions" style="margin-top:0;">
+        <button class="btn secondaire" onclick="selectionnerGroupeFiltre()">🎯 Sélectionner tout le groupe</button>
+      </div>
+    </div>
+    <table id="tblProfils">
+      <thead>
+        <tr>
+          <th style="width:5%;">#</th>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th style="width:7%;">Gr.</th>
+          <th>Semestre</th>
+          <th>Spécialité</th>
+          <th>Téléphone</th>
+          <th>Mot de passe</th>
+        </tr>
+      </thead>
+      <tbody id="corpsProfils"></tbody>
+    </table>
+    <div class="note-pedago" id="compteProfils">0 profil enregistré.</div>
+    <div class="note-pedago" id="statsGroupes"></div>
+  </section>
+
+</section>
+
+</section>
+
+  <section class="carte pleine" id="blocAdminMdp" style="display:none;border-top-color:var(--or);">
+    <h2>🔐 Administration — Modifier les identifiants</h2>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Nom d'utilisateur</label>
+        <input type="text" id="adminIdentifiant" autocomplete="off">
+      </div>
+      <div class="champ">
+        <label>Ancien mot de passe (obligatoire)</label>
+        <input type="password" id="adminAncien" placeholder="••••••••">
+      </div>
+      <div class="champ">
+        <label>Nouveau mot de passe</label>
+        <input type="password" id="adminNouveau" placeholder="6 caractères minimum">
+      </div>
+      <div class="champ">
+        <label>Confirmer le nouveau mot de passe</label>
+        <input type="password" id="adminConfirme" placeholder="••••••••">
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn secondaire" onclick="changerInfosAdmin()">💾 Enregistrer les identifiants</button>
+      <span id="msgAdmin" style="align-self:center;font-size:.85em;font-weight:600;color:var(--vert-fonce);"></span>
+    </div>
+    <div class="avertissement">🔒 Ces identifiants sont personnels : ne les communiquez qu'aux personnes autorisées.</div>
+  </section>
+
+</section>
+
+</section></section>
+
+  <section class="carte pleine">
+    <h2>📐 Rappel théorique</h2>
+    <div class="note-pedago">
+      <p><b>Masse de base (g) = Σ (Poids<sub>huile i</sub> × SAP<sub>i</sub> ÷ 1000) × (1 − Surgras) ÷ Pureté</b></p>
+      <p style="margin-top:6px;">
+        Les valeurs SAP sont exprimées en <b>mg de KOH par gramme d'huile</b>.
+        Pour la soude : <code>NaOH = SAP × 40 ÷ 56.1</code> ;
+        pour la potasse : <code>KOH = NaOH × 56.1 ÷ 40 ≈ NaOH × 1.403</code>.
+      </p>
+      <p style="margin-top:6px;">
+        <b>Saponification :</b> Corps gras + Base → Savon (sel d'acide gras) + Glycérol.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<div class="pied-impression">Professeur Douadi Nabil — © 2026 Tous droits réservés</div>
+
+
+<footer class="pied">
+  INSFP EL Hidhab — Module Chimie / Cosmétologie — Application pédagogique de calcul de saponification.<br>
+  <b>© 2026 — Professeur Douadi Nabil — Tous droits réservés.</b>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
