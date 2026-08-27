@@ -1,10 +1,313 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
-<head>
+<<meta name="google-site-verification" content="bkGWLBOcRtR1OlbXIFdIfha1EqhwiUbujDW71DeLLO8" />>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Les Projets des stagiaires 2026</title>
-<link rel="stylesheet" href="style.css">
+<title>Les Projets des stagiaires 2026</title></title>
+<style>
+  :root{
+    --vert:#0e7a4f;
+    --vert-fonce:#0a5a3a;
+    --bleu:#14508c;
+    --or:#c9a227;
+    --fond:#f4f6f4;
+    --carte:#ffffff;
+    --texte:#222;
+    --rouge:#c0392b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+    background:var(--fond);
+    color:var(--texte);
+    line-height:1.5;
+  }
+  .entete{
+    background:linear-gradient(135deg,var(--vert-fonce),var(--vert));
+    color:#fff;
+    text-align:center;
+    padding:22px 16px 18px;
+    border-bottom:6px solid var(--or);
+  }
+  .entete h1{font-size:1.05em;font-weight:400;letter-spacing:.5px;}
+  .entete h2{font-size:.95em;font-weight:400;margin-top:4px;}
+  .entete h3{font-size:1em;font-weight:400;margin-top:4px;color:#ffe9a8;}
+  .entete .titre-app{
+    font-size:1.6em;font-weight:700;margin-top:14px;text-transform:uppercase;letter-spacing:1px;
+  }
+  .entete .prof{
+    margin-top:10px;font-size:1.05em;background:rgba(255,255,255,.12);
+    display:inline-block;padding:6px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.35);
+  }
+  .conteneur{
+    max-width:1050px;margin:22px auto 40px;padding:0 14px;
+    display:grid;grid-template-columns:1fr 1fr;gap:18px;
+  }
+  .pleine{grid-column:1 / -1;}
+  .carte{
+    background:var(--carte);border-radius:12px;padding:18px 20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);border-top:4px solid var(--vert);
+  }
+  .carte{transform:none !important;transition:none;}
+  .carte h2{
+    font-size:1.1em;color:var(--vert-fonce);margin-bottom:12px;
+    border-bottom:2px solid var(--fond);padding-bottom:6px;
+  }
+  label{font-weight:600;font-size:.9em;display:block;margin-bottom:4px;}
+  input[type=number],select{
+    width:100%;padding:8px 10px;border:1px solid #bbb;border-radius:8px;
+    font-size:1em;background:#fff;
+  }
+  input[type=number]:focus,select:focus{outline:2px solid var(--vert);border-color:var(--vert);}
+  .ligne-champs{display:flex;gap:12px;flex-wrap:wrap;}
+  .champ{flex:1;min-width:150px;}
+  .radio-groupe{display:flex;gap:18px;align-items:center;margin-top:6px;flex-wrap:wrap;}
+  .radio-groupe label{font-weight:400;display:inline-flex;align-items:center;gap:6px;margin:0;}
+  table{
+    width:100%;border-collapse:collapse;margin-top:8px;font-size:.92em;
+  }
+  th,td{padding:7px 6px;text-align:center;border-bottom:1px solid #e4e8e4;}
+  th{background:var(--vert);color:#fff;font-weight:600;}
+  td select,td input{padding:6px;}
+  td.pct{font-weight:700;color:var(--bleu);}
+  td.sap{color:#666;font-size:.85em;}
+  .btn{
+    padding:9px 18px;border:none;border-radius:8px;cursor:pointer;
+    font-size:.95em;font-weight:600;color:#fff;background:var(--vert);
+    transition:background .2s;
+  }
+  .btn:hover{background:var(--vert-fonce);}
+  .btn.secondaire{background:var(--bleu);}
+  .btn.secondaire:hover{background:#0d3a66;}
+  .btn.danger{background:var(--rouge);}
+  .btn.danger:hover{background:#922b21;}
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .resultat-principal{
+    background:linear-gradient(135deg,#fffdf5,#fdf6dd);
+    border:1px solid var(--or);border-radius:10px;
+    padding:14px 18px;margin-bottom:12px;text-align:center;
+  }
+  .resultat-principal .montant{
+    font-size:2.2em;font-weight:800;color:var(--vert-fonce);
+  }
+  .resultat-principal .unite{font-size:1.1em;color:#777;}
+  .resultat-ligne{
+    display:flex;justify-content:space-between;padding:8px 4px;
+    border-bottom:1px dashed #dcdcdc;font-size:.95em;
+  }
+  .resultat-ligne b{color:var(--vert-fonce);}
+  .avertissement{
+    background:#fff4e5;border:1px solid #e6a23c;border-left:6px solid #e6a23c;
+    border-radius:8px;padding:10px 14px;font-size:.88em;margin-top:14px;
+  }
+  .erreur{
+    background:#fdecea;border:1px solid var(--rouge);border-left:6px solid var(--rouge);
+    border-radius:8px;padding:10px 14px;font-size:.9em;margin-top:10px;display:none;
+  }
+  .prop-barre{margin-bottom:10px;}
+  .prop-barre .etiquette{display:flex;justify-content:space-between;font-size:.85em;font-weight:600;}
+  .prop-barre .piste{
+    background:#e8ece8;border-radius:6px;height:14px;overflow:hidden;
+  }
+  .prop-barre .remplissage{
+    height:100%;border-radius:6px;
+    background:linear-gradient(90deg,var(--vert),#3fbf8a);
+    transition:width .4s;
+  }
+  .note-pedago{
+    font-size:.85em;color:#555;margin-top:10px;background:#f0f5f0;
+    border-radius:8px;padding:10px 14px;
+  }
+  .note-pedago code{
+    background:#e2eae2;padding:1px 6px;border-radius:4px;font-size:.95em;
+  }
+  .pied{
+    text-align:center;color:#888;font-size:.8em;margin:-20px auto 30px;padding:0 14px;
+  }
+  .badge-date{
+    position:absolute;top:12px;right:14px;background:rgba(255,255,255,.15);
+    padding:4px 12px;border-radius:12px;font-size:.8em;
+  }
+  .entete{position:relative;}
+
+  .entete-flex{display:flex;align-items:center;justify-content:center;gap:24px;max-width:1050px;margin:0 auto;padding:0 10px;}
+  .titres-centre{flex:1;min-width:250px;text-align:center;}
+  .cadre-media{
+    position:relative;width:96px;height:96px;flex:0 0 auto;border-radius:16px;background:#fff;padding:6px;cursor:pointer;
+    box-shadow:0 12px 24px rgba(0,0,0,.35),0 4px 8px rgba(0,0,0,.25),inset 0 0 0 2px var(--or);
+    transition:transform .35s;
+  }
+  .cadre-media:hover{transform:translateY(-5px) rotateX(9deg) rotateY(-9deg) scale(1.04);}
+  .cadre-media img,.cadre-media svg{width:100%;height:100%;object-fit:contain;border-radius:11px;display:block;}
+  .photo-vide{
+    width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:2px;background:#eef2f5;color:#8a97a3;font-size:1.5em;border-radius:inherit;
+  }
+  .photo-vide small{font-size:.42em;font-weight:700;}
+  .cadre-media .modif{
+    position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);
+    background:var(--or);color:#3a2c00;font-size:.62em;font-weight:700;padding:2px 10px;border-radius:10px;
+    box-shadow:0 3px 6px rgba(0,0,0,.4);white-space:nowrap;
+  }
+
+  .carte{transform-style:preserve-3d;transition:transform .25s ease,box-shadow .25s ease;}
+  .carte:hover{box-shadow:0 10px 26px rgba(0,0,0,.16);}
+  .btn{box-shadow:0 4px 0 rgba(0,0,0,.28);}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.28);}
+  .mini-btn{
+    padding:7px 13px;border:none;border-radius:8px;cursor:pointer;font-size:.82em;font-weight:600;
+    color:#fff;background:var(--bleu);margin:6px 6px 0 0;box-shadow:0 3px 0 rgba(0,0,0,.25);
+  }
+  .mini-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.25);}
+  .mini-btn.second{background:#5a6570;}
+  .swatch{
+    width:26px;height:26px;border-radius:50%;border:2px solid #fff;cursor:pointer;
+    display:inline-block;margin:0 4px;vertical-align:middle;box-shadow:0 2px 6px rgba(0,0,0,.35);
+  }
+  #tblHuiles tbody tr:hover,#tblProfils tbody tr:hover,#tblProjets tbody tr:hover{background:#f2f7f2;}
+  #tblHuiles tbody tr.ligne-active,#tblProfils tbody tr.ligne-active,#tblProjets tbody tr.ligne-active{background:#fff3c4 !important;box-shadow:inset 4px 0 0 var(--or);}
+  textarea{
+    width:100%;padding:8px 10px;border:1px solid #bbb;border-radius:8px;
+    font-size:1em;font-family:inherit;resize:vertical;background:#fff;
+  }
+  textarea:focus{outline:2px solid var(--vert);border-color:var(--vert);}
+  .carte input[type="text"],.carte input[type="tel"],.carte input[type="number"],
+  .carte select,.carte textarea{
+    width:100%;padding:8px 10px;border:1px solid #bbb;border-radius:8px;
+    font-size:1em;background:#fff;font-family:inherit;
+  }
+  .carte input[type="text"]:focus,.carte input[type="tel"]:focus,
+  .carte input[type="number"]:focus{outline:2px solid var(--vert);border-color:var(--vert);}
+  .champ>label{font-size:.85em;color:#444;display:block;margin-bottom:4px;}
+  .cadre-media.modele-carre,.cadre-media.modele-carre img,.cadre-media.modele-carre svg{border-radius:0;}
+  .cadre-media.modele-cercle,.cadre-media.modele-cercle img,.cadre-media.modele-cercle svg,
+  .cadre-media.modele-ovale,.cadre-media.modele-ovale img,.cadre-media.modele-ovale svg{border-radius:50%;}
+  .cadre-media.modele-pilule,.cadre-media.modele-pilule img,.cadre-media.modele-pilule svg{border-radius:999px;}
+  .cadre-media.modele-hexagone{border-radius:0;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);}
+  .mini-select{
+    width:100%;margin-top:12px;padding:7px 9px;border:1px solid #bbb;border-radius:8px;
+    font-size:.85em;background:#fff;
+  }
+  .cadre-3d{
+    animation:flotter3d 6s ease-in-out infinite;
+    box-shadow:
+      0 22px 38px rgba(0,0,0,.45),
+      0 10px 14px rgba(0,0,0,.30),
+      inset 0 2px 3px rgba(255,255,255,.75),
+      inset 0 -3px 6px rgba(0,0,0,.28),
+      inset 0 0 0 2px var(--or);
+    transform-style:preserve-3d;
+    perspective:700px;
+  }
+  .cadre-3d:hover{animation-play-state:paused;}
+  @keyframes flotter3d{
+    0%,100%{transform:rotateY(-7deg) rotateX(4deg) translateY(0);}
+    50%{transform:rotateY(7deg) rotateX(-4deg) translateY(-5px);}
+  }
+  body.connecte:not(.admin) #blocPerso,
+  body.connecte:not(.admin) #blocProfils,
+  body.connecte:not(.admin) #blocEvaluation{display:none !important;}
+  body.connecte:not(.admin) .entete-flex,
+  body.connecte:not(.admin) #dateJour{display:none !important;}
+  .note-eval{width:80px;padding:5px 6px;border:1px solid #bbb;border-radius:7px;text-align:center;font-size:.95em;}
+  .note-eval:focus{outline:2px solid var(--vert);border-color:var(--vert);}
+  .app-eval{font-size:.85em;color:#555;}
+  .swatch:hover{transform:scale(1.15);}
+  #apercuFond{width:46px;height:32px;padding:0;border:2px solid #999;border-radius:6px;background:#fff;cursor:pointer;}
+  @media(max-width:800px){
+    .entete-flex{flex-wrap:wrap;}
+    .cadre-media{width:74px;height:74px;}
+  }
+  #ecranConnexion{    position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--vert-fonce),var(--bleu));padding:16px;
+  }
+  body.connecte #ecranConnexion{display:none;}
+  .entete-officielle{text-align:center;margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid var(--or);}
+  .entete-officielle .rep{font-weight:700;font-size:.95em;color:#0a5a3a;letter-spacing:.3px;}
+  .entete-officielle .min{font-size:.85em;color:#333;margin-top:3px;}
+  .entete-officielle .ins{font-size:.78em;color:#14508c;font-weight:600;margin-top:3px;}
+  .ligne-photos-entete{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .cadre-login-photo{
+    position:relative;width:90px;height:90px;flex:0 0 90px;border-radius:14px;
+    border:3px solid var(--or);background:#fff;overflow:hidden;cursor:pointer;
+    box-shadow:0 8px 18px rgba(0,0,0,.28);transition:transform .2s ease;
+  }
+  .cadre-login-photo:hover{transform:scale(1.06);}
+  .cadre-login-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .mini-ph-vide{display:flex;width:100%;height:100%;align-items:center;justify-content:center;font-size:1.4em;color:#8a97a3;background:#eef2f5;}
+  .pied-login{margin-top:14px;padding-top:9px;border-top:1px solid #e2e6e2;text-align:center;font-size:.8em;color:#667;line-height:1.5;}
+    .pied-login b{color:#0a5a3a;}
+    .entete-impression,.pied-impression{display:none;}
+  .carte-login{
+    background:#fff;border-radius:18px;padding:24px 26px 20px;width:min(430px,94vw);
+    border-top:6px solid var(--or);
+    box-shadow:0 30px 60px rgba(0,0,0,.45),0 10px 22px rgba(0,0,0,.3);
+    animation:surgir .55s ease;
+  }
+  @keyframes surgir{
+    from{transform:perspective(900px) rotateX(14deg) translateY(34px);opacity:0;}
+    to{transform:none;opacity:1;}
+  }
+  .carte-login h2{text-align:center;color:var(--vert-fonce);margin-bottom:2px;}
+  .carte-login .sous{text-align:center;font-size:.83em;color:#778;margin-bottom:14px;}
+  .titre-modifiable{
+    font-weight:800;font-size:1.2em;letter-spacing:.3px;color:var(--vert-fonce,#0a6b3d);
+    margin-bottom:16px;cursor:pointer;
+  }
+  .titre-modifiable:hover{text-decoration:underline dotted;}
+  .tabs-login{display:flex;margin-bottom:16px;}
+  .tabs-login button{
+    flex:1;padding:10px;border:none;cursor:pointer;font-weight:700;font-size:.9em;
+    background:#e7ebef;color:#667;transition:background .2s;
+  }
+  .tabs-login button.actif{background:var(--vert);color:#fff;border-radius:10px 10px 0 0;}
+  .champ-login{margin-bottom:11px;}
+  .champ-login label{font-size:.82em;}
+  #erreurLogin{color:var(--rouge);font-size:.85em;min-height:18px;text-align:center;margin-bottom:6px;font-weight:600;}
+  .btn-login{width:100%;padding:11px;font-size:1em;}
+  .badge-user{
+    position:absolute;top:12px;left:14px;background:rgba(255,255,255,.16);color:#fff;
+    padding:5px 12px;border-radius:14px;font-size:.8em;display:flex;gap:10px;align-items:center;
+    border:1px solid rgba(255,255,255,.35);
+  }
+  .badge-user[hidden]{display:none;}
+  .btn-sortie{background:var(--rouge);border:none;color:#fff;border-radius:10px;padding:2px 9px;cursor:pointer;font-weight:700;}
+  @media print{
+    body.impression-resultats .carte{display:none !important;}
+    body.impression-resultats #blocResultats,
+    body.impression-resultats #blocProprietes{display:block !important;}
+    body.impression-projets .carte{display:none !important;}
+    body.impression-projets #blocProjets{display:block !important;}
+    body.impression-evaluation .carte{display:none !important;}
+    body.impression-evaluation #blocEvaluation{display:block !important;}
+    .entete-impression{
+      display:block !important;text-align:center;margin-bottom:12px;
+      padding-bottom:8px;border-bottom:2px solid #222;
+    }
+    .entete-impression .rep{font-weight:700;font-size:13pt;}
+    .entete-impression .min{font-size:11pt;margin-top:2px;}
+    .entete-impression .ins{font-size:10.5pt;font-weight:600;margin-top:2px;color:#111;}
+    .pied-impression{
+      display:block !important;margin-top:16px;padding-top:8px;
+      border-top:1px solid #222;text-align:center;font-size:11pt;font-weight:700;
+    }
+    .cadre-media .modif,#blocPerso,#ecranConnexion{display:none !important;}
+  }
+
+  @media print{
+    .cadre-media .modif,#blocPerso{display:none !important;}
+  }
+
+  @media(max-width:800px){
+    .conteneur{grid-template-columns:1fr;}
+  }
+  @media print{
+    .actions,.avertissement{display:none;}
+    body{background:#fff;}
+    .carte{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
+    .entete{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
 </head>
 <body>
 
@@ -249,7 +552,7 @@
     </table>
     <div class="erreur" id="msgErreur"></div>
 
-    <h2 style="margin-top:18px;">⚙️ Paramètres</h2>
+    <h2 style="margin-top:18px;">⚙️ Paramètres</h2>
     <div class="ligne-champs">
       <div class="champ">
         <label>Surgras (%)</label>
@@ -281,7 +584,7 @@
       <button class="btn secondaire" onclick="preset('castille')">Castille 100% olive</button>
       <button class="btn secondaire" onclick="preset('basique')">Recette basique</button>
       <button class="btn danger" onclick="toutEffacer()">Réinitialiser</button>
-      <button class="btn" onclick="imprimerResultats()">🖨️ Imprimer</button>
+      <button class="btn" onclick="imprimerResultats()">🖨️ Imprimer</button>
     </div>
 
     <div id="blocResultats" style="display:none; margin-top:18px;">
@@ -369,7 +672,7 @@
     <div class="actions">
       <button class="btn danger" onclick="toutZeroEval()">Tout mettre à zéro</button>
       <button class="btn secondaire" onclick="viderEval()">Vider tout</button>
-      <button class="btn" onclick="imprimerEvaluation()">🖨️ Imprimer la grille</button>
+      <button class="btn" onclick="imprimerEvaluation()">🖨️ Imprimer la grille</button>
     </div>
   </section>
 
@@ -559,6 +862,1044 @@
   INSFP EL Hidhab — Module Chimie / Cosmétologie — Application pédagogique de calcul de saponification.<br>
   <b>© 2026 — Professeur Douadi Nabil — Tous droits réservés.</b>
 </footer>
-<script src="script.js"></script>
+
+<script>
+"use strict";
+
+const FACTOR_KOH_NAOH = 40.00 / 56.11;
+const DENSITE_HUILE = 0.92;
+
+function afficherApercuHuile(){
+  var idx=parseInt(document.getElementById("formHuile").value,10);
+  var div=document.getElementById("infoHuileSelect");
+  if(isNaN(idx)||!HUILES[idx]){div.style.display="none";return;}
+  var h=HUILES[idx];
+  var ag=h.ag||[0,0,0,0,0,0,0,0];
+  var mouss=Math.min(ag[0]+ag[1]+ag[4]+ag[5],100);
+  var nett=Math.min(ag[0]+ag[1],100);
+  var onct=Math.min(ag[4]+ag[5]+ag[6]+ag[7],100);
+  var durt=Math.min(ag[0]+ag[1]+ag[2]+ag[3],100);
+  var longv=Math.min(ag[0]+ag[1]+ag[2]+ag[3],100);
+  var stab=Math.min(ag[0]+ag[1]+ag[2]+ag[3]+ag[5]+ag[4],100);
+  document.getElementById("infoHuileNom").textContent=h.nom;
+  document.getElementById("infoHuileSAP").textContent=h.sap;
+  document.getElementById("infoHuileMouss").textContent=mouss+"%";
+  document.getElementById("infoHuileNett").textContent=nett+"%";
+  document.getElementById("infoHuileOnct").textContent=onct+"%";
+  document.getElementById("infoHuileDurt").textContent=durt+"%";
+  document.getElementById("infoHuileLong").textContent=longv+"%";
+  document.getElementById("infoHuileStab").textContent=stab+"%";
+  div.style.display="block";
+}
+
+const HUILES_BASE = [
+  { nom:"Amande douce",            sap:190, ag:[0,0,7,2,0,69,20,0] },
+  { nom:"Arachide",                sap:192, ag:[0,0,11,2,0,47,32,0] },
+  { nom:"Argan",                   sap:192, ag:[0,0,12,6,0,45,37,0] },
+  { nom:"Avocat",                  sap:187, ag:[0,0,12,3,0,60,12,0] },
+  { nom:"Beurre de cacao",         sap:194, ag:[0,0,26,34,0,34,2,0] },
+  { nom:"Beurre de karité",        sap:180, ag:[0,0,4,42,0,46,7,0] },
+  { nom:"Canola (Colza)",          sap:174, ag:[0,0,4,2,0,62,21,10] },
+  { nom:"Chanvre",                 sap:189, ag:[0,0,7,2,0,12,55,22] },
+  { nom:"Coco (Coprah)",           sap:258, ag:[48,19,9,3,0,7,2,0] },
+  { nom:"Coton",                   sap:196, ag:[0,1,25,2,0,17,53,0] },
+  { nom:"Germes de blé",           sap:184, ag:[0,0,14,1,0,20,55,0] },
+  { nom:"Jojoba",                  sap:97,  ag:[0,0,1,0,0,12,2,0] },
+  { nom:"Lin",                     sap:189, ag:[0,0,6,3,0,18,15,56] },
+  { nom:"Macadamia",               sap:195, ag:[0,0,9,2,0,59,2,0] },
+  { nom:"Neem",                    sap:195, ag:[0,0,17,16,0,50,13,0] },
+  { nom:"Nigelle",                 sap:189, ag:[0,0,12,2,0,23,52,0] },
+  { nom:"Noix",                    sap:189, ag:[0,0,7,2,0,22,58,10] },
+  { nom:"Olive",                   sap:189, ag:[0,0,14,3,0,66,15,1] },
+  { nom:"Palme",                   sap:199, ag:[0,1,44,5,0,40,10,0] },
+  { nom:"Pépins de raisin",        sap:181, ag:[0,0,7,4,0,16,70,0] },
+  { nom:"Ricin",                   sap:180, ag:[0,0,1,1,90,4,4,0] },
+  { nom:"Saindoux (Porc)",         sap:194, ag:[0,1,27,12,0,47,11,0] },
+  { nom:"Sésame",                  sap:187, ag:[0,0,9,4,0,41,45,0] },
+  { nom:"Soja",                    sap:189, ag:[0,0,11,4,0,24,54,7] },
+  { nom:"Suif (Bœuf)",             sap:198, ag:[0,3,26,22,0,43,3,0] },
+  { nom:"Tournesol",               sap:189, ag:[0,0,6,5,0,20,68,0] }
+];
+let HUILES=(function(){try{return HUILES_BASE.concat(JSON.parse(localStorage.getItem("cs_huiles"))||[]);}catch(e){return HUILES_BASE.slice();}})();
+
+function fmt(n){
+  return Number(n).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function remplirSelectForm(){
+  const sel=document.getElementById("formHuile");
+  sel.innerHTML="";
+  HUILES.forEach(function(h,i){
+    const o=document.createElement("option");
+    o.value=i; o.textContent=h.nom+" — SAP "+h.sap;
+    sel.appendChild(o);
+  });
+}
+
+let ingredients=[];
+let ligneSelectionnee=null;
+
+function rendreTable(){
+  var tbody=document.getElementById("corpsTable");
+  tbody.innerHTML="";
+  var total=0;
+  ingredients.forEach(function(ing){total+=ing.poids;});
+  ingredients.forEach(function(ing,i){
+    var h=HUILES[ing.idx];
+    var tr=document.createElement("tr");
+    if(i===ligneSelectionnee)tr.className="ligne-active";
+    tr.style.cursor="pointer";
+    tr.dataset.i=i;
+    tr.onclick=function(){selectionnerLigne(i);};
+    var pct=total>0?(ing.poids/total*100):0;
+    tr.innerHTML='<td>'+h.nom+'</td>'+
+      '<td><b>'+fmt(ing.poids)+' g</b></td>'+
+      '<td class="pct">'+(total>0?fmt(pct)+'%':'—')+'</td>'+
+      '<td class="sap">'+h.sap+'</td>'+
+      '<td><button class="btn danger" style="padding:4px 10px;font-size:.8em;" onclick="event.stopPropagation();supprimerLigne('+i+')">✖</button></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function selectionnerLigne(i){
+  ligneSelectionnee=i;
+  var ing=ingredients[i];
+  document.getElementById("formHuile").value=ing.idx;
+  document.getElementById("formPoids").value=ing.poids;
+  rendreTable();
+}
+
+window.supprimerLigne=function(i){
+  if(!ingredients[i])return;
+  if(!confirm("Supprimer cet ingrédient de la recette ?"))return;
+  ingredients.splice(i,1);
+  if(ligneSelectionnee===i)ligneSelectionnee=null;
+  else if(ligneSelectionnee!==null&&ligneSelectionnee>i)ligneSelectionnee--;
+  document.getElementById("formPoids").value="";
+  rendreTable();
+  calculer();
+};
+
+window.ajouterIngredient=function(){
+  var idx=parseInt(document.getElementById("formHuile").value,10);
+  var q=parseFloat(document.getElementById("formPoids").value);
+  if(isNaN(idx)){alert("Choisissez d'abord un corps gras dans la liste.");return;}
+  if(isNaN(q)||q<=0){alert("Saisissez une quantité valide.");return;}
+  ingredients.push({idx:idx,poids:q});
+  ligneSelectionnee=ingredients.length-1;
+  document.getElementById("formPoids").value="";
+  rendreTable();
+  calculer();
+};
+
+window.modifierIngredient=function(){
+  if(ligneSelectionnee===null||!ingredients[ligneSelectionnee]){alert("Cliquez d'abord sur une ligne du tableau pour la sélectionner.");return;}
+  var idx=parseInt(document.getElementById("formHuile").value,10);
+  var q=parseFloat(document.getElementById("formPoids").value);
+  if(isNaN(idx)){alert("Choisissez un corps gras dans la liste.");return;}
+  if(isNaN(q)||q<=0){alert("Saisissez une quantité valide.");return;}
+  ingredients[ligneSelectionnee]={idx:idx,poids:q};
+  ligneSelectionnee=null;
+  document.getElementById("formPoids").value="";
+  rendreTable();
+  calculer();
+};
+
+window.supprimerIngredient=function(){
+  if(ligneSelectionnee===null||!ingredients[ligneSelectionnee]){alert("Cliquez d'abord sur une ligne du tableau pour la sélectionner.");return;}
+  if(!confirm("Supprimer cet ingrédient de la recette ?"))return;
+  ingredients.splice(ligneSelectionnee,1);
+  ligneSelectionnee=null;
+  document.getElementById("formPoids").value="";
+  rendreTable();
+  calculer();
+};
+
+function afficherErreur(msg){
+  const el=document.getElementById("msgErreur");
+  if(msg){el.textContent=msg;el.style.display="block";}
+  else{el.style.display="none";}
+}
+
+function calculer(){
+  var lignes=ingredients.filter(function(ing){return ing.poids>0;});
+  var totalHuiles=lignes.reduce(function(s,l){return s+l.poids;},0);
+
+  var surgras=Math.min(Math.max(parseFloat(document.getElementById("surgras").value)||0,0),20);
+  var purete=Math.min(Math.max(parseFloat(document.getElementById("purete").value)||100,80),100);
+  var eauPctVal=Math.max(parseFloat(document.getElementById("eauPct").value)||0,0);
+  var hePctVal=Math.max(parseFloat(document.getElementById("hePct").value)||0,0);
+  var estKoh=document.getElementById("typeBase").value==="koh";
+
+  document.querySelectorAll("#corpsTable tr").forEach(function(tr){
+    var i=parseInt(tr.dataset.i,10);
+    var q=(ingredients[i]&&ingredients[i].poids)||0;
+    var pctCell=tr.querySelector(".pct");
+    if(totalHuiles>0&&q>0){
+      pctCell.textContent=fmt(q/totalHuiles*100)+"%";
+    }else{
+      pctCell.textContent="—";
+    }
+  });
+
+  var blocRes=document.getElementById("blocResultats");
+  var blocProp=document.getElementById("blocProprietes");
+
+  if(totalHuiles<=0){
+    blocRes.style.display="none";
+    blocProp.style.display="none";
+    afficherErreur("Veuillez saisir le poids d'au moins un corps gras.");
+    return;
+  }
+  afficherErreur("");
+
+  var basePure=0;
+  lignes.forEach(function(l){
+    basePure+=l.poids*HUILES[l.idx].sap/1000*FACTOR_KOH_NAOH;
+  });
+  basePure*=1-surgras/100;
+  var baseFinale=basePure/(purete/100);
+  var eau=totalHuiles*eauPctVal/100;
+  var huilesEss=totalHuiles*hePctVal/100;
+  var baseAffichee=estKoh?basePure*56.11/40/(purete/100):baseFinale;
+
+  var AG_NOMS=["Acide laurique","Acide myristique","Acide palmitique","Acide stéarique","Acide ricinoléique","Acide oléique","Acide linoléique","Acide linolénique"];
+  var moy=[0,0,0,0,0,0,0,0];
+  lignes.forEach(function(l){
+    var h=HUILES[l.idx];
+    for(var k=0;k<8;k++) moy[k]+=h.ag[k]*l.poids/totalHuiles;
+  });
+
+  var mouss=Math.min(moy[0]+moy[1]+moy[4]+moy[5],100);
+  var nett=Math.min(moy[0]+moy[1],100);
+  var onct=Math.min(moy[4]+moy[5]+moy[6]+moy[7],100);
+  var durt=Math.min(moy[0]+moy[1]+moy[2]+moy[3],100);
+  var longv=Math.min(moy[0]+moy[1]+moy[2]+moy[3],100);
+  var stab=Math.min(moy[0]+moy[1]+moy[2]+moy[3]+moy[5]+moy[4],100);
+
+  var corpsRes=document.getElementById("corpsResultats");
+  corpsRes.innerHTML="";
+  var resultats=[
+    {p:"Soude",v:fmt(baseAffichee)+" g",r:""},
+    {p:"Huile",v:fmt(totalHuiles)+" g",r:""},
+    {p:"Eau",v:fmt(eau)+" g",r:""},
+    {p:"Huiles essentielles",v:fmt(huilesEss)+" g",r:""},
+    {p:"Moussant",v:fmt(mouss)+"%",r:"14–46"},
+    {p:"Nettoyant",v:fmt(nett)+"%",r:"12–22"},
+    {p:"Onctuosité",v:fmt(onct)+"%",r:"44–69"},
+    {p:"Dureté",v:fmt(durt)+"%",r:"29–54"},
+    {p:"Longévité",v:fmt(longv)+"%",r:"25–50"},
+    {p:"Stabilité",v:fmt(stab)+"%",r:"16–48"}
+  ];
+  resultats.forEach(function(r){
+    var tr=document.createElement("tr");
+    tr.innerHTML='<td><b>'+r.p+'</b></td><td>'+r.v+'</td><td>'+r.r+'</td>';
+    corpsRes.appendChild(tr);
+  });
+
+  var corpsAc=document.getElementById("corpsAcides");
+  corpsAc.innerHTML="";
+  for(var k2=0;k2<8;k2++){
+    var grams=totalHuiles*moy[k2]/100;
+    var tr2=document.createElement("tr");
+    tr2.innerHTML='<td>'+AG_NOMS[k2]+'</td><td>'+fmt(grams)+' g</td>';
+    corpsAc.appendChild(tr2);
+  }
+
+  blocRes.style.display="block";
+  blocProp.style.display="block";
+}
+
+function preset(nom){
+  ingredients=[];
+  if(nom==="castille"){
+    var i1=HUILES.findIndex(function(h){return h.nom==="Olive";});
+    ingredients.push({idx:i1,poids:500});
+  }else{
+    ingredients.push({idx:HUILES.findIndex(function(h){return h.nom==="Olive";}),poids:210});
+    ingredients.push({idx:HUILES.findIndex(function(h){return h.nom.startsWith("Coco");}),poids:150});
+    ingredients.push({idx:HUILES.findIndex(function(h){return h.nom==="Palme";}),poids:140});
+  }
+  ligneSelectionnee=null;
+  document.getElementById("formPoids").value="";
+  rendreTable();
+  calculer();
+}
+
+function toutEffacer(){
+  ingredients=[];
+  ligneSelectionnee=null;
+  document.getElementById("formPoids").value="";
+  rendreTable();
+  calculer();
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  document.getElementById("dateJour").textContent=
+    new Date().toLocaleDateString("fr-FR",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  ["typeBase","surgras","purete","eauPct","hePct"].forEach(function(id){
+    document.getElementById(id).addEventListener("change",calculer);
+  });
+  document.getElementById("formHuile").addEventListener("change",afficherApercuHuile);
+  remplirSelectForm();
+  preset("basique");
+});
+</script>
+
+<script>
+"use strict";
+var __mem={};
+try{
+  localStorage.setItem("__test","1");
+  localStorage.removeItem("__test");
+}catch(e){
+  window.localStorage={
+    getItem:function(k){return Object.prototype.hasOwnProperty.call(__mem,k)?__mem[k]:null;},
+    setItem:function(k,v){__mem[k]=String(v);},
+    removeItem:function(k){delete __mem[k];}
+  };
+}
+window.addEventListener("error",function(ev){
+  var b=document.getElementById("barreErreur");
+  if(b){
+    b.style.display="block";
+    b.textContent="⚠ Erreur technique : "+(ev.message||"inconnue")+" — l'application continue en mode dégradé.";
+  }
+});
+const CLE_COMPTES="cs_comptes", CLE_SESSION="cs_session", CLE_FOND="cs_fond", CLE_LOGO="cs_logo", CLE_TLOGO="cs_tlogo", CLE_MLOGO="cs_mlogo", CLE_PHOTOG="cs_photog", CLE_PHOTOD="cs_photod";
+let modeLogin="connexion";
+
+function lireJSON(cle){try{return JSON.parse(localStorage.getItem(cle));}catch(e){return null;}}
+function ecrireJSON(cle,v){try{localStorage.setItem(cle,JSON.stringify(v));}catch(e){}}
+function listeComptes(){return lireJSON(CLE_COMPTES)||[];}
+function erreurLogin(msg){document.getElementById("erreurLogin").textContent=msg;}
+
+window.basculerOnglet=function(m){
+  modeLogin=m;
+  document.getElementById("ongletConnexion").classList.toggle("actif",m==="connexion");
+  document.getElementById("ongletAdmin").classList.toggle("actif",m==="admin");
+  const principal=(m!=="admin");
+  document.getElementById("formPrincipal").style.display=principal?"block":"none";
+  document.getElementById("formAdmin").style.display=principal?"none":"block";
+  erreurLogin("");
+  document.getElementById("erreurAdmin").textContent="";
+  try{
+    document.getElementById("admUser").value=lireAdmin().user;
+  }catch(e){console.error(e);}
+};
+
+window.soumettreLogin=function(ev){
+  ev.preventDefault();
+  const tel=document.getElementById("logTel").value.replace(/[\s.\-]/g,"");
+  const mdp=document.getElementById("logMdp").value;
+
+  if(!tel||!mdp){erreurLogin("⚠ Veuillez remplir tous les champs.");return false;}
+  if(!/^0[5-7][0-9]{8}$/.test(tel)){erreurLogin("⚠ Téléphone invalide (mobile algérien : 05, 06 ou 07 + 8 chiffres).");return false;}
+
+  let c=listeProfils().find(function(x){return x.tel===tel;});
+  if(!c){
+    c=(lireJSON(CLE_COMPTES)||[]).find(function(x){return x.tel===tel;});
+  }
+  if(!c){erreurLogin("⚠ Aucun compte pour ce numéro. Contactez l'administrateur.");return false;}
+  if(c.mdp!==mdp){erreurLogin("⚠ Mot de passe incorrect : saisissez les 4 derniers chiffres de votre numéro.");return false;}
+
+  ecrireJSON(CLE_SESSION,{nom:c.nom,prenom:c.prenom,tel:c.tel,groupe:(c.groupe||""),sem:(c.sem||"")});
+  ouvrirSession();
+  return false;
+};
+
+const CLE_ADMIN="cs_admin";
+function lireAdmin(){
+  const a=lireJSON(CLE_ADMIN);
+  return (a&&a.user)?a:{user:"Profdouadi",mdp:"08082012"};
+}
+
+window.reinitialiserAdmin=function(){
+  if(!confirm("Rétablir les identifiants administrateur par défaut ?"))return;
+  try{localStorage.removeItem(CLE_ADMIN);}catch(e){}
+  ecrireJSON(CLE_ADMIN,{user:"Profdouadi",mdp:"08082012"});
+  document.getElementById("admUser").value="";
+  document.getElementById("admMdp").value="";
+  document.getElementById("admMdp").focus();
+  document.getElementById("erreurAdmin").textContent="✅ Identifiants administrateur réinitialisés.";
+};
+
+window.soumettreAdmin=function(ev){
+  if(ev&&ev.preventDefault)ev.preventDefault();
+  const u=(document.getElementById("admUser").value||"").trim().toLowerCase();
+  const m=(document.getElementById("admMdp").value||"").trim();
+  const ref=lireAdmin();
+  if(!u||!m){
+    document.getElementById("erreurAdmin").textContent="⚠ Veuillez saisir l'identifiant et le mot de passe.";
+    return false;
+  }
+  if(u!==String(ref.user).trim().toLowerCase()||m!==String(ref.mdp).trim()){
+    document.getElementById("erreurAdmin").textContent=
+      "⚠ Identifiant ou mot de passe incorrect. Identifiant attendu : "+ref.user;
+    return false;
+  }
+  ecrireJSON(CLE_SESSION,{admin:true,user:ref.user});
+  ouvrirSession();
+  return false;
+};
+
+window.changerInfosAdmin=function(){
+  const cur=lireAdmin();
+  const ident=document.getElementById("adminIdentifiant").value.trim();
+  const anc=document.getElementById("adminAncien").value;
+  const n1=document.getElementById("adminNouveau").value;
+  const n2=document.getElementById("adminConfirme").value;
+  const msg=document.getElementById("msgAdmin");
+  if(anc!==cur.mdp){msg.textContent="⚠ Ancien mot de passe incorrect.";return;}
+  if(!ident){msg.textContent="⚠ L'identifiant ne peut pas être vide.";return;}
+  if(n1.length<6){msg.textContent="⚠ Le nouveau mot de passe doit contenir au moins 6 caractères.";return;}
+  if(n1!==n2){msg.textContent="⚠ La confirmation ne correspond pas au nouveau mot de passe.";return;}
+  ecrireJSON(CLE_ADMIN,{user:ident,mdp:n1});
+  ["adminAncien","adminNouveau","adminConfirme"].forEach(function(id){document.getElementById(id).value="";});
+  ecrireJSON(CLE_SESSION,{admin:true,user:ident});
+  document.getElementById("texteUser").textContent="👑 Administrateur : "+ident;
+  msg.textContent="✅ Identifiants administrateur mis à jour.";
+};
+
+function ouvrirSession(){
+  const s=lireJSON(CLE_SESSION);
+  if(!s)return;
+  if(typeof s!=="object"||(!s.admin&&!s.prenom)){
+    try{localStorage.removeItem(CLE_SESSION);}catch(e){}
+    return;
+  }
+  document.body.classList.add("connecte");
+  document.body.classList.toggle("admin",!!s.admin);
+  document.getElementById("badgeUser").hidden=false;
+  if(s.admin){
+    document.getElementById("texteUser").textContent="👑 Administrateur : "+s.user;
+    majOperateur({prenom:"Administrateur",nom:s.user,groupe:""});
+    document.getElementById("blocAdminMdp").style.display="block";
+    document.getElementById("adminIdentifiant").value=s.user;
+  }else{
+    document.getElementById("texteUser").textContent="👤 "+s.prenom+" "+s.nom+(s.groupe?" • Gr. "+s.groupe:"")+" • "+s.tel;
+    majOperateur(s);
+    document.getElementById("blocAdminMdp").style.display="none";
+  }
+}
+
+function majOperateur(s){
+  if(!s||typeof s!=="object"||!s.prenom)return;
+  const op=document.getElementById("resOperateur");
+  if(op)op.textContent=s.prenom+" "+s.nom.toUpperCase()+(s.groupe?" — Groupe "+s.groupe:"");
+}
+
+window.deconnexion=function(){
+  try{localStorage.removeItem(CLE_SESSION);}catch(e){}
+  document.body.classList.remove("connecte");
+  document.body.classList.remove("admin");
+  document.getElementById("badgeUser").hidden=true;
+  document.getElementById("blocAdminMdp").style.display="none";
+  document.getElementById("logMdp").value="";
+  erreurLogin("");
+};
+
+function afficherPhoto(boiteId,src){
+  document.getElementById(boiteId).innerHTML=src
+    ?'<img src="'+src+'" alt="Photo">'
+    :'<div class="photo-vide">📷<small>Ajouter une photo</small></div>';
+}
+window.supprimerPhoto=function(){
+  try{localStorage.removeItem(CLE_LOGO);}catch(e){}
+  afficherPhoto("boiteLogo",null);
+};
+
+function afficherMiniPhoto(boiteId,src){
+  document.getElementById(boiteId).innerHTML=src
+    ?'<img src="'+src+'" alt="Photo">'
+    :'<div class="mini-ph-vide">📷</div>';
+}
+
+function appliquerTaille(cadreId,sliderId,valId,v){
+  v=parseInt(v,10);
+  if(isNaN(v))return;
+  v=Math.min(Math.max(v,70),240);
+  const c=document.getElementById(cadreId);
+  if(!c)return;
+  c.style.width=v+"px";
+  c.style.height=v+"px";
+  const s=document.getElementById(sliderId);
+  if(s)s.value=v;
+  const t=document.getElementById(valId);
+  if(t)t.textContent=v;
+}
+window.changerTailleLogo=function(v){
+  appliquerTaille("cadreLogo","tailleLogo","valTailleLogo",v);
+  try{localStorage.setItem(CLE_TLOGO,String(v));}catch(e){}
+};
+
+function appliquerModele(cadreId,selectId,val){
+  const c=document.getElementById(cadreId);
+  if(!c)return;
+  const valides=["arrondi","cercle","carre","ovale","hexagone","pilule"];
+  if(valides.indexOf(val)<0)val="arrondi";
+  c.className="cadre-media cadre-3d modele-"+val;
+  const s=document.getElementById(selectId);
+  if(s)s.value=val;
+}
+window.changerModele=function(val){
+  appliquerModele("cadreLogo","modeleLogo",val);
+  try{localStorage.setItem(CLE_MLOGO,val);}catch(e){}
+};
+
+function reduireImage(dataUrl,max,cb){
+  const img=new Image();
+  img.onload=function(){
+    const r=Math.min(1,max/Math.max(img.width,img.height));
+    if(r>=1){cb(dataUrl);return;}
+    const cv=document.createElement("canvas");
+    cv.width=Math.round(img.width*r);cv.height=Math.round(img.height*r);
+    cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);
+    cb(cv.toDataURL("image/png"));
+  };
+  img.src=dataUrl;
+}
+function chargerMedia(input,cle,boite){
+  const f=input.files&&input.files[0];
+  if(!f)return;
+  const rd=new FileReader();
+  rd.onload=function(ev){
+    reduireImage(ev.target.result,480,function(d){
+      try{localStorage.setItem(cle,d);}catch(e){}
+      afficherPhoto(boite,d);
+    });
+  };
+  rd.readAsDataURL(f);
+}
+function appliquerFond(c){
+  document.documentElement.style.setProperty("--fond",c);
+  document.getElementById("apercuFond").value=c;
+}
+
+window.imprimerResultats=function(){
+  if(document.getElementById("blocResultats").style.display==="none"){
+    alert("Veuillez d'abord saisir une recette avant d'imprimer.");
+    return;
+  }
+  document.body.classList.add("impression-resultats");
+  window.print();
+  setTimeout(function(){document.body.classList.remove("impression-resultats");},400);
+};
+
+const CLE_PROFILS="cs_profils";
+let profilSelectionne=null;
+
+function listeProfils(){return lireJSON(CLE_PROFILS)||[];}
+
+function viderFormulaireProfil(){
+  ["proNom","proPrenom","proSpec","proTel","proMdp"].forEach(function(id){document.getElementById(id).value="";});
+  document.getElementById("proSem").value="";
+  document.getElementById("proGroupe").value="";
+}
+
+function lireFormulaireProfil(){
+  const nom=document.getElementById("proNom").value.trim();
+  const prenom=document.getElementById("proPrenom").value.trim();
+  const spec=document.getElementById("proSpec").value.trim();
+  const tel=document.getElementById("proTel").value.replace(/[\s.\-]/g,"");
+  const sem=document.getElementById("proSem").value;
+  const grp=document.getElementById("proGroupe").value;
+  if(!nom||!prenom||!spec){alert("Veuillez remplir le nom, le prénom et la spécialité.");return null;}
+  if(!sem){alert("Veuillez choisir le semestre (S1 à S5).");return null;}
+  if(!grp){alert("Veuillez choisir le groupe (1 à 9).");return null;}
+  if(!/^0[5-7][0-9]{8}$/.test(tel)){alert("Téléphone invalide (mobile algérien : 05, 06 ou 07 + 8 chiffres).");return null;}
+  const mdp=document.getElementById("proMdp").value.replace(/\D/g,"").slice(0,4);
+  return {nom:nom,prenom:prenom,spec:spec,tel:tel,sem:sem,groupe:grp,mdp:(mdp||tel.slice(-4))};
+}
+
+let groupeMarque=null;
+function majFiltreSpec(){
+  const sel=document.getElementById("filtreSpec");
+  if(!sel)return;
+  const cur=sel.value;
+  const specs={};
+  listeProfils().forEach(function(p){if(p.spec)specs[p.spec]=1;});
+  const cles=Object.keys(specs).sort(function(a,b){return a.localeCompare(b,"fr");});
+  sel.innerHTML='<option value="">Toutes les spécialités</option>'+cles.map(function(s){
+    return '<option value="'+s.replace(/"/g,"&quot;")+'">'+s+"</option>";
+  }).join("");
+  if(cur&&specs[cur])sel.value=cur;
+}
+function rendreProfils(){
+  const tb=document.getElementById("corpsProfils");
+  tb.innerHTML="";
+  majFiltreSpec();
+  const profils=listeProfils();
+  const fG=document.getElementById("filtreGroupe").value;
+  const fP=document.getElementById("filtreSpec")?document.getElementById("filtreSpec").value:"";
+  const fS=document.getElementById("filtreSem")?document.getElementById("filtreSem").value:"";
+  const vus=[];
+  profils.forEach(function(p,i){
+    if(fG&&String(p.groupe||"")!==fG)return;
+    if(fS&&p.sem!==fS)return;
+    if(fP&&p.spec!==fP)return;
+    vus.push(i);
+  });
+  vus.sort(function(a,b){
+    const A=profils[a],B=profils[b];
+    return (A.spec||"zzz").localeCompare(B.spec||"zzz","fr")
+      ||(A.sem||"z").localeCompare(B.sem||"z","fr")
+      ||String(A.groupe||"99").localeCompare(String(B.groupe||"99"),"fr",{numeric:true})
+      ||(A.nom+" "+A.prenom).localeCompare(B.nom+" "+B.prenom,"fr");
+  });
+  vus.forEach(function(idx){
+    const p=profils[idx];
+    const tr=document.createElement("tr");
+    if(idx===profilSelectionne||(groupeMarque&&groupeMarque.has(idx)))tr.className="ligne-active";
+    tr.style.cursor="pointer";
+    tr.onclick=function(){selectionnerProfil(idx);};
+    tr.innerHTML="<td>"+(idx+1)+"</td><td>"+p.nom+"</td><td>"+p.prenom+"</td>"+
+      "<td><b>"+(p.groupe||"—")+"</b></td>"+
+      "<td><b>"+(p.sem||"—")+"</b></td><td>"+p.spec+"</td><td>"+p.tel+"</td>"+
+      "<td><b style=\"font-family:monospace;\">"+p.mdp+"</b></td>";
+    tb.appendChild(tr);
+  });
+  let crit="";
+  if(fP)crit+="Spécialité : "+fP+" — ";
+  if(fS)crit+="Semestre : "+fS+" — ";
+  if(fG)crit+="Groupe : "+fG+" — ";
+  document.getElementById("compteProfils").textContent=
+    (crit?("["+crit.replace(/ — $/,"")+"] "+vus.length+" stagiaire(s) affiché(s). — "):"")+
+    profils.length+(profils.length>1?" profils enregistrés.":" profil enregistré.");
+  const st={g:{},s:{},p:{}};
+  profils.forEach(function(p){
+    const g=p.groupe||"—";st.g[g]=(st.g[g]||0)+1;
+    const sm=p.sem||"—";st.s[sm]=(st.s[sm]||0)+1;
+    const sp=p.spec||"—";st.p[sp]=(st.p[sp]||0)+1;
+  });
+  function ligneStats(obj,trieNum){
+    return Object.keys(obj).sort(function(a,b){
+      if(trieNum)return a.localeCompare(b,"fr",{numeric:true});
+      return a.localeCompare(b,"fr");
+    }).map(function(k){return k+" : "+obj[k];}).join(" • ")||"—";
+  }
+  const el=document.getElementById("statsGroupes");
+  if(el)el.innerHTML=
+    "<b>Effectif :</b> "+profils.length+" / 80 stagiaires<br>"+
+    "<b>Par spécialité :</b> "+ligneStats(st.p,false)+"<br>"+
+    "<b>Par semestre :</b> "+ligneStats(st.s,true)+"<br>"+
+    "<b>Par groupe :</b> "+ligneStats(st.g,true);
+}
+window.selectionnerGroupeFiltre=function(){
+  const filtre=document.getElementById("filtreGroupe").value;
+  if(!filtre){alert("Choisissez d'abord un groupe dans la liste « Organiser / filtrer ».");return;}
+  const profils=listeProfils();
+  groupeMarque=new Set(profils.map(function(p,i){return String(p.groupe||"")===filtre?i:-1;}).filter(function(x){return x>=0;}));
+  if(groupeMarque.size===0){alert("Aucun stagiaire dans le groupe "+filtre+".");groupeMarque=null;}
+  rendreProfils();
+};
+
+function selectionnerProfil(i){
+  profilSelectionne=i;
+  const p=listeProfils()[i];
+  document.getElementById("proNom").value=p.nom;
+  document.getElementById("proPrenom").value=p.prenom;
+  document.getElementById("proSpec").value=p.spec;
+  document.getElementById("proTel").value=p.tel;
+  document.getElementById("proSem").value=p.sem||"";
+  document.getElementById("proGroupe").value=p.groupe||"";
+  document.getElementById("proMdp").value=p.mdp||"";
+  rendreProfils();
+}
+
+window.ajouterProfil=function(){
+  const v=lireFormulaireProfil();
+  if(!v)return;
+  const profils=listeProfils();
+  if(profils.length>=80){alert("Capacité maximale atteinte : 80 stagiaires.");return;}
+  if(profils.some(function(x){return x.tel===v.tel;})){alert("Ce numéro existe déjà dans la liste.");return;}
+  profils.push(v);
+  ecrireJSON(CLE_PROFILS,profils);
+  profilSelectionne=profils.length-1;
+  viderFormulaireProfil();
+  rendreProfils();
+};
+
+window.modifierProfil=function(){
+  if(profilSelectionne===null){alert("Cliquez d'abord sur une ligne du tableau pour la sélectionner.");return;}
+  const v=lireFormulaireProfil();
+  if(!v)return;
+  const profils=listeProfils();
+  if(profils.some(function(x,i){return x.tel===v.tel&&i!==profilSelectionne;})){alert("Ce numéro est déjà utilisé par un autre profil.");return;}
+  profils[profilSelectionne]=v;
+  ecrireJSON(CLE_PROFILS,profils);
+  rendreProfils();
+};
+
+window.supprimerProfil=function(){
+  if(profilSelectionne===null){alert("Cliquez d'abord sur une ligne du tableau pour la sélectionner.");return;}
+  if(!confirm("Supprimer ce profil ?"))return;
+  const profils=listeProfils();
+  profils.splice(profilSelectionne,1);
+  ecrireJSON(CLE_PROFILS,profils);
+  profilSelectionne=null;
+  viderFormulaireProfil();
+  rendreProfils();
+};
+
+const CLE_PROJETS="cs_projets";
+let projetSelectionne=null;
+
+function listeProjets(){return lireJSON(CLE_PROJETS)||[];}
+
+let prjPhotosCourantes=[];
+let prjPhotoRemplace=-1;
+
+function rendreApercuPhotos(){
+  const ap=document.getElementById("prjPhotosApercu");
+  ap.innerHTML="";
+  prjPhotosCourantes.forEach(function(src,i){
+    const d=document.createElement("div");
+    d.style.cssText="position:relative;width:64px;height:64px;";
+    d.innerHTML="<img src='"+src+"' alt='' style='width:100%;height:100%;object-fit:cover;border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,.25);'>"
+      +"<button type='button' title='Supprimer' onclick='supprimerPhotoProjet("+i+")' style='position:absolute;top:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:#c0392b;color:#fff;font-size:.7em;cursor:pointer;'>✖</button>"
+      +"<button type='button' title='Modifier' onclick='remplacerPhotoProjet("+i+")' style='position:absolute;bottom:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:#2980b9;color:#fff;font-size:.7em;cursor:pointer;'>✎</button>";
+    ap.appendChild(d);
+  });
+  document.getElementById("prjPhotosInfo").textContent=
+    prjPhotosCourantes.length===0?"Aucune photo":prjPhotosCourantes.length+" photo(s) sur 3";
+}
+window.supprimerPhotoProjet=function(i){
+  prjPhotosCourantes.splice(i,1);
+  rendreApercuPhotos();
+};
+window.remplacerPhotoProjet=function(i){
+  prjPhotoRemplace=i;
+  document.getElementById("prjPhotos").click();
+};
+function traiterFichiersPhotos(files){
+  Array.prototype.forEach.call(files,function(f){
+    if(!f||!f.type||f.type.indexOf("image")!==0)return;
+    if(prjPhotosCourantes.length>=10&&prjPhotoRemplace<0){alert("Maximum 10 photos par projet.");return;}
+    const rd=new FileReader();
+    rd.onload=function(ev){
+      reduireImage(ev.target.result,480,function(d){
+        if(prjPhotoRemplace>=0){prjPhotosCourantes[prjPhotoRemplace]=d;prjPhotoRemplace=-1;}
+        else if(prjPhotosCourantes.length<10){prjPhotosCourantes.push(d);}
+        rendreApercuPhotos();
+      });
+    };
+    rd.readAsDataURL(f);
+  });
+}
+
+function viderFormulaireProjet(){
+  ["prjTitre","prjObjectif","prjNom","prjPrenom","prjSpec","prjEncadrant","prjAnnee","prjDesc"].forEach(function(id){document.getElementById(id).value="";});
+  document.getElementById("prjGroupe").value="";
+  document.getElementById("prjSem").value="";
+  prjPhotosCourantes=[];
+  prjPhotoRemplace=-1;
+  rendreApercuPhotos();
+}
+
+function lireFormulaireProjet(){
+  const titre=document.getElementById("prjTitre").value.trim();
+  const objectif=document.getElementById("prjObjectif").value.trim();
+  const nom=document.getElementById("prjNom").value.trim();
+  const prenom=document.getElementById("prjPrenom").value.trim();
+  const groupe=document.getElementById("prjGroupe").value;
+  const sem=document.getElementById("prjSem").value;
+  const spec=document.getElementById("prjSpec").value.trim();
+  if(!titre){alert("Veuillez remplir le titre du projet.");return null;}
+  if(!objectif){alert("Veuillez remplir l'objectif du projet.");return null;}
+  if(!nom||!prenom||!spec){alert("Veuillez remplir le nom, le prénom et la spécialité.");return null;}
+  if(!groupe){alert("Veuillez choisir le groupe.");return null;}
+  if(!sem){alert("Veuillez choisir le semestre.");return null;}
+  return {
+    titre:titre,objectif:objectif,nom:nom,prenom:prenom,groupe:groupe,sem:sem,spec:spec,
+    encadrant:document.getElementById("prjEncadrant").value.trim(),
+    annee:document.getElementById("prjAnnee").value.trim(),
+    desc:document.getElementById("prjDesc").value.trim(),
+    photos:prjPhotosCourantes.slice()
+  };
+}
+
+function rendreProjets(){
+  const tb=document.getElementById("corpsProjets");
+  tb.innerHTML="";
+  const projets=listeProjets();
+  projets.forEach(function(p,i){
+    const tr=document.createElement("tr");
+    if(i===projetSelectionne)tr.className="ligne-active";
+    tr.style.cursor="pointer";
+    tr.onclick=function(){selectionnerProjet(i);};
+    tr.innerHTML="<td>"+(i+1)+"</td><td>"+p.titre+"</td>"+
+      "<td style='text-align:left;font-size:.85em;'>"+((p.objectif&&p.objectif.length>42)?p.objectif.slice(0,42)+"…":(p.objectif||"—"))+"</td>"+
+      "<td>"+p.prenom+" "+p.nom+"</td><td><b>"+p.groupe+"</b></td><td><b>"+(p.sem||"—")+"</b></td>"+
+      "<td>"+p.spec+"</td><td>"+(p.encadrant||"—")+"</td><td>"+(p.annee||"—")+"</td>";
+    tb.appendChild(tr);
+  });
+  document.getElementById("compteProjets").textContent=
+    projets.length+(projets.length>1?" projets enregistrés.":" projet enregistré.");
+}
+
+function selectionnerProjet(i){
+  projetSelectionne=i;
+  const p=listeProjets()[i];
+  document.getElementById("prjTitre").value=p.titre;
+  document.getElementById("prjObjectif").value=p.objectif||"";
+  document.getElementById("prjNom").value=p.nom;
+  document.getElementById("prjPrenom").value=p.prenom;
+  document.getElementById("prjGroupe").value=p.groupe||"";
+  document.getElementById("prjSem").value=p.sem||"";
+  document.getElementById("prjSpec").value=p.spec;
+  document.getElementById("prjEncadrant").value=p.encadrant||"";
+  document.getElementById("prjAnnee").value=p.annee||"";
+  prjPhotosCourantes=(p.photos||[]).slice();
+  prjPhotoRemplace=-1;
+  rendreApercuPhotos();
+  document.getElementById("prjDesc").value=p.desc||"";
+  rendreProjets();
+}
+
+window.ajouterProjet=function(){
+  const v=lireFormulaireProjet();
+  if(!v)return;
+  const projets=listeProjets();
+  projets.push(v);
+  ecrireJSON(CLE_PROJETS,projets);
+  projetSelectionne=projets.length-1;
+  viderFormulaireProjet();
+  rendreProjets();
+};
+
+window.modifierProjet=function(){
+  if(projetSelectionne===null){alert("Cliquez d'abord sur une ligne du tableau pour la sélectionner.");return;}
+  const v=lireFormulaireProjet();
+  if(!v)return;
+  const projets=listeProjets();
+  projets[projetSelectionne]=v;
+  ecrireJSON(CLE_PROJETS,projets);
+  rendreProjets();
+};
+
+window.supprimerProjet=function(){
+  if(projetSelectionne===null){alert("Cliquez d'abord sur une ligne du tableau pour la sélectionner.");return;}
+  if(!confirm("Supprimer ce projet ?"))return;
+  const projets=listeProjets();
+  projets.splice(projetSelectionne,1);
+  ecrireJSON(CLE_PROJETS,projets);
+  projetSelectionne=null;
+  viderFormulaireProjet();
+  rendreProjets();
+};
+
+window.imprimerProjets=function(){
+  if(listeProjets().length===0){alert("Aucun projet à imprimer.");return;}
+  document.body.classList.add("impression-projets");
+  window.print();
+  setTimeout(function(){document.body.classList.remove("impression-projets");},400);
+};
+
+const CLE_EVAL="cs_eval";
+let evalSelectionne=null;
+const EVAL_DEFAUT=[
+  {nom:"Dureté et fermeté du savon",max:3,note:0},
+  {nom:"Pouvoir moussant",max:3,note:0},
+  {nom:"Stabilité de la mousse",max:2,note:0},
+  {nom:"Pouvoir nettoyant",max:3,note:0},
+  {nom:"Douceur pour la peau",max:3,note:0},
+  {nom:"Aspect, couleur et fini",max:2,note:0},
+  {nom:"Odeur / parfum",max:2,note:0},
+  {nom:"Temps de séchage (cure)",max:2,note:0}
+];
+
+function listeEval(){
+  let l=lireJSON(CLE_EVAL);
+  if(!Array.isArray(l)||l.length===0){l=EVAL_DEFAUT.map(function(c){return{nom:c.nom,max:c.max,note:0};});ecrireJSON(CLE_EVAL,l);}
+  return l;
+}
+
+function appreciation(pct){
+  if(pct>=85)return "Très bien";
+  if(pct>=70)return "Bien";
+  if(pct>=50)return "Moyen";
+  return "Insuffisant";
+}
+
+function rendreEval(){
+  const tb=document.getElementById("corpsEval");
+  tb.innerHTML="";
+  const crits=listeEval();
+  crits.forEach(function(c,i){
+    const tr=document.createElement("tr");
+    if(i===evalSelectionne)tr.className="ligne-active";
+    tr.style.cursor="pointer";
+    tr.onclick=function(){selectionnerCritere(i);};
+    tr.innerHTML="<td style='text-align:left;'>"+(i+1)+" — "+c.nom+"</td><td>/ "+c.max+"</td>"+
+      "<td><input type='number' class='note-eval' value='"+c.note+"' min='0' max='"+c.max+"' step='0.25' onclick='event.stopPropagation()' oninput='majNote("+i+",this.value)'></td>"+
+      "<td class='app-eval'>"+appreciation(c.max?c.note/c.max*100:0)+"</td>";
+    tb.appendChild(tr);
+  });
+  const maxTotal=crits.reduce(function(s,c){return s+c.max;},0);
+  const total=crits.reduce(function(s,c){return s+c.note;},0);
+  const sur100=maxTotal?Math.round(total/maxTotal*100):0;
+  document.getElementById("totalSur20").textContent=total+" / "+maxTotal;
+  document.getElementById("totalSur100").textContent=sur100+" / 100";
+  document.getElementById("mentionEval").innerHTML="<b>Mention :</b> "+appreciation(sur100)+" — "+sur100+"/100";
+}
+
+function selectionnerCritere(i){
+  evalSelectionne=i;
+  const c=listeEval()[i];
+  document.getElementById("evCritNom").value=c.nom;
+  document.getElementById("evCritMax").value=c.max;
+  rendreEval();
+}
+
+window.majNote=function(i,v){
+  const crits=listeEval();
+  let n=parseFloat(v);
+  if(isNaN(n))n=0;
+  n=Math.min(Math.max(n,0),crits[i].max);
+  crits[i].note=n;
+  ecrireJSON(CLE_EVAL,crits);
+  const tr=document.getElementById("corpsEval").children[i];
+  tr.children[3].textContent=appreciation(crits[i].max?n/crits[i].max*100:0);
+  calculerTotaux();
+};
+function calculerTotaux(){
+  const crits=listeEval();
+  const maxTotal=crits.reduce(function(s,c){return s+c.max;},0);
+  const total=crits.reduce(function(s,c){return s+c.note;},0);
+  const sur100=maxTotal?Math.round(total/maxTotal*100):0;
+  document.getElementById("totalSur20").textContent=total+" / "+maxTotal;
+  document.getElementById("totalSur100").textContent=sur100+" / 100";
+  document.getElementById("mentionEval").innerHTML="<b>Mention :</b> "+appreciation(sur100)+" — "+sur100+"/100";
+}
+window.ajouterCritere=function(){
+  const nom=document.getElementById("evCritNom").value.trim();
+  let max=parseFloat(document.getElementById("evCritMax").value);
+  if(!nom){alert("Veuillez saisir le nom du critère.");return;}
+  if(isNaN(max)||max<=0||max>20){alert("Barème invalide (entre 0,5 et 20).");return;}
+  const crits=listeEval();
+  crits.push({nom:nom,max:max,note:0});
+  ecrireJSON(CLE_EVAL,crits);
+  document.getElementById("evCritNom").value="";
+  evalSelectionne=crits.length-1;
+  rendreEval();
+};
+window.modifierCritere=function(){
+  if(evalSelectionne===null){alert("Cliquez d'abord sur une ligne du tableau pour la sélectionner.");return;}
+  const nom=document.getElementById("evCritNom").value.trim();
+  let max=parseFloat(document.getElementById("evCritMax").value);
+  if(!nom){alert("Veuillez saisir le nom du critère.");return;}
+  if(isNaN(max)||max<=0||max>20){alert("Barème invalide (entre 0,5 et 20).");return;}
+  const crits=listeEval();
+  crits[evalSelectionne].nom=nom;
+  crits[evalSelectionne].max=max;
+  if(crits[evalSelectionne].note>max)crits[evalSelectionne].note=max;
+  ecrireJSON(CLE_EVAL,crits);
+  rendreEval();
+};
+window.supprimerCritere=function(){
+  if(evalSelectionne===null){alert("Cliquez d'abord sur une ligne du tableau pour la sélectionner.");return;}
+  const crits=listeEval();
+  if(crits.length<=1){alert("La grille doit contenir au moins un critère.");return;}
+  if(!confirm("Supprimer ce critère ?"))return;
+  crits.splice(evalSelectionne,1);
+  ecrireJSON(CLE_EVAL,crits);
+  evalSelectionne=null;
+  document.getElementById("evCritNom").value="";
+  rendreEval();
+};
+window.toutZeroEval=function(){
+  const crits=listeEval();
+  crits.forEach(function(c){c.note=0;});
+  ecrireJSON(CLE_EVAL,crits);
+  rendreEval();
+};
+window.viderEval=function(){
+  ["evaSavon","evaApprenant","evaGroupe"].forEach(function(id){document.getElementById(id).value="";});
+  toutZeroEval();
+};
+window.imprimerEvaluation=function(){
+  document.body.classList.add("impression-evaluation");
+  window.print();
+  setTimeout(function(){document.body.classList.remove("impression-evaluation");},400);
+};
+
+(function init(){
+  let logo=null;try{logo=localStorage.getItem(CLE_LOGO);}catch(e){}
+  afficherPhoto("boiteLogo",logo);
+  let pg=null;try{pg=localStorage.getItem(CLE_PHOTOG);}catch(e){}
+  afficherMiniPhoto("boitePhotoG",pg);
+  let pd=null;try{pd=localStorage.getItem(CLE_PHOTOD);}catch(e){}
+  afficherMiniPhoto("boitePhotoD",pd);
+
+  let fond="#f4f6f4";try{fond=localStorage.getItem(CLE_FOND)||fond;}catch(e){}
+  appliquerFond(fond);
+
+  let tl=null;try{tl=localStorage.getItem(CLE_TLOGO);}catch(e){}
+  if(tl)appliquerTaille("cadreLogo","tailleLogo","valTailleLogo",tl);
+
+  let ml=null;try{ml=localStorage.getItem(CLE_MLOGO);}catch(e){}
+  appliquerModele("cadreLogo","modeleLogo",ml||"arrondi");
+
+  document.getElementById("apercuFond").addEventListener("input",function(){
+    appliquerFond(this.value);
+    try{localStorage.setItem(CLE_FOND,this.value);}catch(e){}
+  });
+  document.querySelectorAll(".swatch").forEach(function(s){
+    s.addEventListener("click",function(){
+      appliquerFond(this.dataset.fond);
+      try{localStorage.setItem(CLE_FOND,this.dataset.fond);}catch(e){}
+    });
+  });
+  document.getElementById("fichierLogo").addEventListener("change",function(){chargerMedia(this,CLE_LOGO,"boiteLogo");this.value="";});
+  document.getElementById("fichierPhotoG").addEventListener("change",function(){chargerMedia(this,CLE_PHOTOG,"boitePhotoG");this.value="";});
+  document.getElementById("fichierPhotoD").addEventListener("change",function(){chargerMedia(this,CLE_PHOTOD,"boitePhotoD");this.value="";});
+  document.getElementById("prjPhotos").addEventListener("change",function(){traiterFichiersPhotos(this.files);this.value="";});
+  rendreApercuPhotos();
+
+  try{
+    document.getElementById("formPrincipal").addEventListener("submit",soumettreLogin);
+    document.getElementById("formAdmin").addEventListener("submit",soumettreAdmin);
+  }catch(e){console.error(e);}
+
+  const EFFET_TILT_ACTIVE=false;
+  if(EFFET_TILT_ACTIVE&&window.matchMedia("(hover:hover)").matches){
+    document.querySelectorAll(".carte").forEach(function(cart){
+      if(cart.id==="blocProjets")return;
+      cart.addEventListener("mousemove",function(ev){
+        const r=cart.getBoundingClientRect();
+        const dx=(ev.clientX-r.left)/r.width-.5;
+        const dy=(ev.clientY-r.top)/r.height-.5;
+        cart.style.transform="perspective(900px) rotateY("+(dx*5).toFixed(2)+"deg) rotateX("+(-dy*5).toFixed(2)+"deg)";
+      });
+      cart.addEventListener("mouseleave",function(){cart.style.transform="";});
+    });
+  }
+
+  try{
+    if(!lireJSON(CLE_ADMIN)){
+      ecrireJSON(CLE_ADMIN,{user:"Profdouadi",mdp:"08082012"});
+    }
+  }catch(e){console.error(e);}
+
+  function initTitre(){
+  const el=document.querySelector(".titre-modifiable");
+  if(!el)return;
+  const v=localStorage.getItem("cs_titre");
+  if(v)el.textContent=v;
+  el.onclick=function(){
+    const nv=prompt("Modifier le titre :",el.textContent);
+    if(nv&&nv.trim()){el.textContent=nv.trim();try{localStorage.setItem("cs_titre",nv.trim());}catch(e){}}
+  };
+}
+try{rendreProfils();rendreProjets();rendreEval();rendreApercuPhotos();initTitre();}catch(e){console.error(e);}
+  try{ouvrirSession();}
+  catch(e){
+    console.error(e);
+    document.body.classList.add("connecte");
+    document.body.classList.remove("admin");
+  }
+})();
+</script>
 </body>
 </html>
