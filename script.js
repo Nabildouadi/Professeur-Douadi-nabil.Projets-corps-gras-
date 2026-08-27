@@ -303,7 +303,7 @@ let modeLogin="connexion";
 
 function lireJSON(cle){try{return JSON.parse(localStorage.getItem(cle));}catch(e){return null;}}
 
-const CLES_SYNCHRO=["cs_projets","cs_profils","cs_eval","cs_huiles","cs_admin","cs_photos"];
+const CLES_SYNCHRO=["cs_projets","cs_profils","cs_eval","cs_huiles","cs_admin","cs_specialites","cs_photos"];
 function synchroniserFichier(cle,v){
   if(CLES_SYNCHRO.indexOf(cle)<0)return;
   try{
@@ -326,6 +326,8 @@ function rafraichirToutesDonnees(){
   try{rendreProjets();}catch(e){}
   try{rendreProfils();}catch(e){}
   try{rendreEval();}catch(e){}
+  try{majDatalistSpecs();}catch(e){}
+  try{rendreSpecialites();}catch(e){}
   try{
     const hu=lireJSON("cs_huiles");
     if(Array.isArray(hu)&&hu.length){HUILES=HUILES_BASE.concat(hu);remplirSelectForm();}
@@ -550,6 +552,75 @@ window.imprimerResultats=function(){
 const CLE_PROFILS="cs_profils";
 let profilSelectionne=null;
 
+const CLE_SPECIALITES="cs_specialites";
+const SPEC_DEFAUT=["Cosmétologie","Esthétique","Coiffure","Couture","Cuisine","Pâtisserie"];
+let specSelectionnee=null;
+
+function listeSpecialites(){
+  let l=lireJSON(CLE_SPECIALITES);
+  if(!Array.isArray(l)||l.length===0){l=SPEC_DEFAUT.slice();ecrireJSON(CLE_SPECIALITES,l);}
+  return l;
+}
+function majDatalistSpecs(){
+  const dl=document.getElementById("listeSpecs");
+  if(!dl)return;
+  dl.innerHTML=listeSpecialites().map(function(s){
+    return '<option value="'+s.replace(/"/g,"&quot;")+'"></option>';
+  }).join("");
+}
+function rendreSpecialites(){
+  const box=document.getElementById("specsApercu");
+  if(!box)return;
+  box.innerHTML="";
+  listeSpecialites().forEach(function(s,i){
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="chip-spec"+(i===specSelectionnee?" active":"");
+    b.textContent=s;
+    b.onclick=function(){selectionnerSpec(i);};
+    box.appendChild(b);
+  });
+}
+function selectionnerSpec(i){
+  specSelectionnee=i;
+  document.getElementById("specNom").value=listeSpecialites()[i]||"";
+  rendreSpecialites();
+}
+window.ajouterSpec=function(){
+  const nom=document.getElementById("specNom").value.trim();
+  if(!nom){alert("Veuillez saisir le nom de la spécialité.");return;}
+  const specs=listeSpecialites();
+  if(specs.some(function(x){return x.toLowerCase()===nom.toLowerCase();})){alert("Cette spécialité existe déjà dans la liste.");return;}
+  specs.push(nom);
+  ecrireJSON(CLE_SPECIALITES,specs);
+  specSelectionnee=specs.length-1;
+  document.getElementById("specNom").value="";
+  majDatalistSpecs();
+  rendreSpecialites();
+};
+window.modifierSpec=function(){
+  if(specSelectionnee===null){alert("Cliquez d'abord sur une spécialité dans la liste ci-dessous pour la sélectionner.");return;}
+  const nom=document.getElementById("specNom").value.trim();
+  if(!nom){alert("Veuillez saisir le nom de la spécialité.");return;}
+  const specs=listeSpecialites();
+  if(specs.some(function(x,i){return i!==specSelectionnee&&x.toLowerCase()===nom.toLowerCase();})){alert("Cette spécialité existe déjà dans la liste.");return;}
+  specs[specSelectionnee]=nom;
+  ecrireJSON(CLE_SPECIALITES,specs);
+  majDatalistSpecs();
+  rendreSpecialites();
+};
+window.supprimerSpec=function(){
+  if(specSelectionnee===null){alert("Cliquez d'abord sur la spécialité à supprimer.");return;}
+  const specs=listeSpecialites();
+  if(!confirm("Supprimer la spécialité « "+specs[specSelectionnee]+" » ?"))return;
+  specs.splice(specSelectionnee,1);
+  ecrireJSON(CLE_SPECIALITES,specs);
+  specSelectionnee=null;
+  document.getElementById("specNom").value="";
+  majDatalistSpecs();
+  rendreSpecialites();
+};
+
 function listeProfils(){return lireJSON(CLE_PROFILS)||[];}
 
 function viderFormulaireProfil(){
@@ -581,6 +652,7 @@ function majFiltreSpec(){
   const cur=sel.value;
   const specs={};
   listeProfils().forEach(function(p){if(p.spec)specs[p.spec]=1;});
+  listeSpecialites().forEach(function(s){if(s)specs[s]=1;});
   const cles=Object.keys(specs).sort(function(a,b){return a.localeCompare(b,"fr");});
   sel.innerHTML='<option value="">Toutes les spécialités</option>'+cles.map(function(s){
     return '<option value="'+s.replace(/"/g,"&quot;")+'">'+s+"</option>";
@@ -1178,6 +1250,8 @@ window.imprimerEvaluation=function(){
   rendreApercuPhotos();
   initAutoSauvegarde();
   initAutoSauvegardeProfil();
+  majDatalistSpecs();
+  rendreSpecialites();
 
   try{
     document.getElementById("formPrincipal").addEventListener("submit",soumettreLogin);

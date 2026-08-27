@@ -347,3 +347,15 @@
   }
   .autosave-bar.off{background:#fdecea;border-color:#e6b3ac;}
   .mini-btn.off{background:var(--rouge);}
+  .carte h3{
+    font-size:1em;color:var(--vert-fonce);margin:16px 0 10px;
+    border-bottom:1px solid var(--fond);padding-bottom:5px;
+  }
+  .specs-liste{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .chip-spec{
+    padding:6px 14px;border:1.5px solid #aebfd8;border-radius:20px;background:#fff;
+    cursor:pointer;font-size:.86em;font-weight:600;color:#333;font-family:inherit;
+    transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.08);
+  }
+  .chip-spec:hover{border-color:var(--vert);background:#eef7f0;}
+  .chip-spec.active{background:var(--vert);color:#fff;border-color:var(--vert);}

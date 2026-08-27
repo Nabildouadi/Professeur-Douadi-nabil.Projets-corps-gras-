@@ -409,9 +409,9 @@
       </div>
     </div>
     <div class="actions" style="margin-top:10px;">
-      <button class="btn" onclick="ajouterProfil()">➕ Ajouter</button>
-      <button class="btn secondaire" onclick="modifierProfil()">✏️ Modifier</button>
-      <button class="btn danger" onclick="supprimerProfil()">🗑️ Supprimer</button>
+      <button class="btn" onclick="ajouterProfil()">➕ Ajouter un stagiaire</button>
+      <button class="btn secondaire" onclick="modifierProfil()">✏️ Modifier un stagiaire</button>
+      <button class="btn danger" onclick="supprimerProfil()">🗑️ Supprimer un stagiaire</button>
       <span style="align-self:center;font-size:.85em;color:#666;">
         4 — Mot de passe : <b>automatique</b>, les 4 derniers chiffres du téléphone
         (il se met à jour si le numéro change).
@@ -421,6 +421,20 @@
       <button type="button" class="mini-btn" id="btnAutoSauvegardeProfil" onclick="basculerAutoSauvegardeProfil()">💾 Sauvegarde automatique — Activée</button>
       <span id="autoSauvInfoProfil" style="align-self:center;font-size:.82em;color:#666;">Vos modifications sont enregistrées automatiquement sur cet ordinateur.</span>
     </div>
+    <h3>🎓 Gestion des spécialités</h3>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Nom de la spécialité</label>
+        <input type="text" id="specNom" list="listeSpecs" placeholder="Ex : Cosmétologie">
+      </div>
+    </div>
+    <div class="actions" style="margin-top:6px;">
+      <button class="btn" onclick="ajouterSpec()">➕ Ajouter une spécialité</button>
+      <button class="btn secondaire" onclick="modifierSpec()">✏️ Modifier</button>
+      <button class="btn danger" onclick="supprimerSpec()">🗑️ Supprimer</button>
+    </div>
+    <div class="specs-liste" id="specsApercu"></div>
+    <div class="note-pedago">Cliquez sur une spécialité ci-dessus pour la sélectionner (Modifier / Supprimer). Ces spécialités alimentent aussi le filtre et la liste de saisie.</div>
     <div class="ligne-champs" style="align-items:flex-end;">
       <div class="champ" style="max-width:230px;">
         <label>🗂️ Organiser / filtrer par groupe</label>
