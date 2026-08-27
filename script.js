@@ -302,7 +302,36 @@ const CLE_COMPTES="cs_comptes", CLE_SESSION="cs_session", CLE_FOND="cs_fond", CL
 let modeLogin="connexion";
 
 function lireJSON(cle){try{return JSON.parse(localStorage.getItem(cle));}catch(e){return null;}}
-function ecrireJSON(cle,v){try{localStorage.setItem(cle,JSON.stringify(v));}catch(e){}}
+
+const CLES_SYNCHRO=["cs_projets","cs_profils","cs_eval","cs_huiles","cs_admin","cs_photos"];
+function synchroniserFichier(cle,v){
+  if(CLES_SYNCHRO.indexOf(cle)<0)return;
+  try{
+    fetch("api/sauvegarde",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cle:cle,donnees:v})}).catch(function(){});
+  }catch(e){}
+}
+function ecrireJSON(cle,v){
+  try{localStorage.setItem(cle,JSON.stringify(v));}catch(e){}
+  synchroniserFichier(cle,v);
+}
+function chargerDonneesProjet(cb){
+  try{
+    fetch("api/donnees").then(function(r){return r.json();}).then(function(donnees){
+      Object.keys(donnees).forEach(function(cle){try{localStorage.setItem(cle,JSON.stringify(donnees[cle]));}catch(e){}});
+      cb(donnees);
+    }).catch(function(){cb(null);});
+  }catch(e){cb(null);}
+}
+function rafraichirToutesDonnees(){
+  try{rendreProjets();}catch(e){}
+  try{rendreProfils();}catch(e){}
+  try{rendreEval();}catch(e){}
+  try{
+    const hu=lireJSON("cs_huiles");
+    if(Array.isArray(hu)&&hu.length){HUILES=HUILES_BASE.concat(hu);remplirSelectForm();}
+  }catch(e){}
+  try{rendreApercuPhotos();}catch(e){}
+}
 function listeComptes(){return lireJSON(CLE_COMPTES)||[];}
 function erreurLogin(msg){document.getElementById("erreurLogin").textContent=msg;}
 
@@ -527,6 +556,7 @@ function viderFormulaireProfil(){
   ["proNom","proPrenom","proSpec","proTel","proMdp"].forEach(function(id){document.getElementById(id).value="";});
   document.getElementById("proSem").value="";
   document.getElementById("proGroupe").value="";
+  effacerBrouillonProfil();
 }
 
 function lireFormulaireProfil(){
@@ -636,6 +666,7 @@ function selectionnerProfil(i){
   document.getElementById("proSem").value=p.sem||"";
   document.getElementById("proGroupe").value=p.groupe||"";
   document.getElementById("proMdp").value=p.mdp||"";
+  sauvegardeAutoProfil();
   rendreProfils();
 }
 
@@ -674,6 +705,92 @@ window.supprimerProfil=function(){
   rendreProfils();
 };
 
+const CLE_DRAFT_PROFIL="cs_draft_profil";
+const CLE_AUTOSAVE_PROFIL="cs_autosave_profil";
+let autoSauvegardeProfilActive=true;
+try{autoSauvegardeProfilActive=localStorage.getItem(CLE_AUTOSAVE_PROFIL)!=="0";}catch(e){}
+
+function effacerBrouillonProfil(){try{localStorage.removeItem(CLE_DRAFT_PROFIL);}catch(e){}}
+
+function majInfoAutoSauvegardeProfil(){
+  const bouton=document.getElementById("btnAutoSauvegardeProfil");
+  const info=document.getElementById("autoSauvInfoProfil");
+  const bar=bouton?bouton.closest(".autosave-bar"):null;
+  if(bouton){
+    bouton.textContent=autoSauvegardeProfilActive
+      ?"💾 Sauvegarde automatique — Activée"
+      :"💾 Sauvegarde automatique — Désactivée";
+    bouton.classList.toggle("off",!autoSauvegardeProfilActive);
+  }
+  if(bar)bar.classList.toggle("off",!autoSauvegardeProfilActive);
+  if(info){
+    info.textContent=autoSauvegardeProfilActive
+      ?"Vos modifications sont enregistrées automatiquement sur cet ordinateur."
+      :"Sauvegarde automatique désactivée : pensez à cliquer sur « Ajouter » ou « Modifier » pour enregistrer.";
+  }
+}
+
+function sauvegardeAutoProfil(){
+  if(!autoSauvegardeProfilActive)return;
+  const rec={
+    nom:document.getElementById("proNom").value.trim(),
+    prenom:document.getElementById("proPrenom").value.trim(),
+    spec:document.getElementById("proSpec").value.trim(),
+    tel:document.getElementById("proTel").value.replace(/[\s.\-]/g,""),
+    sem:document.getElementById("proSem").value,
+    groupe:document.getElementById("proGroupe").value,
+    mdp:document.getElementById("proMdp").value.replace(/\D/g,"").slice(0,4),
+    sauvegardeAuto:heureCourante()
+  };
+  try{localStorage.setItem(CLE_DRAFT_PROFIL,JSON.stringify(rec));}catch(e){}
+  if(profilSelectionne!==null){
+    const profils=listeProfils();
+    if(profils[profilSelectionne]&&rec.tel){
+      profils[profilSelectionne].nom=rec.nom;
+      profils[profilSelectionne].prenom=rec.prenom;
+      profils[profilSelectionne].spec=rec.spec;
+      profils[profilSelectionne].tel=rec.tel;
+      profils[profilSelectionne].sem=rec.sem;
+      profils[profilSelectionne].groupe=rec.groupe;
+      profils[profilSelectionne].mdp=(rec.mdp||rec.tel.slice(-4));
+      ecrireJSON(CLE_PROFILS,profils);
+      rendreProfils();
+    }
+  }
+  const info=document.getElementById("autoSauvInfoProfil");
+  if(info)info.textContent="💾 Enregistré automatiquement à "+rec.sauvegardeAuto+".";
+}
+
+window.basculerAutoSauvegardeProfil=function(){
+  autoSauvegardeProfilActive=!autoSauvegardeProfilActive;
+  try{localStorage.setItem(CLE_AUTOSAVE_PROFIL,autoSauvegardeProfilActive?"1":"0");}catch(e){}
+  majInfoAutoSauvegardeProfil();
+  if(autoSauvegardeProfilActive)sauvegardeAutoProfil();
+};
+
+function restaurerBrouillonProfil(){
+  if(!autoSauvegardeProfilActive)return;
+  let b=null;
+  try{b=JSON.parse(localStorage.getItem(CLE_DRAFT_PROFIL));}catch(e){}
+  if(!b)return;
+  document.getElementById("proNom").value=b.nom||"";
+  document.getElementById("proPrenom").value=b.prenom||"";
+  document.getElementById("proSpec").value=b.spec||"";
+  document.getElementById("proTel").value=b.tel||"";
+  document.getElementById("proSem").value=b.sem||"";
+  document.getElementById("proGroupe").value=b.groupe||"";
+  document.getElementById("proMdp").value=b.mdp||"";
+}
+
+function initAutoSauvegardeProfil(){
+  majInfoAutoSauvegardeProfil();
+  ["proNom","proPrenom","proSpec","proSem","proGroupe","proTel","proMdp"].forEach(function(id){
+    const el=document.getElementById(id);
+    if(el){el.addEventListener("input",sauvegardeAutoProfil);el.addEventListener("change",sauvegardeAutoProfil);}
+  });
+  restaurerBrouillonProfil();
+}
+
 const CLE_PROJETS="cs_projets";
 let projetSelectionne=null;
 
@@ -699,6 +816,7 @@ function rendreApercuPhotos(){
 window.supprimerPhotoProjet=function(i){
   prjPhotosCourantes.splice(i,1);
   rendreApercuPhotos();
+  sauvegardeAuto();
 };
 window.remplacerPhotoProjet=function(i){
   prjPhotoRemplace=i;
@@ -714,6 +832,7 @@ function traiterFichiersPhotos(files){
         if(prjPhotoRemplace>=0){prjPhotosCourantes[prjPhotoRemplace]=d;prjPhotoRemplace=-1;}
         else if(prjPhotosCourantes.length<10){prjPhotosCourantes.push(d);}
         rendreApercuPhotos();
+        sauvegardeAuto();
       });
     };
     rd.readAsDataURL(f);
@@ -721,31 +840,21 @@ function traiterFichiersPhotos(files){
 }
 
 function viderFormulaireProjet(){
-  ["prjTitre","prjObjectif","prjNom","prjPrenom","prjSpec","prjEncadrant","prjAnnee","prjDesc"].forEach(function(id){document.getElementById(id).value="";});
-  document.getElementById("prjGroupe").value="";
-  document.getElementById("prjSem").value="";
+  ["prjTitre","prjObjectif","prjEncadrant","prjDesc"].forEach(function(id){document.getElementById(id).value="";});
   prjPhotosCourantes=[];
   prjPhotoRemplace=-1;
+  effacerBrouillon();
   rendreApercuPhotos();
 }
 
 function lireFormulaireProjet(){
   const titre=document.getElementById("prjTitre").value.trim();
   const objectif=document.getElementById("prjObjectif").value.trim();
-  const nom=document.getElementById("prjNom").value.trim();
-  const prenom=document.getElementById("prjPrenom").value.trim();
-  const groupe=document.getElementById("prjGroupe").value;
-  const sem=document.getElementById("prjSem").value;
-  const spec=document.getElementById("prjSpec").value.trim();
   if(!titre){alert("Veuillez remplir le titre du projet.");return null;}
   if(!objectif){alert("Veuillez remplir l'objectif du projet.");return null;}
-  if(!nom||!prenom||!spec){alert("Veuillez remplir le nom, le prénom et la spécialité.");return null;}
-  if(!groupe){alert("Veuillez choisir le groupe.");return null;}
-  if(!sem){alert("Veuillez choisir le semestre.");return null;}
   return {
-    titre:titre,objectif:objectif,nom:nom,prenom:prenom,groupe:groupe,sem:sem,spec:spec,
+    titre:titre,objectif:objectif,
     encadrant:document.getElementById("prjEncadrant").value.trim(),
-    annee:document.getElementById("prjAnnee").value.trim(),
     desc:document.getElementById("prjDesc").value.trim(),
     photos:prjPhotosCourantes.slice()
   };
@@ -761,9 +870,8 @@ function rendreProjets(){
     tr.style.cursor="pointer";
     tr.onclick=function(){selectionnerProjet(i);};
     tr.innerHTML="<td>"+(i+1)+"</td><td>"+p.titre+"</td>"+
-      "<td style='text-align:left;font-size:.85em;'>"+((p.objectif&&p.objectif.length>42)?p.objectif.slice(0,42)+"…":(p.objectif||"—"))+"</td>"+
-      "<td>"+p.prenom+" "+p.nom+"</td><td><b>"+p.groupe+"</b></td><td><b>"+(p.sem||"—")+"</b></td>"+
-      "<td>"+p.spec+"</td><td>"+(p.encadrant||"—")+"</td><td>"+(p.annee||"—")+"</td>";
+      "<td style='text-align:left;font-size:.85em;'>"+((p.objectif&&p.objectif.length>46)?p.objectif.slice(0,46)+"…":(p.objectif||"—"))+"</td>"+
+      "<td>"+(p.encadrant||"—")+"</td>";
     tb.appendChild(tr);
   });
   document.getElementById("compteProjets").textContent=
@@ -775,17 +883,12 @@ function selectionnerProjet(i){
   const p=listeProjets()[i];
   document.getElementById("prjTitre").value=p.titre;
   document.getElementById("prjObjectif").value=p.objectif||"";
-  document.getElementById("prjNom").value=p.nom;
-  document.getElementById("prjPrenom").value=p.prenom;
-  document.getElementById("prjGroupe").value=p.groupe||"";
-  document.getElementById("prjSem").value=p.sem||"";
-  document.getElementById("prjSpec").value=p.spec;
   document.getElementById("prjEncadrant").value=p.encadrant||"";
-  document.getElementById("prjAnnee").value=p.annee||"";
   prjPhotosCourantes=(p.photos||[]).slice();
   prjPhotoRemplace=-1;
   rendreApercuPhotos();
   document.getElementById("prjDesc").value=p.desc||"";
+  sauvegardeAuto();
   rendreProjets();
 }
 
@@ -827,6 +930,91 @@ window.imprimerProjets=function(){
   window.print();
   setTimeout(function(){document.body.classList.remove("impression-projets");},400);
 };
+
+const CLE_DRAFT="cs_draft";
+const CLE_AUTOSAVE="cs_autosave";
+let autoSauvegardeActive=true;
+try{autoSauvegardeActive=localStorage.getItem(CLE_AUTOSAVE)!=="0";}catch(e){}
+
+function heureCourante(){
+  return new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+}
+function lireBrouillon(){try{return JSON.parse(localStorage.getItem(CLE_DRAFT));}catch(e){return null;}}
+function effacerBrouillon(){try{localStorage.removeItem(CLE_DRAFT);}catch(e){}}
+
+function majInfoAutoSauvegarde(){
+  const bouton=document.getElementById("btnAutoSauvegarde");
+  const info=document.getElementById("autoSauvInfo");
+  const bar=bouton?bouton.closest(".autosave-bar"):null;
+  if(bouton){
+    bouton.textContent=autoSauvegardeActive
+      ?"💾 Sauvegarde automatique — Activée"
+      :"💾 Sauvegarde automatique — Désactivée";
+    bouton.classList.toggle("off",!autoSauvegardeActive);
+  }
+  if(bar)bar.classList.toggle("off",!autoSauvegardeActive);
+  if(info){
+    info.textContent=autoSauvegardeActive
+      ?"Vos modifications sont enregistrées automatiquement sur cet ordinateur."
+      :"Sauvegarde automatique désactivée : pensez à cliquer sur « Ajouter » ou « Modifier » pour enregistrer.";
+  }
+}
+
+function sauvegardeAuto(){
+  if(!autoSauvegardeActive)return;
+  const rec={
+    titre:document.getElementById("prjTitre").value.trim(),
+    objectif:document.getElementById("prjObjectif").value.trim(),
+    encadrant:document.getElementById("prjEncadrant").value.trim(),
+    desc:document.getElementById("prjDesc").value.trim(),
+    photos:prjPhotosCourantes.slice(),
+    sauvegardeAuto:heureCourante()
+  };
+  try{localStorage.setItem(CLE_DRAFT,JSON.stringify(rec));}catch(e){}
+  if(projetSelectionne!==null){
+    const projets=listeProjets();
+    if(projets[projetSelectionne]){
+      projets[projetSelectionne].titre=rec.titre;
+      projets[projetSelectionne].objectif=rec.objectif;
+      projets[projetSelectionne].encadrant=rec.encadrant;
+      projets[projetSelectionne].desc=rec.desc;
+      projets[projetSelectionne].photos=rec.photos;
+      ecrireJSON(CLE_PROJETS,projets);
+      rendreProjets();
+    }
+  }
+  const info=document.getElementById("autoSauvInfo");
+  if(info)info.textContent="💾 Enregistré automatiquement à "+rec.sauvegardeAuto+".";
+}
+
+window.basculerAutoSauvegarde=function(){
+  autoSauvegardeActive=!autoSauvegardeActive;
+  try{localStorage.setItem(CLE_AUTOSAVE,autoSauvegardeActive?"1":"0");}catch(e){}
+  majInfoAutoSauvegarde();
+  if(autoSauvegardeActive)sauvegardeAuto();
+};
+
+function restaurerBrouillon(){
+  if(!autoSauvegardeActive)return;
+  const b=lireBrouillon();
+  if(!b)return;
+  document.getElementById("prjTitre").value=b.titre||"";
+  document.getElementById("prjObjectif").value=b.objectif||"";
+  document.getElementById("prjEncadrant").value=b.encadrant||"";
+  document.getElementById("prjDesc").value=b.desc||"";
+  prjPhotosCourantes=(b.photos||[]).slice();
+  prjPhotoRemplace=-1;
+  rendreApercuPhotos();
+}
+
+function initAutoSauvegarde(){
+  majInfoAutoSauvegarde();
+  ["prjTitre","prjObjectif","prjEncadrant","prjDesc"].forEach(function(id){
+    const el=document.getElementById(id);
+    if(el){el.addEventListener("input",sauvegardeAuto);el.addEventListener("change",sauvegardeAuto);}
+  });
+  restaurerBrouillon();
+}
 
 const CLE_EVAL="cs_eval";
 let evalSelectionne=null;
@@ -988,6 +1176,8 @@ window.imprimerEvaluation=function(){
   document.getElementById("fichierPhotoD").addEventListener("change",function(){chargerMedia(this,CLE_PHOTOD,"boitePhotoD");this.value="";});
   document.getElementById("prjPhotos").addEventListener("change",function(){traiterFichiersPhotos(this.files);this.value="";});
   rendreApercuPhotos();
+  initAutoSauvegarde();
+  initAutoSauvegardeProfil();
 
   try{
     document.getElementById("formPrincipal").addEventListener("submit",soumettreLogin);
@@ -1025,6 +1215,9 @@ window.imprimerEvaluation=function(){
   };
 }
 try{rendreProfils();rendreProjets();rendreEval();rendreApercuPhotos();initTitre();}catch(e){console.error(e);}
+  chargerDonneesProjet(function(donnees){
+    if(donnees&&Object.keys(donnees).length){rafraichirToutesDonnees();}
+  });
   try{ouvrirSession();}
   catch(e){
     console.error(e);
@@ -1032,3 +1225,28 @@ try{rendreProfils();rendreProjets();rendreEval();rendreApercuPhotos();initTitre(
     document.body.classList.remove("admin");
   }
 })();
+
+const ETAPES_MINI_PROJET=[
+  { titre:"ÉTAPE 1 — PLANIFICATION",     texte:"Définition du thème du mini-projet, des objectifs attendus, des ressources nécessaires (matériaux, outils, matières premières) et du planning de réalisation." },
+  { titre:"ÉTAPE 2 — PRÉPARATION",       texte:"Préparation du poste de travail, réunion du matériel et de l'équipement, respect des consignes de sécurité et organisation des étapes de fabrication." },
+  { titre:"ÉTAPE 3 — FABRICATION",       texte:"Réalisation pratique du produit : pesée des matières, mélange et transformation, suivi de la méthode et ajustements en fonction des résultats obtenus." },
+  { titre:"ÉTAPE 4 — CONTRÔLE QUALITÉ",  texte:"Vérification des caractéristiques du produit fini : aspect, texture, stabilité et conformité au cahier des charges, avec correction des éventuels défauts." },
+  { titre:"ÉTAPE 5 — VALORISATION",      texte:"Présentation et valorisation du mini-projet : emballage, étiquetage, mise en valeur du produit et restitution orale devant le formateur et le groupe." }
+];
+window.afficherEtapeMini=function(index,btn){
+  const step=ETAPES_MINI_PROJET[index];
+  if(!step)return;
+  const fiche=btn?btn.closest(".fiche-mini-projet"):document.getElementById("ficheMiniProjetLogin");
+  if(!fiche)return;
+  const titre=fiche.querySelector(".mp-detail-titre");
+  const texte=fiche.querySelector(".mp-detail-texte");
+  if(titre)titre.textContent=step.titre;
+  if(texte)texte.textContent=step.texte;
+  fiche.querySelectorAll(".mp-step").forEach(function(s){s.classList.remove("active");});
+  if(btn)btn.classList.add("active");
+};
+window.basculerFicheMiniProjet=function(id){
+  const f=document.getElementById(id||"ficheMiniProjetLogin");
+  if(!f)return;
+  f.style.display=(f.style.display==="block")?"none":"block";
+};
