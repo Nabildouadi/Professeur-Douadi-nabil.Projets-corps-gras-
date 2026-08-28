@@ -145,6 +145,99 @@
         <textarea id="prjDesc" rows="3" placeholder="Méthodes, étapes de fabrication, résultats obtenus..."></textarea>
       </div>
     </div>
+    <h3>🪪 Fiche du stagiaire</h3>
+    <datalist id="listeSpecs">
+      <option value="Cosmétologie"></option>
+      <option value="Esthétique"></option>
+      <option value="Coiffure"></option>
+      <option value="Couture"></option>
+      <option value="Cuisine"></option>
+      <option value="Pâtisserie"></option>
+    </datalist>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>1 — Nom du stagiaire</label>
+        <input type="text" id="ficNom" placeholder="Nom">
+      </div>
+      <div class="champ">
+        <label>Prénom</label>
+        <input type="text" id="ficPrenom" placeholder="Prénom">
+      </div>
+      <div class="champ" style="max-width:120px;">
+        <label>3 — Semestre</label>
+        <select id="ficSem">
+          <option value="">—</option>
+          <option value="S1">S1</option>
+          <option value="S2">S2</option>
+          <option value="S3">S3</option>
+          <option value="S4">S4</option>
+          <option value="S5">S5</option>
+        </select>
+      </div>
+      <div class="champ" style="max-width:110px;">
+        <label>4 — Groupe</label>
+        <select id="ficGroupe">
+          <option value="">—</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>2 — Spécialité</label>
+        <input type="text" id="ficSpec" list="listeSpecs" placeholder="Ex : Cosmétologie">
+      </div>
+      <div class="champ">
+        <label>5 — Numéro de téléphone (à remplir)</label>
+        <input type="tel" id="ficTel" maxlength="14" placeholder="05XX XX XX XX" oninput="document.getElementById('ficMdp').value=this.value.replace(/\D/g,'').slice(-4);">
+      </div>
+      <div class="champ" style="max-width:160px;">
+        <label>6 — Mot de passe (4 derniers chiffres)</label>
+        <input type="text" id="ficMdp" maxlength="4" placeholder="Auto">
+      </div>
+    </div>
+    <div class="ligne-champs">
+      <div class="champ" style="max-width:300px;">
+        <label>📋 Stagiaires enregistrés</label>
+        <select id="ficStagiaireSelect" class="mini-select" style="margin-top:0;" onchange="chargerStagiaireFiche()">
+          <option value="">— Choisir un stagiaire —</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:6px;">
+      <button class="btn" onclick="ajouterStagiaireFiche()">➕ Ajouter</button>
+      <button class="btn secondaire" onclick="modifierStagiaireFiche()">✏️ Modifier</button>
+      <button class="btn danger" onclick="supprimerStagiaireFiche()">🗑️ Supprimer</button>
+      <span id="msgFicheStagiaire" style="align-self:center;font-size:.8em;color:var(--vert-fonce);font-weight:600;"></span>
+    </div>
+    <h3>🎓 Gestion de la spécialité</h3>
+    <div class="ligne-champs">
+      <div class="champ">
+        <label>Nom de la spécialité</label>
+        <input type="text" id="ficSpecManage" list="listeSpecs" placeholder="Ex : Cosmétologie">
+      </div>
+      <div class="champ" style="max-width:280px;">
+        <label>Liste des spécialités</label>
+        <select id="ficSpecSelect" class="mini-select" style="margin-top:0;" onchange="chargerSpecFiche()">
+          <option value="">— Choisir —</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions" style="margin-top:6px;">
+      <button class="btn" onclick="ajouterSpecFiche()">➕ Ajouter</button>
+      <button class="btn secondaire" onclick="modifierSpecFiche()">✏️ Modifier</button>
+      <button class="btn danger" onclick="supprimerSpecFiche()">🗑️ Supprimer</button>
+      <span id="msgFicheSpec" style="align-self:center;font-size:.8em;color:var(--vert-fonce);font-weight:600;"></span>
+    </div>
     <div class="ligne-champs">
       <div class="champ">
         <label>📷 Photos du projet (max 3) — ajouter, modifier ou supprimer</label>
@@ -345,150 +438,7 @@
     </div>
   </section>
 
-<section class="carte pleine" id="blocProfils">
-    <h2>👥 Gestion des profils</h2>
-        <div class="ligne-champs">
-      <div class="champ">
-        <label>1 — Nom</label>
-        <input type="text" id="proNom" placeholder="Nom de famille">
-      </div>
-      <div class="champ">
-        <label>Prénom</label>
-        <input type="text" id="proPrenom" placeholder="Prénom">
-      </div>
-    </div>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>2 — Spécialité (à remplir)</label>
-        <input type="text" id="proSpec" list="listeSpecs" placeholder="Ex : Cosmétologie">
-        <datalist id="listeSpecs">
-          <option value="Cosmétologie"></option>
-          <option value="Esthétique"></option>
-          <option value="Coiffure"></option>
-          <option value="Couture"></option>
-          <option value="Cuisine"></option>
-          <option value="Pàtisserie"></option>
-        </datalist>
-      </div>
-    </div>
-    <div class="ligne-champs">
-      <div class="champ" style="max-width:130px;">
-        <label>3 — Semestre</label>
-        <select id="proSem">
-          <option value="">—</option>
-          <option value="S1">S1</option>
-          <option value="S2">S2</option>
-          <option value="S3">S3</option>
-          <option value="S4">S4</option>
-          <option value="S5">S5</option>
-        </select>
-      </div>
-      <div class="champ" style="max-width:110px;">
-        <label>4 — Groupe</label>
-        <select id="proGroupe">
-          <option value="">—</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
-      </div>
-      <div class="champ">
-        <label>5 — Numéro de téléphone</label>
-        <input type="tel" id="proTel" maxlength="14" placeholder="05XX XX XX XX" oninput="document.getElementById('proMdp').value=this.value.replace(/\D/g,'').slice(-4);">
-      </div>
-      <div class="champ" style="max-width:150px;">
-        <label>6 — Mot de passe</label>
-        <input type="text" id="proMdp" maxlength="4" placeholder="4 chiffres">
-      </div>
-    </div>
-    <div class="actions" style="margin-top:10px;">
-      <button class="btn" onclick="ajouterProfil()">➕ Ajouter un stagiaire</button>
-      <button class="btn secondaire" onclick="modifierProfil()">✏️ Modifier un stagiaire</button>
-      <button class="btn danger" onclick="supprimerProfil()">🗑️ Supprimer un stagiaire</button>
-      <span style="align-self:center;font-size:.85em;color:#666;">
-        4 — Mot de passe : <b>automatique</b>, les 4 derniers chiffres du téléphone
-        (il se met à jour si le numéro change).
-      </span>
-    </div>
-    <div class="autosave-bar">
-      <button type="button" class="mini-btn" id="btnAutoSauvegardeProfil" onclick="basculerAutoSauvegardeProfil()">💾 Sauvegarde automatique — Activée</button>
-      <span id="autoSauvInfoProfil" style="align-self:center;font-size:.82em;color:#666;">Vos modifications sont enregistrées automatiquement sur cet ordinateur.</span>
-    </div>
-    <h3>🎓 Gestion des spécialités</h3>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Nom de la spécialité</label>
-        <input type="text" id="specNom" list="listeSpecs" placeholder="Ex : Cosmétologie">
-      </div>
-    </div>
-    <div class="actions" style="margin-top:6px;">
-      <button class="btn" onclick="ajouterSpec()">➕ Ajouter une spécialité</button>
-      <button class="btn secondaire" onclick="modifierSpec()">✏️ Modifier</button>
-      <button class="btn danger" onclick="supprimerSpec()">🗑️ Supprimer</button>
-    </div>
-    <div class="specs-liste" id="specsApercu"></div>
-    <div class="note-pedago">Cliquez sur une spécialité ci-dessus pour la sélectionner (Modifier / Supprimer). Ces spécialités alimentent aussi le filtre et la liste de saisie.</div>
-    <div class="ligne-champs" style="align-items:flex-end;">
-      <div class="champ" style="max-width:230px;">
-        <label>🗂️ Organiser / filtrer par groupe</label>
-        <select id="filtreGroupe" class="mini-select" style="margin-top:0;" onchange="rendreProfils()">
-          <option value="">Tous les groupes</option>
-          <option value="1">Groupe 1</option>
-          <option value="2">Groupe 2</option>
-          <option value="3">Groupe 3</option>
-          <option value="4">Groupe 4</option>
-          <option value="5">Groupe 5</option>
-          <option value="6">Groupe 6</option>
-          <option value="7">Groupe 7</option>
-          <option value="8">Groupe 8</option>
-          <option value="9">Groupe 9</option>
-          <option value="10">Groupe 10</option>
-        </select>
-      </div>
-      <div class="champ">
-        <label>🗂️ Filtrer par spécialité</label>
-        <select id="filtreSpec" class="mini-select" style="margin-top:0;" onchange="rendreProfils()"></select>
-      </div>
-      <div class="champ" style="max-width:140px;">
-        <label>🗓️ Filtrer par semestre</label>
-        <select id="filtreSem" class="mini-select" style="margin-top:0;" onchange="rendreProfils()">
-          <option value="">Tous les semestres</option>
-          <option value="S1">S1</option>
-          <option value="S2">S2</option>
-          <option value="S3">S3</option>
-          <option value="S4">S4</option>
-          <option value="S5">S5</option>
-        </select>
-      </div>
-      <div class="actions" style="margin-top:0;">
-        <button class="btn secondaire" onclick="selectionnerGroupeFiltre()">🎯 Sélectionner tout le groupe</button>
-      </div>
-    </div>
-    <table id="tblProfils">
-      <thead>
-        <tr>
-          <th style="width:5%;">#</th>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th style="width:7%;">Gr.</th>
-          <th>Semestre</th>
-          <th>Spécialité</th>
-          <th>Téléphone</th>
-          <th>Mot de passe</th>
-        </tr>
-      </thead>
-      <tbody id="corpsProfils"></tbody>
-    </table>
-    <div class="note-pedago" id="compteProfils">0 profil enregistré.</div>
-    <div class="note-pedago" id="statsGroupes"></div>
-  </section>
+
 
 </section>
 

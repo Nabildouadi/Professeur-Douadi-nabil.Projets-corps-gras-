@@ -661,6 +661,13 @@ function majFiltreSpec(){
 }
 function rendreProfils(){
   const tb=document.getElementById("corpsProfils");
+  if(!tb){
+    try{majDatalistSpecs();}catch(e){}
+    try{majFiltreSpec();}catch(e){}
+    try{remplirComboStagiaires();}catch(e){}
+    try{remplirComboSpecFiche();}catch(e){}
+    return;
+  }
   tb.innerHTML="";
   majFiltreSpec();
   const profils=listeProfils();
@@ -804,6 +811,7 @@ function majInfoAutoSauvegardeProfil(){
 
 function sauvegardeAutoProfil(){
   if(!autoSauvegardeProfilActive)return;
+  if(!document.getElementById("proNom"))return;
   const rec={
     nom:document.getElementById("proNom").value.trim(),
     prenom:document.getElementById("proPrenom").value.trim(),
@@ -842,6 +850,7 @@ window.basculerAutoSauvegardeProfil=function(){
 
 function restaurerBrouillonProfil(){
   if(!autoSauvegardeProfilActive)return;
+  if(!document.getElementById("proNom"))return;
   let b=null;
   try{b=JSON.parse(localStorage.getItem(CLE_DRAFT_PROFIL));}catch(e){}
   if(!b)return;
@@ -862,6 +871,175 @@ function initAutoSauvegardeProfil(){
   });
   restaurerBrouillonProfil();
 }
+
+window.sauvegarderProfils=function(){
+  const profils=listeProfils();
+  const specs=listeSpecialites();
+  ecrireJSON(CLE_PROFILS,profils);
+  ecrireJSON(CLE_SPECIALITES,specs);
+  sauvegardeAutoProfil();
+  majDatalistSpecs();
+  rendreSpecialites();
+  const msg=document.getElementById("msgSauvegardeProfils");
+  if(msg)msg.textContent="💾 "+profils.length+" profil(s) et "+specs.length+" spécialité(s) enregistrés à "+heureCourante()+".";
+};
+
+function rendrFiche(){
+  try{majDatalistSpecs();}catch(e){}
+  try{remplirComboStagiaires();}catch(e){}
+  try{remplirComboSpecFiche();}catch(e){}
+  try{rendreProfils();}catch(e){}
+}
+function specCombosRefresh(){
+  rendrFiche();
+}
+
+let ficStagiaireSelection=null;
+
+function viderFicheStagiaire(){
+  ["ficNom","ficPrenom","ficSpec","ficTel","ficMdp"].forEach(function(id){document.getElementById(id).value="";});
+  document.getElementById("ficSem").value="";
+  document.getElementById("ficGroupe").value="";
+  ficStagiaireSelection=null;
+  const sel=document.getElementById("ficStagiaireSelect");
+  if(sel)sel.value="";
+}
+
+function lireFicheStagiaire(){
+  const nom=document.getElementById("ficNom").value.trim();
+  const prenom=document.getElementById("ficPrenom").value.trim();
+  const spec=document.getElementById("ficSpec").value.trim();
+  const tel=document.getElementById("ficTel").value.replace(/[\s.\-]/g,"");
+  const sem=document.getElementById("ficSem").value;
+  const grp=document.getElementById("ficGroupe").value;
+  if(!nom||!prenom||!spec){alert("Fiche stagiaire : veuillez remplir le nom, le prénom et la spécialité.");return null;}
+  if(!sem){alert("Fiche stagiaire : choisissez le semestre (S1 à S5).");return null;}
+  if(!grp){alert("Fiche stagiaire : choisissez le groupe (1 à 10).");return null;}
+  if(!/^0[5-7][0-9]{8}$/.test(tel)){alert("Téléphone invalide (mobile algérien : 05, 06 ou 07 + 8 chiffres).");return null;}
+  const mdp=document.getElementById("ficMdp").value.replace(/\D/g,"").slice(0,4);
+  return {nom:nom,prenom:prenom,spec:spec,tel:tel,sem:sem,groupe:grp,mdp:(mdp||tel.slice(-4))};
+}
+
+function remplirComboStagiaires(){
+  const sel=document.getElementById("ficStagiaireSelect");
+  if(!sel)return;
+  const profils=listeProfils();
+  const avant=sel.value;
+  sel.innerHTML='<option value="">— Choisir un stagiaire —</option>'+profils.map(function(p,i){
+    return '<option value="'+i+'">'+p.prenom+' '+p.nom+' — Gr. '+(p.groupe||"—")+' • '+(p.sem||"—")+' • '+p.spec+'</option>';
+  }).join("");
+  if(avant&&profils[parseInt(avant,10)])sel.value=avant;
+}
+
+window.chargerStagiaireFiche=function(){
+  const sel=document.getElementById("ficStagiaireSelect");
+  const idx=parseInt(sel.value,10);
+  if(isNaN(idx)||idx<0){viderFicheStagiaire();return;}
+  const p=listeProfils()[idx];
+  if(!p)return;
+  document.getElementById("ficNom").value=p.nom;
+  document.getElementById("ficPrenom").value=p.prenom;
+  document.getElementById("ficSpec").value=p.spec;
+  document.getElementById("ficTel").value=p.tel;
+  document.getElementById("ficSem").value=p.sem||"";
+  document.getElementById("ficGroupe").value=p.groupe||"";
+  document.getElementById("ficMdp").value=p.mdp||"";
+  ficStagiaireSelection=idx;
+};
+
+window.ajouterStagiaireFiche=function(){
+  const v=lireFicheStagiaire();
+  if(!v)return;
+  const profils=listeProfils();
+  if(profils.length>=80){alert("Capacité maximale atteinte : 80 stagiaires.");return;}
+  if(profils.some(function(x){return x.tel===v.tel;})){alert("Ce numéro existe déjà dans la liste.");return;}
+  profils.push(v);
+  ecrireJSON(CLE_PROFILS,profils);
+  ficStagiaireSelection=profils.length-1;
+  viderFicheStagiaire();
+  rendrFiche();
+  document.getElementById("msgFicheStagiaire").textContent="✅ Stagiaire ajouté à "+heureCourante()+".";
+};
+
+window.modifierStagiaireFiche=function(){
+  if(ficStagiaireSelection===null){alert("Choisissez d'abord un stagiaire dans la liste ci-dessus.");return;}
+  const v=lireFicheStagiaire();
+  if(!v)return;
+  const profils=listeProfils();
+  if(profils.some(function(x,i){return x.tel===v.tel&&i!==ficStagiaireSelection;})){alert("Ce numéro est déjà utilisé par un autre stagiaire.");return;}
+  profils[ficStagiaireSelection]=v;
+  ecrireJSON(CLE_PROFILS,profils);
+  rendrFiche();
+  document.getElementById("msgFicheStagiaire").textContent="✅ Stagiaire modifié à "+heureCourante()+".";
+};
+
+window.supprimerStagiaireFiche=function(){
+  if(ficStagiaireSelection===null){alert("Choisissez d'abord un stagiaire dans la liste ci-dessus.");return;}
+  const profils=listeProfils();
+  if(!confirm("Supprimer ce stagiaire ?"))return;
+  profils.splice(ficStagiaireSelection,1);
+  ecrireJSON(CLE_PROFILS,profils);
+  viderFicheStagiaire();
+  rendrFiche();
+  document.getElementById("msgFicheStagiaire").textContent="✅ Stagiaire supprimé.";
+};
+
+function remplirComboSpecFiche(){
+  const sel=document.getElementById("ficSpecSelect");
+  if(!sel)return;
+  sel.innerHTML='<option value="">— Choisir —</option>'+listeSpecialites().map(function(s,i){
+    return '<option value="'+i+'">'+s.replace(/"/g,"&quot;")+"</option>";
+  }).join("");
+}
+
+window.chargerSpecFiche=function(){
+  const sel=document.getElementById("ficSpecSelect");
+  const idx=parseInt(sel.value,10);
+  const specs=listeSpecialites();
+  document.getElementById("ficSpecManage").value=(!isNaN(idx)&&specs[idx])?specs[idx]:"";
+};
+
+window.ajouterSpecFiche=function(){
+  const nom=document.getElementById("ficSpecManage").value.trim();
+  if(!nom){alert("Saisissez le nom de la spécialité.");return;}
+  const specs=listeSpecialites();
+  if(specs.some(function(x){return x.toLowerCase()===nom.toLowerCase();})){alert("Cette spécialité existe déjà.");return;}
+  specs.push(nom);
+  ecrireJSON(CLE_SPECIALITES,specs);
+  document.getElementById("ficSpecManage").value="";
+  specCombosRefresh();
+  document.getElementById("msgFicheSpec").textContent="✅ Spécialité ajoutée.";
+};
+
+window.modifierSpecFiche=function(){
+  const sel=document.getElementById("ficSpecSelect");
+  const idx=parseInt(sel.value,10);
+  const specs=listeSpecialites();
+  if(isNaN(idx)||idx<0||!specs[idx]){alert("Choisissez d'abord une spécialité dans la liste.");return;}
+  const nom=document.getElementById("ficSpecManage").value.trim();
+  if(!nom){alert("Saisissez le nouveau nom.");return;}
+  if(specs.some(function(x,i){return i!==idx&&x.toLowerCase()===nom.toLowerCase();})){alert("Cette spécialité existe déjà.");return;}
+  specs[idx]=nom;
+  ecrireJSON(CLE_SPECIALITES,specs);
+  document.getElementById("ficSpecManage").value="";
+  document.getElementById("ficSpecSelect").value="";
+  specCombosRefresh();
+  document.getElementById("msgFicheSpec").textContent="✅ Spécialité modifiée.";
+};
+
+window.supprimerSpecFiche=function(){
+  const sel=document.getElementById("ficSpecSelect");
+  const idx=parseInt(sel.value,10);
+  const specs=listeSpecialites();
+  if(isNaN(idx)||idx<0||!specs[idx]){alert("Choisissez d'abord la spécialité à supprimer.");return;}
+  if(!confirm("Supprimer la spécialité « "+specs[idx]+" » ?"))return;
+  specs.splice(idx,1);
+  ecrireJSON(CLE_SPECIALITES,specs);
+  document.getElementById("ficSpecManage").value="";
+  document.getElementById("ficSpecSelect").value="";
+  specCombosRefresh();
+  document.getElementById("msgFicheSpec").textContent="✅ Spécialité supprimée.";
+};
 
 const CLE_PROJETS="cs_projets";
 let projetSelectionne=null;
