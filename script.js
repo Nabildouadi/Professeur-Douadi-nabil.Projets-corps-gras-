@@ -303,25 +303,162 @@ let modeLogin="connexion";
 
 function lireJSON(cle){try{return JSON.parse(localStorage.getItem(cle));}catch(e){return null;}}
 
-const CLES_SYNCHRO=["cs_projets","cs_profils","cs_eval","cs_huiles","cs_admin","cs_specialites","cs_photos"];
-function synchroniserFichier(cle,v){
-  if(CLES_SYNCHRO.indexOf(cle)<0)return;
-  try{
-    fetch("api/sauvegarde",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cle:cle,donnees:v})}).catch(function(){});
-  }catch(e){}
+const CLES_SYNCHRO=["cs_projets","cs_profils","cs_eval","cs_huiles","cs_admin","cs_specialites","cs_photos","cs_comptes","cs_fond","cs_logo","cs_tlogo","cs_mlogo","cs_photog","cs_photod","cs_titre"];
+let donneesCloud={};
+let chargementCloudEnCours=false;
+let chargementCloudTermine=false;
+let sauvegardeEnAttente=false;
+let timerSauvegardeCloud=null;
+
+function configCloud(){
+  const c=window.KV_CONFIG||{};
+  const url=String(c.URL||"").trim();
+  const token=String(c.TOKEN||"").trim();
+  const cle=String(c.CLE||"sauvegarde").trim();
+  if(!url||!token)return null;
+  if(url.indexOf("COLLER_ICI")>=0||token.indexOf("COLLER_ICI")>=0)return null;
+  return {url:url.replace(/\/+$/,""),token:token,cle:cle};
 }
+
+function majEtatCloud(cle,v){
+  donneesCloud[cle]=v;
+}
+
+function majIndicCloud(){
+  const el=document.getElementById("etatCloud");
+  if(!el)return;
+  const cfg=configCloud();
+  if(!cfg){
+    el.textContent="Sauvegarde en ligne désactivée (config.js non configuré) — données locales uniquement.";
+    el.classList.add("horsligne");
+    el.classList.remove("enligne");
+    el.title="Les données restent dans chaque navigateur.";
+    return;
+  }
+  el.textContent="☁️ Données enregistrées sur le cloud à "+derniereSauvegardeCloud+".";
+  el.classList.remove("horsligne");
+  el.classList.add("enligne");
+  el.title="Toutes les données sont partagées avec tous les visiteurs.";
+}
+let derniereSauvegardeCloud="";
+
+function envoyerCloud(){
+  timerSauvegardeCloud=null;
+  const cfg=configCloud();
+  if(!cfg)return;
+  donneesCloud.sauvegardeAuto=heureCourante();
+  try{
+    fetch(cfg.url+"/"+encodeURIComponent(cfg.cle),{
+      method:"PUT",
+      headers:{
+        "Authorization":"Bearer "+cfg.token,
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body:JSON.stringify(JSON.stringify(donneesCloud))
+    }).then(function(r){
+      if(r.ok){derniereSauvegardeCloud=heureCourante();}
+      majIndicCloud();
+    }).catch(function(err){majIndicCloud();});
+  }catch(e){majIndicCloud();}
+}
+
+function sauvegardeCloud(immediat){
+  if(chargementCloudEnCours){sauvegardeEnAttente=true;return;}
+  if(immediat){envoyerCloud();return;}
+  if(timerSauvegardeCloud)clearTimeout(timerSauvegardeCloud);
+  timerSauvegardeCloud=setTimeout(function(){
+    if(chargementCloudEnCours){sauvegardeEnAttente=true;return;}
+    envoyerCloud();
+  },900);
+}
+
 function ecrireJSON(cle,v){
   try{localStorage.setItem(cle,JSON.stringify(v));}catch(e){}
-  synchroniserFichier(cle,v);
+  if(CLES_SYNCHRO.indexOf(cle)>=0){
+    majEtatCloud(cle,v);
+    sauvegardeCloud(false);
+  }
 }
+
 function chargerDonneesProjet(cb){
+  const cfg=configCloud();
+  if(!cfg){
+    chargementCloudEnCours=false;
+    chargementCloudTermine=true;
+    majIndicCloud();
+    cb(null);
+    return;
+  }
+  chargementCloudEnCours=true;
   try{
-    fetch("api/donnees").then(function(r){return r.json();}).then(function(donnees){
-      Object.keys(donnees).forEach(function(cle){try{localStorage.setItem(cle,JSON.stringify(donnees[cle]));}catch(e){}});
+    fetch(cfg.url+"/"+encodeURIComponent(cfg.cle),{
+      method:"GET",
+      headers:{
+        "Authorization":"Bearer "+cfg.token,
+        "Accept":"application/json"
+      }
+    }).then(function(r){return r.json();}).then(function(res){
+      let donnees={};
+      try{
+        const raw=(res&&res.result!=null)?res.result:null;
+        if(raw){const p=JSON.parse(raw);if(p&&typeof p==="object")donnees=p;}
+      }catch(e){donnees={};}
+      donneesCloud=donnees;
+      Object.keys(donnees).forEach(function(cle){
+        if(cle!=="sauvegardeAuto"){try{localStorage.setItem(cle,JSON.stringify(donnees[cle]));}catch(e){}}
+      });
+      chargementCloudEnCours=false;
+      chargementCloudTermine=true;
       cb(donnees);
-    }).catch(function(){cb(null);});
-  }catch(e){cb(null);}
+      majIndicCloud();
+      if(sauvegardeEnAttente){sauvegardeEnAttente=false;sauvegardeCloud(false);}
+    }).catch(function(){
+      chargementCloudEnCours=false;
+      chargementCloudTermine=true;
+      majIndicCloud();
+      cb(null);
+    });
+  }catch(e){
+    chargementCloudEnCours=false;
+    chargementCloudTermine=true;
+    majIndicCloud();
+    cb(null);
+  }
 }
+
+function appliquerDonneesVisuellesCloud(){
+  try{
+    const fond=localStorage.getItem(CLE_FOND);
+    if(fond)appliquerFond(fond);
+  }catch(e){}
+  try{
+    const logo=localStorage.getItem(CLE_LOGO);
+    afficherPhoto("boiteLogo",logo);
+  }catch(e){}
+  try{
+    const pg=localStorage.getItem(CLE_PHOTOG);
+    afficherMiniPhoto("boitePhotoG",pg);
+  }catch(e){}
+  try{
+    const pd=localStorage.getItem(CLE_PHOTOD);
+    afficherMiniPhoto("boitePhotoD",pd);
+  }catch(e){}
+  try{
+    const t=localStorage.getItem("cs_titre");
+    const el=document.querySelector(".titre-modifiable");
+    if(t&&el)el.textContent=t;
+  }catch(e){}
+  try{
+    const tl=localStorage.getItem(CLE_TLOGO);
+    if(tl)appliquerTaille("cadreLogo","tailleLogo","valTailleLogo",tl);
+  }catch(e){}
+  try{
+    const ml=localStorage.getItem(CLE_MLOGO);
+    appliquerModele("cadreLogo","modeleLogo",ml||"arrondi");
+  }catch(e){}
+}
+
 function rafraichirToutesDonnees(){
   try{rendreProjets();}catch(e){}
   try{rendreProfils();}catch(e){}
@@ -333,6 +470,8 @@ function rafraichirToutesDonnees(){
     if(Array.isArray(hu)&&hu.length){HUILES=HUILES_BASE.concat(hu);remplirSelectForm();}
   }catch(e){}
   try{rendreApercuPhotos();}catch(e){}
+  try{appliquerDonneesVisuellesCloud();}catch(e){}
+  majIndicCloud();
 }
 function listeComptes(){return lireJSON(CLE_COMPTES)||[];}
 function erreurLogin(msg){document.getElementById("erreurLogin").textContent=msg;}
@@ -1468,7 +1607,7 @@ window.imprimerEvaluation=function(){
 }
 try{rendreProfils();rendreProjets();rendreEval();rendreApercuPhotos();initTitre();}catch(e){console.error(e);}
   chargerDonneesProjet(function(donnees){
-    if(donnees&&Object.keys(donnees).length){rafraichirToutesDonnees();}
+    if(!configCloud()||(donnees&&Object.keys(donnees).length))rafraichirToutesDonnees();
   });
   try{ouvrirSession();}
   catch(e){

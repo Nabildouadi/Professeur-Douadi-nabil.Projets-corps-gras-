@@ -359,3 +359,9 @@
   }
   .chip-spec:hover{border-color:var(--vert);background:#eef7f0;}
   .chip-spec.active{background:var(--vert);color:#fff;border-color:var(--vert);}
+  .etat-cloud{
+    display:inline-block;margin-top:8px;padding:5px 12px;border-radius:12px;
+    font-size:.8em;font-weight:600;
+  }
+  .etat-cloud.enligne{background:#eef7f0;color:var(--vert-fonce);border:1px solid #bcd9c4;}
+  .etat-cloud.horsligne{background:#fff4e5;color:#8a6d1a;border:1px solid #ecd9a8;}

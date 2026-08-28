@@ -1,0 +1,85 @@
+=====================================================================
+ RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE
+ Ministère De La Formation et de l'Enseignement Professionnels
+ Institut National Spécialisé de la Formation Professionnelle
+ (EL Hidhab) — Professeur : Douadi Nabil
+=====================================================================
+
+ LES PROJETS DES STAGIAIRES 2026
+ Application pédagogique de calcul de saponification
+
+=====================================================================
+ CONTENU DE CETTE ARCHIVE
+=====================================================================
+ - index.html   : la page principale de l'application
+ - script.js    : toute la logique (connexion, projets, calculs,
+                  évaluation, sauvegarde en ligne)
+ - style.css    : le design et la mise en forme
+ - config.js    : la configuration de la sauvegarde en ligne (cloud)
+ - LISEZ-MOI.txt : ce fichier
+
+ Dossier prêt à être mis en ligne (hébergé), par exemple sur Vercel.
+
+=====================================================================
+ UTILISATION EN LOCAL (sur votre ordinateur)
+=====================================================================
+ Double-cliquez sur index.html : l'application s'ouvre dans le
+ navigateur. Elle fonctionne sans installation ni Internet.
+
+ Les données sont alors enregistrées automatiquement dans le
+ navigateur (localStorage).
+
+=====================================================================
+ METTRE LE SITE EN LIGNE (hébergement)
+=====================================================================
+ Vous pouvez par exemple utiliser Vercel (gratuit) :
+
+ 1. Allez sur https://vercel.com et créez un compte.
+ 2. Cliquez sur « Add New… » > « Project », puis onglet « Upload ».
+ 3. Glissez ce dossier (deploy-vercel).
+ 4. Cliquez sur « Deploy » : vous obtenez une adresse du type
+    https://votre-projet.vercel.app
+
+=====================================================================
+ ACTIVER LA SAUVEGARDE EN LIGNE (cloud, gratuit, avec Vercel KV)
+=====================================================================
+ À l'état initial, le site en ligne fonctionne mais les données ne
+ sont pas partagées (l'indicateur en bas de page indique
+ « Sauvegarde en ligne désactivée »).
+
+ Pour que TOUTES les mises à jour (projets, stagiaires, évaluation,
+ photos, logo...) soient sauvegardées sur le cloud et partagées
+ entre tous les visiteurs :
+
+ 1. Connectez-vous sur https://vercel.com/dashboard
+ 2. Ouvrez votre projet, puis le menu « Storage » en haut.
+    > « Create Database » > choisissez « KV » (Redis).
+ 3. Donnez un nom et choisissez une région, validez.
+ 4. Dans la base créée, ouvrez l'onglet « .env.local » (ou
+    « Connect ») et copiez les 2 valeurs :
+       KV_REST_API_URL   -> voir config.js (URL)
+       KV_REST_API_TOKEN -> voir config.js (TOKEN)
+ 5. Ouvrez le fichier config.js et remplacez :
+       URL   -> COLLER_ICI_VOTRE_KV_REST_API_URL   par votre
+                KV_REST_API_URL
+       TOKEN -> COLLER_ICI_VOTRE_KV_REST_API_TOKEN par votre
+                KV_REST_API_TOKEN
+ 6. Téléversez config.js modifié sur GitHub (Add file > Upload
+    files) pour remplacer l'ancien. L'indicateur passe à
+    « ☁️ Données enregistrées sur le cloud ». C'est prêt !
+
+ Votre site reste sur Vercel ; Vercel KV est simplement le stockage
+ (le « cahier ») où les données sont écrites, séparé du site.
+
+ Les instructions complètes sont aussi écrites en tête de config.js.
+
+=====================================================================
+ COMPTE ADMINISTRATEUR (par défaut)
+=====================================================================
+ Identifiant : Profdouadi
+ Mot de passe : 08082012
+ (modifiables depuis le panneau « Administration » après connexion)
+
+=====================================================================
+ (c) 2026 - Professeur Douadi Nabil - TOUS DROITS RÉSERVÉS
+=====================================================================
