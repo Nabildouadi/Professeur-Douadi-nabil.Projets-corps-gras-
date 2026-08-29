@@ -1,506 +1,405 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Les Projets des stagiaires 2026</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSFP EL HIDHAB - Prof Douadi Nabil 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="barreErreur" style="display:none;position:fixed;top:0;left:0;right:0;z-index:2000;background:#c0392b;color:#fff;padding:8px 14px;font-size:.85em;font-weight:600;"></div>
-
-<div id="ecranConnexion">
-  <div class="carte-login">
-    <div id="loginLogo" style="margin-bottom:8px;"></div>
-    <div class="ligne-photos-entete">
-      <div class="cadre-login-photo" id="cadrePhotoG" onclick="document.getElementById('fichierPhotoG').click()" title="Photo gauche — cliquer pour modifier">
-        <div id="boitePhotoG"></div>
-      </div>
-      <div class="entete-officielle" style="flex:1;">
-        <div class="rep">République Algérienne Démocratique et Populaire</div>
-        <div class="min">Ministère De La Formation et de l'Enseignement Professionnels</div>
-        <div class="ins">Institut National Spécialisé de la Formation Professionnelle (Haddadi Cherif EL Hidhab)</div>
-      </div>
-      <div class="cadre-login-photo" id="cadrePhotoD" onclick="document.getElementById('fichierPhotoD').click()" title="Photo droite — cliquer pour modifier">
-        <div id="boitePhotoD"></div>
-      </div>
-    </div>
-    <input type="file" id="fichierPhotoG" accept="image/*" hidden>
-    <input type="file" id="fichierPhotoD" accept="image/*" hidden>
-    <h2>Espace Professionnel</h2>
-    <p class="sous titre-modifiable" title="Cliquer pour modifier ce titre">Les Projets des stagiaires 2026</p>
-    <div class="mini-projet-login">
-      <button type="button" class="btn mini-projet-bouton" onclick="basculerFicheMiniProjet('ficheMiniProjetLogin')">
-        📋 FICHE DE MINI-PROJET — Déroulement du mini-projet en étapes
-      </button>
-      <div class="fiche-mini-projet" id="ficheMiniProjetLogin" style="display:none;">
-        <div class="mp-steps">
-          <button type="button" class="mp-step active" onclick="afficherEtapeMini(0,this)"><span class="mp-num">1</span><span class="mp-label">ÉTAPE 1 — PLANIFICATION</span></button>
-          <button type="button" class="mp-step" onclick="afficherEtapeMini(1,this)"><span class="mp-num">2</span><span class="mp-label">ÉTAPE 2 — PRÉPARATION</span></button>
-          <button type="button" class="mp-step" onclick="afficherEtapeMini(2,this)"><span class="mp-num">3</span><span class="mp-label">ÉTAPE 3 — FABRICATION</span></button>
-          <button type="button" class="mp-step" onclick="afficherEtapeMini(3,this)"><span class="mp-num">4</span><span class="mp-label">ÉTAPE 4 — CONTRÔLE QUALITÉ</span></button>
-          <button type="button" class="mp-step" onclick="afficherEtapeMini(4,this)"><span class="mp-num">5</span><span class="mp-label">ÉTAPE 5 — VALORISATION</span></button>
+    <header class="official-header">
+        <div class="photo-wrap">
+            <img id="imgLeft" src="https://via.placeholder.com/80" class="header-photo">
+            <span class="photo-edit no-print d-none" onclick="changeHeaderImg('imgLeft')"><i class="bi bi-camera"></i></span>
+            <input type="file" id="fileLeft" accept="image/*" class="d-none" onchange="upImg('imgLeft', this)">
         </div>
-        <div class="mp-detail">
-          <div class="mp-detail-titre">ÉTAPE 1 — PLANIFICATION</div>
-          <div class="mp-detail-texte">Définition du thème du mini-projet, des objectifs attendus, des ressources nécessaires (matériaux, outils, matières premières) et du planning de réalisation.</div>
+        <div class="header-text">
+            <h6>RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE</h6>
+            <h5>INSTITUT NATIONAL SPÉCIALISÉ DE LA FORMATION PROFESSIONNELLE (EL HIDHAB)</h5>
+            <h6>PROFESSEUR DOUADI NABIL - 2026</h6>
         </div>
-      </div>
-    </div>
-    <div class="tabs-login">
-      <button type="button" id="ongletConnexion" class="actif" onclick="basculerOnglet('connexion')">👤 Stagiaire</button>
-      <button type="button" id="ongletAdmin" onclick="basculerOnglet('admin')">👑 Admin</button>
-    </div>
-    <form id="formPrincipal">
-      <div class="champ-login">
-        <label>Numéro de téléphone</label>
-        <input type="password" id="logTel" maxlength="14" autocomplete="off" placeholder="Ex : 0555 12 34 56">
-      </div>
-      <div class="champ-login">
-        <label>Mot de passe</label>
-        <input type="password" id="logMdp" maxlength="4" placeholder="••••">
-      </div>
-      <div id="erreurLogin"></div>
-      <button type="submit" class="btn btn-login" id="btnLogin">Se connecter</button>
-    </form>
-    <form id="formAdmin" style="display:none;">
-      <div class="champ-login">
-        <label>Nom d'utilisateur administrateur</label>
-        <input type="password" id="admUser" autocomplete="off" placeholder="Identifiant">
-      </div>
-      <div class="champ-login">
-        <label>Mot de passe</label>
-        <input type="password" id="admMdp" placeholder="••••••••">
-      </div>
-      <div id="erreurAdmin" style="color:var(--rouge);font-size:.85em;min-height:18px;text-align:center;margin-bottom:6px;font-weight:600;"></div>
-      <button type="submit" class="btn btn-login">Se connecter en tant qu'administrateur</button>
-      <p style="text-align:center;margin-top:10px;font-size:.78em;">
-        <a href="#" onclick="reinitialiserAdmin();return false;" style="color:#999;">Mot de passe oublié ?</a>
-      </p>
-    </form>
-    <p class="note-pedago" style="margin-top:12px;">
-      🔒 Les comptes sont enregistrés uniquement sur cet ordinateur (navigateur).
-    </p>
-    <div class="pied-login">
-      <div><b>Professeur : Douadi Nabil</b></div>
-      <div>© 2026 — Tous droits réservés</div>
-    </div>
-  </div>
-</div>
-
-<header class="entete">
-  <span class="badge-date" id="dateJour"></span>
-  <div class="badge-user" id="badgeUser" hidden>
-    <span id="texteUser"></span>
-    <button class="btn-sortie" onclick="deconnexion()">Quitter</button>
-  </div>
-  <div class="entete-flex">
-    <div class="cadre-media" id="cadreLogo" onclick="document.getElementById('fichierLogo').click()" title="Cliquer pour changer la photo 1">
-      <div id="boiteLogo"></div>
-      <span class="modif">🖼️ Photo 1</span>
-    </div>
-    <div class="titres-centre">
-      <h1>République Algérienne Démocratique et Populaire</h1>
-      <h2>Ministère De La Formation et de l'Enseignement Professionnels</h2>
-      <h3>Institut National Spécialisé de la Formation Professionnelle (EL Hidhab)</h3>
-      <div class="titre-app">🧼 Calculatrice de Saponification</div>
-      <div class="prof">Professeur : Douadi Nabil</div>
-    </div>
-  </div>
-  <input type="file" id="fichierLogo" accept="image/*" hidden>
-</header>
-
-<div class="entete-impression">
-  <div class="rep">République Algérienne Démocratique et Populaire</div>
-  <div class="min">Ministère De La Formation et de l'Enseignement Professionnels</div>
-  <div class="ins">Institut National Spécialisé de la Formation Professionnelle (EL Hidhab)</div>
-</div>
-
-<main class="conteneur">
-
-  <section class="carte pleine" id="blocProjets">
-    <h2>📋 Formulaire Projet</h2>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Titre du projet (à remplir)</label>
-        <input type="text" id="prjTitre" maxlength="140" placeholder="Ex : Fabrication artisanale du savon de Castille">
-      </div>
-    </div>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Objectif du projet (à remplir)</label>
-        <textarea id="prjObjectif" rows="2" maxlength="300" placeholder="But principal du projet, résultats attendus..."></textarea>
-      </div>
-    </div>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Encadreur / Formateur</label>
-        <input type="text" id="prjEncadrant" placeholder="Ex : Douadi Nabil">
-      </div>
-    </div>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Description du projet</label>
-        <textarea id="prjDesc" rows="3" placeholder="Méthodes, étapes de fabrication, résultats obtenus..."></textarea>
-      </div>
-    </div>
-    <h3>🪪 Fiche du stagiaire</h3>
-    <datalist id="listeSpecs">
-      <option value="Cosmétologie"></option>
-      <option value="Esthétique"></option>
-      <option value="Coiffure"></option>
-      <option value="Couture"></option>
-      <option value="Cuisine"></option>
-      <option value="Pâtisserie"></option>
-    </datalist>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>1 — Nom du stagiaire</label>
-        <input type="text" id="ficNom" placeholder="Nom">
-      </div>
-      <div class="champ">
-        <label>Prénom</label>
-        <input type="text" id="ficPrenom" placeholder="Prénom">
-      </div>
-      <div class="champ" style="max-width:120px;">
-        <label>3 — Semestre</label>
-        <select id="ficSem">
-          <option value="">—</option>
-          <option value="S1">S1</option>
-          <option value="S2">S2</option>
-          <option value="S3">S3</option>
-          <option value="S4">S4</option>
-          <option value="S5">S5</option>
-        </select>
-      </div>
-      <div class="champ" style="max-width:110px;">
-        <label>4 — Groupe</label>
-        <select id="ficGroupe">
-          <option value="">—</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
-      </div>
-    </div>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>2 — Spécialité</label>
-        <input type="text" id="ficSpec" list="listeSpecs" placeholder="Ex : Cosmétologie">
-      </div>
-      <div class="champ">
-        <label>5 — Numéro de téléphone (à remplir)</label>
-        <input type="tel" id="ficTel" maxlength="14" placeholder="05XX XX XX XX" oninput="document.getElementById('ficMdp').value=this.value.replace(/\D/g,'').slice(-4);">
-      </div>
-      <div class="champ" style="max-width:160px;">
-        <label>6 — Mot de passe (4 derniers chiffres)</label>
-        <input type="text" id="ficMdp" maxlength="4" placeholder="Auto">
-      </div>
-    </div>
-    <div class="ligne-champs">
-      <div class="champ" style="max-width:300px;">
-        <label>📋 Stagiaires enregistrés</label>
-        <select id="ficStagiaireSelect" class="mini-select" style="margin-top:0;" onchange="chargerStagiaireFiche()">
-          <option value="">— Choisir un stagiaire —</option>
-        </select>
-      </div>
-    </div>
-    <div class="actions" style="margin-top:6px;">
-      <button class="btn" onclick="ajouterStagiaireFiche()">➕ Ajouter</button>
-      <button class="btn secondaire" onclick="modifierStagiaireFiche()">✏️ Modifier</button>
-      <button class="btn danger" onclick="supprimerStagiaireFiche()">🗑️ Supprimer</button>
-      <span id="msgFicheStagiaire" style="align-self:center;font-size:.8em;color:var(--vert-fonce);font-weight:600;"></span>
-    </div>
-    <h3>🎓 Gestion de la spécialité</h3>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Nom de la spécialité</label>
-        <input type="text" id="ficSpecManage" list="listeSpecs" placeholder="Ex : Cosmétologie">
-      </div>
-      <div class="champ" style="max-width:280px;">
-        <label>Liste des spécialités</label>
-        <select id="ficSpecSelect" class="mini-select" style="margin-top:0;" onchange="chargerSpecFiche()">
-          <option value="">— Choisir —</option>
-        </select>
-      </div>
-    </div>
-    <div class="actions" style="margin-top:6px;">
-      <button class="btn" onclick="ajouterSpecFiche()">➕ Ajouter</button>
-      <button class="btn secondaire" onclick="modifierSpecFiche()">✏️ Modifier</button>
-      <button class="btn danger" onclick="supprimerSpecFiche()">🗑️ Supprimer</button>
-      <span id="msgFicheSpec" style="align-self:center;font-size:.8em;color:var(--vert-fonce);font-weight:600;"></span>
-    </div>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>📷 Photos du projet (max 3) — ajouter, modifier ou supprimer</label>
-        <div class="actions" style="margin-top:4px;">
-          <button type="button" class="mini-btn" onclick="document.getElementById('prjPhotos').click()">➕ Ajouter des photos</button>
-          <input type="file" id="prjPhotos" accept="image/*" multiple hidden>
-          <span id="prjPhotosInfo" style="font-size:.8em;color:#777;align-self:center;">Aucune photo</span>
+        <div class="photo-wrap">
+            <img id="imgRight" src="https://via.placeholder.com/80" class="header-photo">
+            <span class="photo-edit no-print d-none" onclick="changeHeaderImg('imgRight')"><i class="bi bi-camera"></i></span>
+            <input type="file" id="fileRight" accept="image/*" class="d-none" onchange="upImg('imgRight', this)">
         </div>
-        <div id="prjPhotosApercu" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;"></div>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn" onclick="ajouterProjet()">➕ Ajouter</button>
-      <button class="btn secondaire" onclick="modifierProjet()">✏️ Modifier</button>
-      <button class="btn danger" onclick="supprimerProjet()">🗑️ Supprimer</button>
-      <button class="btn secondaire" onclick="imprimerProjets()">🖨️ Imprimer la liste</button>
-    </div>
-    <div class="autosave-bar">
-      <button type="button" class="mini-btn" id="btnAutoSauvegarde" onclick="basculerAutoSauvegarde()">💾 Sauvegarde automatique — Activée</button>
-      <span id="autoSauvInfo" style="align-self:center;font-size:.82em;color:#666;">Vos modifications sont enregistrées automatiquement sur cet ordinateur.</span>
-    </div>
-    <table id="tblProjets">
-      <thead>
-        <tr>
-          <th style="width:4%;">#</th>
-          <th style="width:30%;">Titre du projet</th>
-          <th style="width:30%;">Objectif</th>
-          <th>Encadreur</th>
-        </tr>
-      </thead>
-      <tbody id="corpsProjets"></tbody>
-    </table>
-    <div class="note-pedago" id="compteProjets">0 projet enregistré.</div>
-  
+    </header>
 
+    <div class="sub-header"><b id="subHeaderText">Les projets des stagiaires INSFP El Hidhab Sétif 2026</b></div>
 
-  <section class="carte pleine" id="blocIngrParams">
-    <h2>🧪 Calculateur de saponification</h2>
-
-    <div class="ligne-champs">
-      <div class="champ" style="flex:3;">
-        <label>Choix de l'huile</label>
-        <select id="formHuile"></select>
-      </div>
-      <div class="champ" style="max-width:160px;">
-        <label>Quantité</label>
-        <input type="number" id="formPoids" min="1" step="1" placeholder="g">
-      </div>
-      <div style="display:flex;align-items:end;gap:6px;">
-        <button type="button" class="btn" onclick="ajouterIngredient()">➕ Ajouter</button>
-        <button type="button" class="btn secondaire" onclick="modifierIngredient()">✏️ Modifier</button>
-        <button type="button" class="btn danger" onclick="supprimerIngredient()">❌ Supprimer</button>
-      </div>
-    </div>
-
-    <div class="note-pedago" id="infoHuileSelect" style="display:none;background:var(--fond);padding:8px 12px;border-radius:8px;border:1px solid #ddd;margin-top:6px;">
-      <b id="infoHuileNom"></b> — SAP : <b id="infoHuileSAP"></b> —
-      Moussant : <b id="infoHuileMouss"></b> — Nettoyant : <b id="infoHuileNett"></b> —
-      Onctuosité : <b id="infoHuileOnct"></b> — Dureté : <b id="infoHuileDurt"></b> —
-      Longévité : <b id="infoHuileLong"></b> — Stabilité : <b id="infoHuileStab"></b>
-    </div>
-
-    <table style="margin-top:10px;">
-      <thead>
-        <tr>
-          <th style="width:30%;">Huile(s)</th>
-          <th style="width:20%;">Quantité (g)</th>
-          <th style="width:20%;">Quantité (%)</th>
-          <th style="width:15%;">SAP</th>
-          <th style="width:15%;">Supprimer</th>
-        </tr>
-      </thead>
-      <tbody id="corpsTable"></tbody>
-    </table>
-    <div class="erreur" id="msgErreur"></div>
-
-    <h2 style="margin-top:18px;">⚙️ Paramètres</h2>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Surgras (%)</label>
-        <input type="number" id="surgras" value="5" min="0" max="20" step="0.5">
-      </div>
-      <div class="champ">
-        <label>Pourcentage d'eau (%)</label>
-        <input type="number" id="eauPct" value="38" min="20" max="60" step="1">
-      </div>
-      <div class="champ">
-        <label>Huiles essentielles / fragrances (%)</label>
-        <input type="number" id="hePct" value="0" min="0" max="5" step="0.5">
-      </div>
-      <div class="champ">
-        <label>Pureté de la base (%)</label>
-        <input type="number" id="purete" value="98" min="80" max="100" step="1">
-      </div>
-    </div>
-    <div class="ligne-champs" style="margin-top:8px;">
-      <div class="champ">
-        <label>Type de base</label>
-        <select id="typeBase">
-          <option value="naoh">Solide - Soude caustique (NaOH)</option>
-          <option value="koh">Liquide - Potasse caustique (KOH)</option>
-        </select>
-      </div>
-    </div>
-    <div class="actions" style="margin-top:10px;">
-      <button class="btn secondaire" onclick="preset('castille')">Castille 100% olive</button>
-      <button class="btn secondaire" onclick="preset('basique')">Recette basique</button>
-      <button class="btn danger" onclick="toutEffacer()">Réinitialiser</button>
-      <button class="btn" onclick="imprimerResultats()">🖨️ Imprimer</button>
-    </div>
-
-    <div id="blocResultats" style="display:none; margin-top:18px;">
-      <h2>📊 Résultats</h2>
-      <table>
-        <thead><tr><th>Propriété</th><th>Valeur</th><th>Recommandation</th></tr></thead>
-        <tbody id="corpsResultats"></tbody>
-      </table>
-    </div>
-
-    <div id="blocProprietes" style="display:none; margin-top:18px;">
-      <h2>🔬 Acides gras</h2>
-      <table>
-        <thead><tr><th style="width:35%;">Acide gras</th><th>Quantité (g)</th></tr></thead>
-        <tbody id="corpsAcides"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="carte" id="blocPerso">
-    <h2>🎨 Personnalisation</h2>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Couleur de fond</label>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
-          <span class="swatch" data-fond="#f4f6f4" style="width:32px;height:32px;border-radius:50%;background:#f4f6f4;border:2px solid #ccc;cursor:pointer;"></span>
-          <span class="swatch" data-fond="#e8f5e9" style="width:32px;height:32px;border-radius:50%;background:#e8f5e9;border:2px solid #ccc;cursor:pointer;"></span>
-          <span class="swatch" data-fond="#fff8e1" style="width:32px;height:32px;border-radius:50%;background:#fff8e1;border:2px solid #ccc;cursor:pointer;"></span>
-          <span class="swatch" data-fond="#e3f2fd" style="width:32px;height:32px;border-radius:50%;background:#e3f2fd;border:2px solid #ccc;cursor:pointer;"></span>
-          <span class="swatch" data-fond="#fce4ec" style="width:32px;height:32px;border-radius:50%;background:#fce4ec;border:2px solid #ccc;cursor:pointer;"></span>
-          <span class="swatch" data-fond="#f3e5f5" style="width:32px;height:32px;border-radius:50%;background:#f3e5f5;border:2px solid #ccc;cursor:pointer;"></span>
+    <nav id="mainNav">
+        <div class="container d-flex justify-content-center flex-wrap">
+            <span class="nav-link" id="nav-stg" onclick="showPage('page-stg', this)">GESTION STAGIAIRES</span>
+            <span class="nav-link" id="nav-grille" onclick="showPage('page-grille', this)">GRILLE ÉVALUATION</span>
+            <span class="nav-link" onclick="showPage('page-calc', this)">CALCULATRICE SOAP</span>
+            <span class="nav-link" onclick="showPage('page-proj', this)">FICHE PROJET</span>
+            <span id="adminConfigTab" class="nav-link text-warning" onclick="showPage('page-config', this)">⚙️ CONFIG</span>
+            <button class="btn btn-danger btn-sm ms-lg-3" onclick="location.reload()">SORTIR</button>
         </div>
-      </div>
-      <div class="champ">
-        <label>Couleur personnalisée</label>
-        <input type="color" id="apercuFond" value="#f4f6f4">
-      </div>
+    </nav>
+
+    <div class="container-fluid mt-3">
+
+        <!-- PAGE ACCUEIL : CONNEXION -->
+        <section id="page-login" class="section active text-center">
+            <div class="row justify-content-center mt-5 gap-4">
+                <div class="col-md-4 card p-4 shadow">
+                    <h5 class="fw-bold mb-3">ACCÈS ADMIN</h5>
+                    <input type="text" id="userAdmin" class="form-control mb-2 text-center" placeholder="Username">
+                    <input type="password" id="passAdmin" class="form-control mb-3 text-center" placeholder="Password">
+                    <button onclick="loginAdmin()" class="btn btn-dark w-100 fw-bold">CONNEXION</button>
+                </div>
+                <div class="col-md-4 card p-4 shadow border-success">
+                    <h5 class="fw-bold text-success mb-3">ACCÈS STAGIAIRE</h5>
+                    <input type="text" id="userStg" class="form-control mb-2 text-center" placeholder="N° Téléphone">
+                    <input type="password" id="passStg" class="form-control mb-3 text-center" placeholder="Mot de passe">
+                    <button onclick="loginStg()" class="btn btn-success w-100 fw-bold">ÉTUDIANT</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. GESTION STAGIAIRES -->
+        <section id="page-stg" class="section">
+            <div class="row px-3">
+                <div class="col-md-4">
+                    <div class="card-panel">
+                        <h6 class="fw-bold text-success border-bottom pb-2 mb-3">Formulaire Stagiaire</h6>
+                        <input type="hidden" id="stgEditIdx" value="-1">
+                        <input type="text" id="stgNom" class="form-control form-control-sm mb-2" placeholder="Nom et Prénom">
+                        <input type="text" id="stgSpec" class="form-control form-control-sm mb-2" placeholder="Spécialité">
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label class="small fw-bold">Semestre :</label>
+                                <select id="stgSem" class="form-select form-select-sm">
+                                    <option>S1</option><option>S2</option><option>S3</option><option>S4</option><option>S5</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="small fw-bold">Groupe :</label>
+                                <select id="stgGrp" class="form-select form-select-sm">
+                                    <script>for(let i=1;i<=10;i++) document.write(`<option>${i}</option>`);</script>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="text" id="stgTel" class="form-control form-control-sm mb-2" placeholder="Téléphone" oninput="autoMdpStg()">
+                        <input type="text" id="stgMdp" class="form-control form-control-sm mb-3 bg-light" readonly placeholder="Mdp Auto">
+                        <div class="d-flex gap-2">
+                            <button onclick="saveStg()" id="btnStgSave" class="btn btn-success btn-sm w-100">Ajouter</button>
+                            <button onclick="clearStgForm()" class="btn btn-secondary btn-sm">Vider</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <table class="table table-custom table-sm shadow-sm">
+                        <thead><tr><th>Nom</th><th>Spec</th><th>Sem</th><th>Gr</th><th>Tél</th><th>Mdp</th><th>Action</th></tr></thead>
+                        <tbody id="tbodyStg"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. GRILLE EVALUATION -->
+        <section id="page-grille" class="section">
+            <div id="grilleAdminTools" class="card-panel no-print d-none">
+                <div class="row g-2 mb-3">
+                    <div class="col-md-10"><input type="text" id="editGTitle" class="form-control" oninput="updateGTitle(this.value)" placeholder="Titre de la grille"></div>
+                </div>
+                <div class="row g-2">
+                    <input type="hidden" id="editRowIdx" value="-1">
+                    <div class="col-md-3"><input type="text" id="inComp" class="form-control form-control-sm" placeholder="Compétence"></div>
+                    <div class="col-md-3"><input type="text" id="inCrit" class="form-control form-control-sm" placeholder="Critère"></div>
+                    <div class="col-md-4"><input type="text" id="inLevels" class="form-control form-control-sm" placeholder="Descriptions Exc, Bien, Moy, Ins (virgule)"></div>
+                    <div class="col-md-2 d-flex gap-1">
+                        <button onclick="saveGrilleRow()" id="btnGSave" class="btn btn-success btn-sm w-100">Ajouter</button>
+                        <button onclick="window.print()" class="btn btn-dark btn-sm"><i class="bi bi-printer"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-3 shadow bg-white">
+                <h5 id="displayGTitle" class="text-center fw-bold border p-2 mb-3 bg-light">FABRICATION DE SAVON À BASE DE CITRONNELLE</h5>
+                <table class="table table-custom table-bordered align-middle text-center">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">N°</th><th rowspan="2">COMPÉTENCES</th><th rowspan="2">CRITÈRES</th><th colspan="4">NIVEAUX</th><th rowspan="2">/100</th><th rowspan="2">/20</th><th rowspan="2" class="no-print admin-only d-none">ACT</th>
+                        </tr>
+                        <tr class="small">
+                            <th class="bg-exc">Exc</th><th class="bg-bien">Bien</th><th class="bg-moy">Moy</th><th class="bg-ins">Ins</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyGrille"></tbody>
+                    <tfoot class="fw-bold"><tr><td colspan="7" class="text-end">TOTAL :</td><td id="t100">0</td><td id="t20" class="text-danger">0</td><td class="no-print admin-only d-none"></td></tr></tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. CALCULATRICE SOAP -->
+        <section id="page-calc" class="section">
+            <div class="container card p-4 shadow-sm">
+                <h5 class="fw-bold text-success border-bottom mb-4 text-center">CALCULATRICE DE SAPONIFICATION (NAOH)</h5>
+
+                <div id="soapAdminTools" class="card-panel no-print d-none mb-3">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <h6 class="fw-bold text-success mb-0">Gestion de la Bibliothèque d'Huiles</h6>
+                        <button class="btn btn-sm btn-secondary" onclick="clearOilLibForm()">Nouvelle Huile</button>
+                    </div>
+                    <input type="hidden" id="oilEditLibIdx" value="-1">
+                    <div class="row g-2">
+                        <div class="col-md-4"><input type="text" id="inOilName" class="form-control form-control-sm" placeholder="Nom de l'huile"></div>
+                        <div class="col-md-2"><input type="number" step="0.001" id="inOilSap" class="form-control form-control-sm" placeholder="SAP NaOH"></div>
+                        <div class="col-md-2"><input type="number" step="0.001" id="inOilFap" class="form-control form-control-sm" placeholder="SAP KOH"></div>
+                        <div class="col-md-2"><input type="number" id="inOilIns" class="form-control form-control-sm" placeholder="INS"></div>
+                        <div class="col-md-2 d-flex gap-1">
+                            <button onclick="saveOilLib()" id="btnOilSave" class="btn btn-success btn-sm w-100">Ajouter</button>
+                        </div>
+                        <div class="col-12 small text-muted">Seuls les champs Nom et SAP NaOH sont obligatoires. INS est facultatif.</div>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-custom table-sm shadow-sm">
+                            <thead><tr><th>#</th><th>Huile</th><th>SAP NaOH</th><th>SAP KOH</th><th>INS</th><th class="no-print">MOD</th></tr></thead>
+                            <tbody id="tbodyOilLib"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Colonne 1 : Réglages + Choix huile -->
+                    <div class="col-md-3">
+                        <h6 class="fw-bold text-success border-bottom pb-1 mb-2">RÉGLAGES</h6>
+                        <label class="small fw-bold">Type de Soude</label>
+                        <select id="soapLye" class="form-select form-select-sm mb-2" onchange="runSoap()">
+                            <option value="0.141">NaOH (barres)</option>
+                            <option value="0.200">KOH (liquide)</option>
+                        </select>
+                        <label class="small fw-bold">Poids Total Huiles (g)</label>
+                        <input type="number" id="soapWeight" class="form-control form-control-sm mb-2" value="1000" oninput="runSoap()">
+                        <label class="small fw-bold">Surgraissage (%)</label>
+                        <input type="number" id="soapSF" class="form-control form-control-sm mb-2" value="5" oninput="runSoap()">
+                        <label class="small fw-bold">Eau (% des huiles)</label>
+                        <input type="number" id="soapWater" class="form-control form-control-sm mb-2" value="38" oninput="runSoap()">
+
+                        <h6 class="fw-bold text-success border-bottom pb-1 mt-3 mb-2">CHOISIR UNE HUILE</h6>
+                        <select id="oilSelect" class="form-select form-select-sm mb-2"></select>
+                        <div id="oilSelectedInfo" class="small text-muted border p-2 rounded mb-2">Sélectionnez une huile de la liste.</div>
+                        <button class="btn btn-success btn-sm w-100" onclick="addOilToRecipe()">+ Ajouter à la recette</button>
+                    </div>
+
+                    <!-- Colonne 2 : Liste de recette -->
+                    <div class="col-md-4 border-start">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold text-success border-bottom pb-1 mb-2">MA RECETTE</h6>
+                            <button class="btn btn-sm btn-outline-danger" onclick="resetRecipe()">Réinitialiser</button>
+                        </div>
+                        <table class="table table-custom table-sm text-center shadow-sm">
+                            <thead><tr><th>Huile</th><th>%</th><th>g</th><th class="no-print">+/-</th></tr></thead>
+                            <tbody id="tbodyRecipe"></tbody>
+                            <tfoot><tr class="fw-bold"><td class="text-end">Totaux</td><td id="recTotPct">0</td><td id="recTotG">0</td><td class="no-print"></td></tr></tfoot>
+                        </table>
+                        <p id="recMsg" class="small text-danger d-none">Ajoutez au moins une huile ⚠</p>
+                        <div class="d-none" id="soapEditTools">
+                            <hr>
+                            <h6 class="small fw-bold text-success">Modifier la ligne :</h6>
+                            <input type="hidden" id="soapEditLineIdx" value="-1">
+                            <div class="row g-1">
+                                <div class="col-8"><input type="text" id="inLineNom" class="form-control form-control-sm" placeholder="Huile ou SAP" readonly></div>
+                                <div class="col-4"><input type="number" id="inLinePct" class="form-control form-control-sm" placeholder="%"></div>
+                            </div>
+                            <button class="btn btn-sm btn-primary w-100 mt-1" onclick="confirmEditLine()">Valider la modification</button>
+                        </div>
+                    </div>
+
+                    <!-- Colonne 3 : Résultats -->
+                    <div class="col-md-5">
+                        <h6 class="fw-bold text-success border-bottom pb-1 mb-2">RÉSULTATS</h6>
+                        <div class="soap-res shadow mb-3">
+                            <h6>QUANTITÉS</h6>
+                            <hr class="bg-white">
+                            SOUDE (NaOH) : <h2 id="resNaoh">0.00</h2> g<br>
+                            EAU : <h2 id="resEau">0.00</h2> g
+                        </div>
+                        <div id="qualitiesBox" class="card-panel">
+                            <h6 class="fw-bold text-success border-bottom pb-1 mb-2">QUALITÉS DU SAVON (estimation)</h6>
+                            <div id="qualitiesList"></div>
+                            <div class="small text-muted mt-2">INS référence ~160 · Sat:Unsat idéal ~40:60</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. FICHE PROJET -->
+        <section id="page-proj" class="section">
+            <div class="container card p-4 shadow border-0">
+                <h3 class="fw-bold text-success text-center">FICHE TECHNIQUE DU PROJET</h3>
+                <p class="text-center text-muted small">Affiche de présentation & fiche de fabrication - Dossier de l'élève</p>
+
+                <div class="row g-4">
+                    <!-- Formulaire -->
+                    <div class="col-md-5">
+                        <div class="card-panel">
+                            <h6 class="fw-bold text-success border-bottom pb-2 mb-3">Formulaire Fiche Projet</h6>
+                            <input type="hidden" id="projEditIdx" value="-1">
+                            <label class="small fw-bold">Nom du produit :</label>
+                            <input type="text" id="projTitre" class="form-control form-control-sm mb-2" placeholder="Ex : Savon au Moringa">
+                            <label class="small fw-bold">Choisir le stagiaire (remplissage auto) :</label>
+                            <select id="projStgSel" class="form-select form-select-sm mb-2" onchange="fillStgProj()">
+                                <option value="-1">-- Sélectionner un stagiaire --</option>
+                            </select>
+                            <label class="small fw-bold">Stagiaire :</label>
+                            <input type="text" id="projStg" class="form-control form-control-sm mb-2" placeholder="Nom et Prénom du stagiaire" readonly>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="small fw-bold">Spécialité :</label>
+                                    <input type="text" id="projSpec" class="form-control form-control-sm" placeholder="Spécialité" readonly>
+                                </div>
+                                <div class="col-6">
+                                    <label class="small fw-bold">Groupe :</label>
+                                    <input type="text" id="projGrp" class="form-control form-control-sm" placeholder="Groupe">
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="small fw-bold">Date :</label>
+                                    <input type="date" id="projDate" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-6">
+                                    <label class="small fw-bold">Quantité (g) :</label>
+                                    <input type="text" id="projQte" class="form-control form-control-sm" placeholder="Ex : 500 g">
+                                </div>
+                            </div>
+                            <label class="small fw-bold">Ingrédients / Formulation :</label>
+                            <div class="input-group input-group-sm mb-1">
+                                <input type="text" id="projIngInp" class="form-control" placeholder="Saisir un ingrédient (ex : huile de moringa)">
+                                <input type="hidden" id="projIngIdx" value="-1">
+                                <button class="btn btn-success" onclick="addIng()" id="btnIngSave">Ajouter</button>
+                            </div>
+                            <div id="projIngList" class="mb-2"></div>
+                            <label class="small fw-bold">Titre du procédé :</label>
+                            <input type="text" id="projProcTitre" class="form-control form-control-sm mb-2" placeholder="Ex : Procédé de fabrication du savon au Moringa">
+                            <label class="small fw-bold">Étapes de fabrication :</label>
+                            <div class="input-group input-group-sm mb-1">
+                                <input type="text" id="projStep" class="form-control" placeholder="Saisir une étape...">
+                                <input type="hidden" id="projStepIdx" value="-1">
+                                <button class="btn btn-success" onclick="addStep()" id="btnStepSave">Ajouter</button>
+                            </div>
+                            <div id="projStepsList" class="mb-2"></div>
+                            <label class="small fw-bold">Matériel utilisé :</label>
+                            <div class="input-group input-group-sm mb-1">
+                                <input type="text" id="projMatInp" class="form-control" placeholder="Saisir un matériel (ex : balance)">
+                                <input type="hidden" id="projMatIdx" value="-1">
+                                <button class="btn btn-success" onclick="addMat()" id="btnMatSave">Ajouter</button>
+                            </div>
+                            <div id="projMatList" class="mb-2"></div>
+                            <label class="small fw-bold">Présentation du produit (affiche) :</label>
+                            <textarea id="projDesc" class="form-control form-control-sm mb-2" rows="2" placeholder="Description, propriétés, utilisation du produit..."></textarea>
+                            <label class="small fw-bold">Photo du produit :</label>
+                            <div class="input-group input-group-sm mb-1">
+                                <input type="file" id="projPhoto" accept="image/*" class="form-control" onchange="prevProjPhoto(this)">
+                                <button class="btn btn-outline-danger" onclick="removeProjPhoto()" title="Supprimer la photo"><i class="bi bi-trash"></i></button>
+                            </div>
+                            <div id="projPhotoPrev" class="mb-2 text-center d-none">
+                                <img id="projPhotoImg" src="" class="img-thumbnail" style="max-height:140px">
+                                <div><button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="removeProjPhoto()"><i class="bi bi-trash"></i> Supprimer la photo</button></div>
+                            </div>
+                            <label class="small fw-bold">Pièces jointes :</label>
+                            <input type="file" id="projFile" class="form-control form-control-sm mb-3" multiple>
+                            <div class="d-flex gap-2">
+                                <button onclick="saveProj()" id="btnProjSave" class="btn btn-success btn-sm w-100">Ajouter</button>
+                                <button onclick="clearProjForm()" class="btn btn-secondary btn-sm">Vider</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Liste des fiches -->
+                    <div class="col-md-7">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-1">
+                            <h6 class="fw-bold text-success mb-0">Fiches Projet Enregistrées</h6>
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-dark" onclick="downloadAllProj()"><i class="bi bi-download"></i> Télécharger tout</button>
+                                <button class="btn btn-sm btn-secondary" onclick="printProj()"><i class="bi bi-printer"></i> Imprimer</button>
+                            </div>
+                        </div>
+                        <table class="table table-custom table-sm shadow-sm">
+                            <thead><tr><th>Produit</th><th>Stagiaire</th><th>Quantité</th><th>Date</th><th class="no-print">Actions</th></tr></thead>
+                            <tbody id="tbodyProj"></tbody>
+                        </table>
+                        <!-- Aperçu détaillé de la fiche sélectionnée -->
+                        <div id="projDetail" class="card-panel mt-3 d-none">
+                            <h6 class="fw-bold text-success border-bottom pb-2 mb-2">Aperçu de la fiche</h6>
+                            <div class="small" id="projDetailBody"></div>
+                            <button class="btn btn-sm btn-dark mt-2" onclick="downloadOneProj(projDetailIdx)"><i class="bi bi-download"></i> Télécharger</button>
+                            <button class="btn btn-sm btn-secondary mt-2 ms-1" onclick="printOneProj(projDetailIdx)"><i class="bi bi-printer"></i> Imprimer cette fiche</button>
+                            <button class="btn btn-sm btn-outline-danger mt-2 ms-1" onclick="document.getElementById('projDetail').classList.add('d-none')">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. CONFIG -->
+        <section id="page-config" class="section">
+            <div class="container card p-4 shadow-sm col-md-6">
+                <h5 class="fw-bold border-bottom text-center mb-4">Configuration de l'Interface</h5>
+
+                <div class="card-panel">
+                    <h6 class="fw-bold text-success border-bottom pb-2 mb-3">Logos & Documents</h6>
+                    <label class="fw-bold small">Logo Gauche :</label>
+                    <input type="file" class="form-control mb-3" onchange="upImg('imgLeft', this)">
+                    <label class="fw-bold small">Logo Droit :</label>
+                    <input type="file" class="form-control mb-3" onchange="upImg('imgRight', this)">
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success w-100" onclick="saveConfig()"><i class="bi bi-save"></i> Sauvegarder</button>
+                        <button class="btn btn-secondary w-100" onclick="resetConfig()">Réinitialiser</button>
+                    </div>
+                </div>
+
+                <div class="card-panel">
+                    <h6 class="fw-bold text-success border-bottom pb-2 mb-3">Couleurs de l'Interface</h6>
+                    <div class="mb-3">
+                        <label class="fw-bold small">Couleur principale (vert/accents) :</label>
+                        <input type="color" id="cfgPrimary" class="form-control form-control-color w-100" value="#006633" onchange="previewColors()">
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold small">Couleur de la barre de navigation :</label>
+                        <input type="color" id="cfgNav" class="form-control form-control-color w-100" value="#2c3e50" onchange="previewColors()">
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold small">Couleur de fond :</label>
+                        <input type="color" id="cfgBody" class="form-control form-control-color w-100" value="#f4f7f6" onchange="previewColors()">
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold small">Thème rapide :</label>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-sm btn-outline-success" onclick="applyTheme('#006633','#2c3e50','#f4f7f6')">Vert classique</button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="applyTheme('#0d47a1','#1a237e','#e8eaf6')">Bleu</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="applyTheme('#b71c1c','#4a0000','#ffebee')">Rouge</button>
+                            <button class="btn btn-sm btn-outline-dark" onclick="applyTheme('#1b5e20','#111','#eceff1')">Noir/Vert</button>
+                            <button class="btn btn-sm btn-outline-warning" onclick="applyTheme('#e65100','#4e342e','#fff8e1')">Orange</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold small">Texte de la bannière (sous l'en-tête) :</label>
+                        <input type="text" id="cfgSubText" class="form-control form-control-sm" value="Les projets des stagiaires INSFP El Hidhab Sétif 2026">
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold small">Taille du texte de la bannière :</label>
+                        <input type="range" id="cfgSubSize" min="14" max="40" value="22" class="form-range" oninput="document.getElementById('subHeaderText').style.fontSize=this.value+'px'">
+                        <span class="small" id="cfgSubSizeLbl">22 px</span>
+                    </div>
+                    <button class="btn btn-success w-100" onclick="saveConfig()"><i class="bi bi-save"></i> Sauvegarder les couleurs</button>
+                </div>
+
+                <button class="btn btn-dark w-100 mt-3" onclick="showPage('page-stg')">Retour</button>
+            </div>
+        </section>
+
     </div>
-    <div class="note-pedago">Vos choix (couleur) sont enregistrés automatiquement dans ce navigateur.</div>
-  </section>
 
-  <section class="carte" id="blocEvaluation">
-    <h2>📝 Grille d'évaluation</h2>
-    <div class="ligne-champs">
-      <div class="champ" style="flex:3;">
-        <label>Critère</label>
-        <input type="text" id="evCritNom" placeholder="Nom du critère">
-      </div>
-      <div class="champ" style="max-width:120px;">
-        <label>Barème (/20)</label>
-        <input type="number" id="evCritMax" min="0.5" max="20" step="0.5" value="3">
-      </div>
-      <div style="display:flex;align-items:end;gap:6px;">
-        <button type="button" class="btn" onclick="ajouterCritere()">➕ Ajouter</button>
-        <button type="button" class="btn secondaire" onclick="modifierCritere()">✏️ Modifier</button>
-        <button type="button" class="btn danger" onclick="supprimerCritere()">❌ Supprimer</button>
-      </div>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width:6%;">N°</th>
-          <th style="width:44%;">Critère</th>
-          <th style="width:14%;">Note</th>
-          <th style="width:14%;">Barème</th>
-          <th style="width:22%;">Appréciation</th>
-        </tr>
-      </thead>
-      <tbody id="corpsEval"></tbody>
-    </table>
-    <div class="ligne-champs" style="margin-top:10px;">
-      <div class="champ">
-        <label>Total</label>
-        <div id="totalSur20" style="font-weight:800;font-size:1.1em;">0 / 0</div>
-      </div>
-      <div class="champ">
-        <label>Sur 100</label>
-        <div id="totalSur100" style="font-weight:800;font-size:1.1em;">0 / 100</div>
-      </div>
-      <div class="champ" style="flex:2;">
-        <label>Mention</label>
-        <div id="mentionEval" style="font-weight:800;font-size:1.1em;">-</div>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn danger" onclick="toutZeroEval()">Tout mettre à zéro</button>
-      <button class="btn secondaire" onclick="viderEval()">Vider tout</button>
-      <button class="btn" onclick="imprimerEvaluation()">🖨️ Imprimer la grille</button>
-    </div>
-  </section>
-
-
-
-</section>
-
-</section>
-
-  <section class="carte pleine" id="blocAdminMdp" style="display:none;border-top-color:var(--or);">
-    <h2>🔐 Administration — Modifier les identifiants</h2>
-    <div class="ligne-champs">
-      <div class="champ">
-        <label>Nom d'utilisateur</label>
-        <input type="text" id="adminIdentifiant" autocomplete="off">
-      </div>
-      <div class="champ">
-        <label>Ancien mot de passe (obligatoire)</label>
-        <input type="password" id="adminAncien" placeholder="••••••••">
-      </div>
-      <div class="champ">
-        <label>Nouveau mot de passe</label>
-        <input type="password" id="adminNouveau" placeholder="6 caractères minimum">
-      </div>
-      <div class="champ">
-        <label>Confirmer le nouveau mot de passe</label>
-        <input type="password" id="adminConfirme" placeholder="••••••••">
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn secondaire" onclick="changerInfosAdmin()">💾 Enregistrer les identifiants</button>
-      <span id="msgAdmin" style="align-self:center;font-size:.85em;font-weight:600;color:var(--vert-fonce);"></span>
-    </div>
-    <div class="avertissement">🔒 Ces identifiants sont personnels : ne les communiquez qu'aux personnes autorisées.</div>
-  </section>
-
-</section>
-
-</section></section>
-
-  <section class="carte pleine">
-    <h2>📐 Rappel théorique</h2>
-    <div class="note-pedago">
-      <p><b>Masse de base (g) = Σ (Poids<sub>huile i</sub> × SAP<sub>i</sub> ÷ 1000) × (1 − Surgras) ÷ Pureté</b></p>
-      <p style="margin-top:6px;">
-        Les valeurs SAP sont exprimées en <b>mg de KOH par gramme d'huile</b>.
-        Pour la soude : <code>NaOH = SAP × 40 ÷ 56.1</code> ;
-        pour la potasse : <code>KOH = NaOH × 56.1 ÷ 40 ≈ NaOH × 1.403</code>.
-      </p>
-      <p style="margin-top:6px;">
-        <b>Saponification :</b> Corps gras + Base → Savon (sel d'acide gras) + Glycérol.
-      </p>
-    </div>
-  </section>
-
-</main>
-
-<div class="pied-impression">Professeur Douadi Nabil — © 2026 Tous droits réservés</div>
-
-
-<footer class="pied">
-  INSFP EL Hidhab — Module Chimie / Cosmétologie — Application pédagogique de calcul de saponification.<br>
-  <b>© 2026 — Professeur Douadi Nabil — Tous droits réservés.</b><br>
-  <span id="etatCloud" class="etat-cloud horsligne" title="État de la sauvegarde en ligne"></span>
-</footer>
-<script src="config.js"></script>
-<script src="script.js"></script>
+    <script src="script.js"></script>
+    <footer class="app-footer">
+        <b>Tous droits réservés © Professeur Douadi Nabil 2026</b>
+    </footer>
 </body>
 </html>

@@ -1,0 +1,59 @@
+===========================================================
+ GUIDE D'UTILISATION - GESTION D'ÉCOLE / FORMATION SAVON
+===========================================================
+ INSFP EL HIDHAB - Prof Douadi Nabil - 2026
+===========================================================
+
+CONTENU DU PROJET
+-----------------
+- index.html          : Page principale (page d'accueil + navigation)
+- style.css           : Feuille de style CSS (design de l'interface)
+- script.js           : Logique JavaScript (données, calculs, actions)
+- documentation.txt   : Ce fichier
+
+POUR OUVRIR LE PROJET
+---------------------
+1. Placez les 3 fichiers (index.html, style.css, script.js)
+   dans le MEME dossier.
+2. Double-cliquez sur "index.html" pour ouvrir dans le navigateur.
+3. Les liens de style.css et script.js sont relatifs :
+   ils fonctionnent si les fichiers restent ensemble.
+
+IDENTIFIANTS DE CONNEXION
+-------------------------
+ACCES ADMIN :
+   Utilisateur : Profdouadi
+   Mot de passe : 08082012
+
+ACCES STAGIAIRE :
+   N° Téléphone + Mot de passe (créé par l'admin dans
+   "Gestion Stagiaires", le mot de passe = 4 derniers chiffres du tél.)
+
+PAGES / FONCTIONS
+-----------------
+1. GESTION STAGIAIRES : ajouter, modifier, supprimer les stagiaires.
+2. GRILLE ÉVALUATION : grille de compétences avec notes /100 et /20.
+3. CALCULATRICE SOAP : calcul de la soude (NaOH/KOH) et de l'eau
+   pour la fabrication de savon (modèle type SoapCalc).
+   - Bibliothèque d'huiles modifiable (ajouter/modifier/supprimer)
+   - Recette : ajouter une huile, ajuster les %, boutons M/X
+   - Réglages : soude, poids huiles, surgraissage, % eau
+4. FICHE PROJET : formulaire fiche technique + liste des projets
+   avec boutons Ajouter / Modifier / Supprimer / Télécharger.
+5. CONFIG : changer les logos et les couleurs de l'interface,
+   bouton Sauvegarder, thèmes rapides, réinitialisation.
+
+PHOTOS DU HEADER (page d'accueil)
+---------------------------------
+En mode ADMIN, cliquer sur l'icône caméra au-dessus des deux
+photos du haut permet de les changer directement.
+Autre possibilité : page CONFIG -> Logos & Documents.
+
+SAUVEGARDE DES DONNÉES
+----------------------
+Toutes les données (stagiaires, grille, huiles, recette, fiches,
+couleurs, logos) sont enregistrées automatiquement dans le
+"localStorage" du navigateur. Elles persistent entre les sessions
+sur le même poste/navigateur.
+
+Remarque : vider l'historique/navigateur peut effacer ces données.
