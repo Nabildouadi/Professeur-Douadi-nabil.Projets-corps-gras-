@@ -107,7 +107,7 @@
                 document.getElementById('nav-stg').style.display = "none";
                 document.getElementById('nav-grille').style.display = "none";
             }
-            showPage(p); renderGrille(); renderStg(); renderOilLib(); renderOilSelect(); renderRecipe(); renderProj(); fillStgSelect(); toggleHeaderEdit(isAdmin); loadSubHeader(); runSoap(); renderSig(); renderMp(); renderMat2(); renderOp(); renderGrComp(); renderQst();
+            showPage(p); renderGrille(); renderStg(); renderOilLib(); renderOilSelect(); renderRecipe(); renderProj(); fillStgSelect(); fillSoapSelect(); fillGrSelect(); toggleHeaderEdit(isAdmin); loadSubHeader(); runSoap(); renderSig(); renderMp(); renderMat2(); renderOp(); renderGrComp(); renderQst();
         }
 
         // --- NAVIGATION ---
@@ -551,9 +551,16 @@
             });
             if(stData.length === 0) sel.innerHTML += `<option value="-1" disabled>Aucun stagiaire enregistré</option>`;
             // présélectionner si le nom correspond déjà
+            let preselect = -1;
             if(current) {
                 const found = stData.findIndex(s => s.nom === current);
-                if(found >= 0) sel.value = found;
+                if(found >= 0) preselect = found;
+            }
+            // sinon présélection automatique du premier stagiaire (remplissage auto)
+            if(preselect < 0 && stData.length > 0) preselect = 0;
+            if(preselect >= 0) {
+                sel.value = preselect;
+                fillStgProj();
             }
         }
         function fillStgProj() {
@@ -564,6 +571,66 @@
                 document.getElementById('projStg').value = s.nom || "";
                 document.getElementById('projSpec').value = s.spec || "";
                 document.getElementById('projGrp').value = s.grp || "";
+            }
+        }
+        function fillSoapSelect() {
+            const sel = document.getElementById('soapStgSel'); const inx = document.getElementById('soapStgIdx'); if(!sel || !inx) return;
+            const current = parseInt(inx.value) || -1;
+            sel.innerHTML = `<option value="-1">-- Stagiaire --</option>`;
+            stData.forEach((s, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.text = s.nom || ('Stagiaire ' + (i+1));
+                sel.appendChild(opt);
+            });
+            if(stData.length === 0) sel.innerHTML += `<option value="-1" disabled>Aucun stagiaire</option>`;
+            let preselect = current;
+            if(preselect < 0 && stData.length > 0) preselect = 0;
+            if(preselect >= 0) { sel.value = preselect; fillSoapStg(); }
+        }
+        function fillSoapStg() {
+            const sel = document.getElementById('soapStgSel'); const inx = document.getElementById('soapStgIdx');
+            const i = parseInt(sel.value);
+            if(!inx) return;
+            inx.value = i;
+            if(i >= 0 && stData[i]) {
+                const s = stData[i];
+                document.getElementById('soapStgNom').value = s.nom || "";
+                document.getElementById('soapStgSpec').value = s.spec || "";
+                document.getElementById('soapStgSem').value = s.sem || "";
+                document.getElementById('soapStgGrp').value = s.grp || "";
+            } else {
+                ['soapStgNom','soapStgSpec','soapStgSem','soapStgGrp'].forEach(id => { const e = document.getElementById(id); if(e) e.value = ""; });
+            }
+        }
+        function fillGrSelect() {
+            const sel = document.getElementById('grStgSel'); const inx = document.getElementById('grStgIdx'); if(!sel || !inx) return;
+            const current = parseInt(inx.value) || -1;
+            sel.innerHTML = `<option value="-1">-- Stagiaire --</option>`;
+            stData.forEach((s, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.text = s.nom || ('Stagiaire ' + (i+1));
+                sel.appendChild(opt);
+            });
+            if(stData.length === 0) sel.innerHTML += `<option value="-1" disabled>Aucun stagiaire</option>`;
+            let preselect = current;
+            if(preselect < 0 && stData.length > 0) preselect = 0;
+            if(preselect >= 0) { sel.value = preselect; fillGrStg(); }
+        }
+        function fillGrStg() {
+            const sel = document.getElementById('grStgSel'); const inx = document.getElementById('grStgIdx');
+            const i = parseInt(sel.value);
+            if(!inx) return;
+            inx.value = i;
+            if(i >= 0 && stData[i]) {
+                const s = stData[i];
+                document.getElementById('grStgNom').value = s.nom || "";
+                document.getElementById('grStgSpec').value = s.spec || "";
+                document.getElementById('grStgSem').value = s.sem || "";
+                document.getElementById('grStgGrp').value = s.grp || "";
+            } else {
+                ['grStgNom','grStgSpec','grStgSem','grStgGrp'].forEach(id => { const e = document.getElementById(id); if(e) e.value = ""; });
             }
         }
         function renderSteps() {

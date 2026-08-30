@@ -34,6 +34,7 @@
         <div class="container d-flex justify-content-center flex-wrap">
             <span class="nav-link" id="nav-stg" onclick="showPage('page-stg', this)">GESTION STAGIAIRES</span>
             <span class="nav-link" id="nav-grille" onclick="showPage('page-grille', this)">GRILLE ÉVALUATION</span>
+            <span class="nav-link" onclick="showPage('page-qcm', this)">QUESTION ET QCM</span>
             <span class="nav-link" onclick="showPage('page-calc', this)">CALCULATRICE SOAP</span>
             <span class="nav-link" onclick="showPage('page-proj', this)">FICHE PROJET</span>
             <span id="adminConfigTab" class="nav-link text-warning" onclick="showPage('page-config', this)">⚙️ CONFIG</span>
@@ -126,6 +127,32 @@
                 </table>
             </div>
             <div class="card p-3 shadow mt-3 bg-white">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="small fw-bold">Stagiaire (remplissage auto) :</label>
+                        <input type="hidden" id="grStgIdx" value="-1">
+                        <input type="text" id="grStgNom" class="form-control form-control-sm" placeholder="Nom et Prénom" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="small fw-bold">Spécialité :</label>
+                        <input type="text" id="grStgSpec" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Semestre :</label>
+                        <input type="text" id="grStgSem" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="small fw-bold">Groupe :</label>
+                        <input type="text" id="grStgGrp" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <select id="grStgSel" class="form-select form-select-sm" onchange="fillGrStg()">
+                            <option value="-1">-- Stagiaire --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-3 shadow mt-3 bg-white">
                 <h5 class="text-center fw-bold border p-2 mb-3 bg-light">GRILLE D'ÉVALUATION PAR COMPÉTENCES (TP SAVON GLYCÉRINE & CANNELLE)</h5>
                 <div class="row g-2 mb-2">
                     <div class="col-md-4"><input type="text" id="grComp" class="form-control form-control-sm" placeholder="Critère (ex : C1 – ...)"></div>
@@ -140,7 +167,11 @@
                     <tfoot class="fw-bold"><tr><td class="fw-bold">TOTAL</td><td>Compétence jugée : acquise / en cours d'acquisition / non acquise</td><td class="fw-bold">/20</td><td id="grCompTotal">-</td><td class="no-print"></td></tr></tfoot>
                 </table>
             </div>
-            <div class="card p-3 shadow mt-3 bg-white">
+        </section>
+
+        <!-- 8. QUESTION ET QCM -->
+        <section id="page-qcm" class="section">
+            <div class="container card p-4 shadow border-0">
                 <h5 class="text-center fw-bold border p-2 mb-3 bg-light">QUESTIONS DE SYNTHÈSE ET PROLONGEMENT (QCM)</h5>
                 <div class="card-panel no-print mb-3 pb-2 bg-light p-2">
                     <div class="row g-2">
@@ -174,6 +205,32 @@
         <section id="page-calc" class="section">
             <div class="container card p-4 shadow-sm">
                 <h5 class="fw-bold text-success border-bottom mb-4 text-center">CALCULATRICE DE SAPONIFICATION (NAOH)</h5>
+
+                <!-- En-tête stagiaire : remplissage auto -->
+                <div class="row g-2 mb-3 no-print">
+                    <div class="col-md-4">
+                        <label class="small fw-bold">Stagiaire (remplissage auto) :</label>
+                        <input type="hidden" id="soapStgIdx" value="-1">
+                        <input type="text" id="soapStgNom" class="form-control form-control-sm" placeholder="Nom et Prénom" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Spécialité :</label>
+                        <input type="text" id="soapStgSpec" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Semestre :</label>
+                        <input type="text" id="soapStgSem" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Groupe :</label>
+                        <input type="text" id="soapStgGrp" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <select id="soapStgSel" class="form-select form-select-sm" onchange="fillSoapStg()">
+                            <option value="-1">-- Stagiaire --</option>
+                        </select>
+                    </div>
+                </div>
 
                 <div id="soapAdminTools" class="card-panel no-print d-none mb-3">
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
@@ -331,22 +388,8 @@
                                 <tbody id="sigBody"></tbody>
                             </table>
 
-                            <!-- 3. Compétences ciblées -->
-                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">3. Compétences ciblées</h5>
-                            <p class="mb-1">Ce TP vise à développer chez l'apprenant la compétence globale suivante, déclinée en compétences spécifiques mobilisées et évaluées tout au long de la séance :</p>
-                            <p class="fw-bold mb-1">Compétence globale : Fabriquer un savon glycériné aromatisé à la cannelle, conforme à un cahier des charges, en autonomie et dans le respect des règles d'hygiène et de sécurité.</p>
-                            <ul class="mb-0 small">
-                                <li>C1 — Organiser son poste de travail conformément aux exigences d'un atelier de fabrication cosmétique.</li>
-                                <li>C2 — Appliquer les règles d'hygiène et de sécurité liées à la manipulation d'un corps gras chaud et d'une huile essentielle.</li>
-                                <li>C3 — Conduire une opération de fusion (« melt and pour ») en maîtrisant le paramètre température.</li>
-                                <li>C4 — Doser et incorporer des additifs (colorant, actif, parfum naturel) selon une formule donnée.</li>
-                                <li>C5 — Contrôler la qualité du produit fini au regard de critères esthétiques et sensoriels définis.</li>
-                                <li>C6 — Travailler avec autonomie, méthode et respect des délais.</li>
-                                <li>C7 — Rendre compte de sa pratique et justifier ses choix techniques.</li>
-                            </ul>
-
-                            <!-- 7. Matières premières -->
-                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">7. Matières premières</h5>
+                            <!-- 2. Matières premières -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">2. Matières premières</h5>
                             <div class="row g-2 mb-2">
                                 <div class="col-4"><input type="text" id="mpName" class="form-control form-control-sm" placeholder="Désignation"></div>
                                 <div class="col-3"><input type="text" id="mpQte" class="form-control form-control-sm" placeholder="Quantité"></div>
@@ -358,16 +401,16 @@
                                 <tbody id="mpBody"></tbody>
                             </table>
 
-                            <!-- 8. Matériel et équipements -->
-                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">8. Matériel et équipements</h5>
+                            <!-- 3. Matériel et équipements -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">3. Matériel et équipements</h5>
                             <div class="row g-2 mb-2">
                                 <div class="col-10"><input type="text" id="mat2Name" class="form-control form-control-sm" placeholder="Saisir un matériel ou équipement"></div>
                                 <div class="col-2"><input type="hidden" id="mat2Idx" value="-1"><button class="btn btn-success btn-sm w-100" onclick="addMat2()" id="btnMat2Save">Ajouter</button></div>
                             </div>
                             <div id="mat2List" class="mb-2"></div>
 
-                            <!-- 10. Mode opératoire -->
-                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">10. Mode opératoire (protocole expérimental)</h5>
+                            <!-- 4. Mode opératoire -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">4. Mode opératoire (protocole expérimental)</h5>
                             <div class="input-group input-group-sm mb-1">
                                 <input type="text" id="opName" class="form-control" placeholder="Saisir une étape...">
                                 <input type="hidden" id="opIdx" value="-1">
