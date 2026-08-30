@@ -378,6 +378,33 @@
                 <h3 class="fw-bold text-success text-center">FICHE DE TRAVAUX PRATIQUES (TP)</h3>
                 <p class="text-center text-muted small">Fabrication d'un savon à base de glycérine et de cannelle — Approche Par Compétences (APC)</p>
 
+                <!-- Galerie du projet (photos modifiables par admin) -->
+                <div class="card-panel p-3 mb-3 text-center">
+                    <h5 class="fw-bold text-success border-bottom pb-1 mb-2">Les Galurie du projet</h5>
+                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                        <div class="photo-wrap">
+                            <img id="projGal1" src="007.jpg" class="tp-photo">
+                            <span class="photo-edit no-print d-none" onclick="changeHeaderImg('projGal1')"><i class="bi bi-camera"></i></span>
+                            <input type="file" id="fileProjGal1" accept="image/*" class="d-none" onchange="upImg('projGal1', this)">
+                        </div>
+                        <div class="photo-wrap">
+                            <img id="projGal2" src="02.jpg" class="tp-photo">
+                            <span class="photo-edit no-print d-none" onclick="changeHeaderImg('projGal2')"><i class="bi bi-camera"></i></span>
+                            <input type="file" id="fileProjGal2" accept="image/*" class="d-none" onchange="upImg('projGal2', this)">
+                        </div>
+                        <div class="photo-wrap">
+                            <img id="projGal3" src="8.jpg" class="tp-photo">
+                            <span class="photo-edit no-print d-none" onclick="changeHeaderImg('projGal3')"><i class="bi bi-camera"></i></span>
+                            <input type="file" id="fileProjGal3" accept="image/*" class="d-none" onchange="upImg('projGal3', this)">
+                        </div>
+                        <div class="photo-wrap">
+                            <img id="projGal4" src="04.jpg" class="tp-photo">
+                            <span class="photo-edit no-print d-none" onclick="changeHeaderImg('projGal4')"><i class="bi bi-camera"></i></span>
+                            <input type="file" id="fileProjGal4" accept="image/*" class="d-none" onchange="upImg('projGal4', this)">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- En-tête de la fiche : stagiaire + enregistrement -->
                 <div class="row g-3 mb-3">
                     <div class="col-md-12">
@@ -496,6 +523,7 @@
                             <div class="small" id="projDetailBody"></div>
                             <button class="btn btn-sm btn-dark mt-2" onclick="downloadOneProj(projDetailIdx)"><i class="bi bi-download"></i> Télécharger</button>
                             <button class="btn btn-sm btn-secondary mt-2 ms-1" onclick="printOneProj(projDetailIdx)"><i class="bi bi-printer"></i> Imprimer cette fiche</button>
+                            <button class="btn btn-sm btn-success mt-2 ms-1 fw-bold" onclick="saveProjNote(projDetailIdx)"><i class="bi bi-save"></i> Sauvegarder</button>
                             <button class="btn btn-sm btn-outline-danger mt-2 ms-1" onclick="document.getElementById('projDetail').classList.add('d-none')">Fermer</button>
                         </div>
                     </div>

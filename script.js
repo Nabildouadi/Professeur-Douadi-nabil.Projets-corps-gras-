@@ -1048,13 +1048,18 @@ Généré le ${new Date().toLocaleString()}`;
             r.readAsDataURL(input.files[0]);
         }
         function changeHeaderImg(id) {
-            const fileId = id === 'imgLeft' ? 'fileLeft' : (id === 'imgRight' ? 'fileRight' : 'file'+id.slice(3));
-            const f = document.getElementById(fileId); if(f) f.click();
+            const candidates = ['file'+id, 'file'+id.slice(3)];
+            let f = null;
+            for(const c of candidates) { const el = document.getElementById(c); if(el) { f = el; break; } }
+            if(f) f.click();
         }
         function loadImgs() {
             if(localStorage.getItem('img_imgLeft')) document.getElementById('imgLeft').src = localStorage.getItem('img_imgLeft');
             if(localStorage.getItem('img_imgRight')) document.getElementById('imgRight').src = localStorage.getItem('img_imgRight');
             ['imgTp1','imgTp2','imgTp3','imgTp4'].forEach(id => {
+                if(localStorage.getItem('img_'+id)) document.getElementById(id).src = localStorage.getItem('img_'+id);
+            });
+            ['projGal1','projGal2','projGal3','projGal4'].forEach(id => {
                 if(localStorage.getItem('img_'+id)) document.getElementById(id).src = localStorage.getItem('img_'+id);
             });
         }
