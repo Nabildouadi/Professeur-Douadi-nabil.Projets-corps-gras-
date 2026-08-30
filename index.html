@@ -6,7 +6,7 @@
     <title>INSFP EL HIDHAB - Prof Douadi Nabil 2026</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -29,6 +29,33 @@
     </header>
 
     <div class="sub-header"><b id="subHeaderText">Les projets des stagiaires INSFP El Hidhab Sétif 2026</b></div>
+
+    <!-- Bandeau Travaux Pratiques (titre + photos modifiables par admin) -->
+    <div class="tp-banner text-center my-2">
+        <div id="tpTitle" class="tp-title mx-auto px-3">* TRAVAUX PRATIQUES (TP) *</div>
+        <div class="d-flex justify-content-center flex-wrap gap-2 mt-2">
+            <div class="photo-wrap">
+                <img id="imgTp1" src="007.jpg" class="tp-photo">
+                <span class="photo-edit no-print d-none" onclick="changeHeaderImg('imgTp1')"><i class="bi bi-camera"></i></span>
+                <input type="file" id="fileTp1" accept="image/*" class="d-none" onchange="upImg('imgTp1', this)">
+            </div>
+            <div class="photo-wrap">
+                <img id="imgTp2" src="02.jpg" class="tp-photo">
+                <span class="photo-edit no-print d-none" onclick="changeHeaderImg('imgTp2')"><i class="bi bi-camera"></i></span>
+                <input type="file" id="fileTp2" accept="image/*" class="d-none" onchange="upImg('imgTp2', this)">
+            </div>
+            <div class="photo-wrap">
+                <img id="imgTp3" src="8.jpg" class="tp-photo">
+                <span class="photo-edit no-print d-none" onclick="changeHeaderImg('imgTp3')"><i class="bi bi-camera"></i></span>
+                <input type="file" id="fileTp3" accept="image/*" class="d-none" onchange="upImg('imgTp3', this)">
+            </div>
+            <div class="photo-wrap">
+                <img id="imgTp4" src="04.jpg" class="tp-photo">
+                <span class="photo-edit no-print d-none" onclick="changeHeaderImg('imgTp4')"><i class="bi bi-camera"></i></span>
+                <input type="file" id="fileTp4" accept="image/*" class="d-none" onchange="upImg('imgTp4', this)">
+            </div>
+        </div>
+    </div>
 
     <nav id="mainNav">
         <div class="container d-flex justify-content-center flex-wrap">
@@ -173,6 +200,30 @@
         <section id="page-qcm" class="section">
             <div class="container card p-4 shadow border-0">
                 <h5 class="text-center fw-bold border p-2 mb-3 bg-light">QUESTIONS DE SYNTHÈSE ET PROLONGEMENT (QCM)</h5>
+                <div class="row g-2 mb-3 no-print">
+                    <div class="col-md-4">
+                        <label class="small fw-bold">Stagiaire (remplissage auto) :</label>
+                        <input type="hidden" id="qcmStgIdx" value="-1">
+                        <input type="text" id="qcmStgNom" class="form-control form-control-sm" placeholder="Nom et Prénom" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="small fw-bold">Spécialité :</label>
+                        <input type="text" id="qcmStgSpec" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Semestre :</label>
+                        <input type="text" id="qcmStgSem" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="small fw-bold">Groupe :</label>
+                        <input type="text" id="qcmStgGrp" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="col-md-2">
+                        <select id="qcmStgSel" class="form-select form-select-sm" onchange="fillQcmStg()">
+                            <option value="-1">-- Stagiaire --</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="card-panel no-print mb-3 pb-2 bg-light p-2">
                     <div class="row g-2">
                         <div class="col-md-12"><input type="text" id="qstName" class="form-control form-control-sm" placeholder="Énoncé de la question..."></div>
@@ -498,6 +549,10 @@
                         <input type="text" id="cfgSubText" class="form-control form-control-sm" value="Les projets des stagiaires INSFP El Hidhab Sétif 2026">
                     </div>
                     <div class="mb-3">
+                        <label class="fw-bold small">Titre Travaux Pratiques (TP) :</label>
+                        <input type="text" id="cfgTpTitle" class="form-control form-control-sm" value="* TRAVAUX PRATIQUES (TP) *">
+                    </div>
+                    <div class="mb-3">
                         <label class="fw-bold small">Taille du texte de la bannière :</label>
                         <input type="range" id="cfgSubSize" min="14" max="40" value="22" class="form-range" oninput="document.getElementById('subHeaderText').style.fontSize=this.value+'px'">
                         <span class="small" id="cfgSubSizeLbl">22 px</span>
@@ -511,7 +566,7 @@
 
     </div>
 
-    <script src="script.js"></script>
+        <script src="script.js"></script>
     <footer class="app-footer">
         <b>Tous droits réservés © Professeur Douadi Nabil 2026</b>
     </footer>

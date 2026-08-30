@@ -107,7 +107,7 @@
                 document.getElementById('nav-stg').style.display = "none";
                 document.getElementById('nav-grille').style.display = "none";
             }
-            showPage(p); renderGrille(); renderStg(); renderOilLib(); renderOilSelect(); renderRecipe(); renderProj(); fillStgSelect(); fillSoapSelect(); fillGrSelect(); toggleHeaderEdit(isAdmin); loadSubHeader(); runSoap(); renderSig(); renderMp(); renderMat2(); renderOp(); renderGrComp(); renderQst();
+            showPage(p); renderGrille(); renderStg(); renderOilLib(); renderOilSelect(); renderRecipe(); renderProj(); fillStgSelect(); fillSoapSelect(); fillGrSelect(); fillQcmSelect(); toggleHeaderEdit(isAdmin); loadSubHeader(); runSoap(); renderSig(); renderMp(); renderMat2(); renderOp(); renderGrComp(); renderQst();
         }
 
         // --- NAVIGATION ---
@@ -633,6 +633,36 @@
                 ['grStgNom','grStgSpec','grStgSem','grStgGrp'].forEach(id => { const e = document.getElementById(id); if(e) e.value = ""; });
             }
         }
+        function fillQcmSelect() {
+            const sel = document.getElementById('qcmStgSel'); const inx = document.getElementById('qcmStgIdx'); if(!sel || !inx) return;
+            const current = parseInt(inx.value) || -1;
+            sel.innerHTML = `<option value="-1">-- Stagiaire --</option>`;
+            stData.forEach((s, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.text = s.nom || ('Stagiaire ' + (i+1));
+                sel.appendChild(opt);
+            });
+            if(stData.length === 0) sel.innerHTML += `<option value="-1" disabled>Aucun stagiaire</option>`;
+            let preselect = current;
+            if(preselect < 0 && stData.length > 0) preselect = 0;
+            if(preselect >= 0) { sel.value = preselect; fillQcmStg(); }
+        }
+        function fillQcmStg() {
+            const sel = document.getElementById('qcmStgSel'); const inx = document.getElementById('qcmStgIdx');
+            const i = parseInt(sel.value);
+            if(!inx) return;
+            inx.value = i;
+            if(i >= 0 && stData[i]) {
+                const s = stData[i];
+                document.getElementById('qcmStgNom').value = s.nom || "";
+                document.getElementById('qcmStgSpec').value = s.spec || "";
+                document.getElementById('qcmStgSem').value = s.sem || "";
+                document.getElementById('qcmStgGrp').value = s.grp || "";
+            } else {
+                ['qcmStgNom','qcmStgSpec','qcmStgSem','qcmStgGrp'].forEach(id => { const e = document.getElementById(id); if(e) e.value = ""; });
+            }
+        }
         function renderSteps() {
             const list = document.getElementById('projStepsList'); if(!list) return;
             list.innerHTML = "";
@@ -1018,11 +1048,15 @@ Généré le ${new Date().toLocaleString()}`;
             r.readAsDataURL(input.files[0]);
         }
         function changeHeaderImg(id) {
-            document.getElementById(id === 'imgLeft' ? 'fileLeft' : 'fileRight').click();
+            const fileId = id === 'imgLeft' ? 'fileLeft' : (id === 'imgRight' ? 'fileRight' : 'file'+id.slice(3));
+            const f = document.getElementById(fileId); if(f) f.click();
         }
         function loadImgs() {
             if(localStorage.getItem('img_imgLeft')) document.getElementById('imgLeft').src = localStorage.getItem('img_imgLeft');
             if(localStorage.getItem('img_imgRight')) document.getElementById('imgRight').src = localStorage.getItem('img_imgRight');
+            ['imgTp1','imgTp2','imgTp3','imgTp4'].forEach(id => {
+                if(localStorage.getItem('img_'+id)) document.getElementById(id).src = localStorage.getItem('img_'+id);
+            });
         }
         function toggleHeaderEdit(admin) {
             document.querySelectorAll('.photo-edit').forEach(el => el.classList.toggle('d-none', !admin));
@@ -1041,6 +1075,9 @@ Généré le ${new Date().toLocaleString()}`;
             localStorage.setItem('cfg_subsize', ss);
             document.getElementById('subHeaderText').textContent = st;
             document.getElementById('subHeaderText').style.fontSize = ss + 'px';
+            const tp = document.getElementById('cfgTpTitle').value;
+            localStorage.setItem('cfg_tptitle', tp);
+            document.getElementById('tpTitle').textContent = tp;
             alert("Configuration et couleurs sauvegardéés !");
         }
         function resetConfig() {
@@ -1095,6 +1132,9 @@ Généré le ${new Date().toLocaleString()}`;
                 const lb = document.getElementById('cfgSubSizeLbl'); if(lb) lb.textContent = ss + ' px';
             }
             const inp = document.getElementById('cfgSubText'); if(inp && st != null) inp.value = st;
+            const tp = localStorage.getItem('cfg_tptitle');
+            if(tp != null) document.getElementById('tpTitle').textContent = tp;
+            const tpinp = document.getElementById('cfgTpTitle'); if(tpinp && tp != null) tpinp.value = tp;
         }
         window.onload = function() { loadImgs(); loadColors(); loadSubHeader(); loadRecipe(); };
     

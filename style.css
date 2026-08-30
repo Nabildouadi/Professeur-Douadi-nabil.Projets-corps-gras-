@@ -23,6 +23,11 @@
         .header-text { text-align: center; flex-grow: 1; }
         .header-text h5, .header-text h6 { margin: 5px 0; font-weight: 900; color: #333; text-shadow: 1px 1px 0 #bbb, 2px 2px 3px rgba(0,0,0,0.4); }
 
+        /* BANDEAU TRAVAUX PRATIQUES */
+        .tp-banner { background: #fff; border-top: 4px solid var(--primary-color); border-bottom: 4px solid var(--primary-color); padding: 8px 10px; }
+        .tp-title { display: inline-block; background: var(--primary-color); color: #fff; font-weight: 900; letter-spacing: 2px; font-size: 18px; padding: 6px 18px; border-radius: 20px; }
+        .tp-photo { width: 90px; height: 90px; border: 2px solid var(--primary-color); border-radius: 12px; object-fit: cover; background: #eee; cursor: default; box-shadow: 0 2px 5px rgba(0,0,0,0.25); }
+
         /* NAVIGATION */
         #mainNav { background: var(--nav-bg); display: none; padding: 5px 0; position: sticky; top: 0; z-index: 1000; }
         .nav-link { color: white !important; cursor: pointer; font-weight: bold; padding: 8px 12px !important; }
