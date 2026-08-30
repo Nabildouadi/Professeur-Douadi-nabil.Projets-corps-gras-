@@ -466,6 +466,24 @@
                                 <tbody id="sigBody"></tbody>
                             </table>
 
+                            <!-- Objectifs du TP -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2 mt-3">Objectifs du TP</h5>
+                            <div class="input-group input-group-sm mb-1">
+                                <textarea id="objName" class="form-control" rows="2" placeholder="Saisir un objectif du TP..."></textarea>
+                                <input type="hidden" id="objIdx" value="-1">
+                                <button class="btn btn-success" onclick="addObj()" id="btnObjSave">Ajouter</button>
+                            </div>
+                            <div id="objList" class="mb-2"></div>
+
+                            <!-- Principe -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2 mt-3">Principe</h5>
+                            <div class="input-group input-group-sm mb-1">
+                                <textarea id="prinName" class="form-control" rows="2" placeholder="Saisir un principe..."></textarea>
+                                <input type="hidden" id="prinIdx" value="-1">
+                                <button class="btn btn-success" onclick="addPrin()" id="btnPrinSave">Ajouter</button>
+                            </div>
+                            <div id="prinList" class="mb-2"></div>
+
                             <!-- 2. Matières premières -->
                             <h5 class="fw-bold text-success border-bottom pb-1 mb-2">2. Matières premières</h5>
                             <div class="row g-2 mb-2">

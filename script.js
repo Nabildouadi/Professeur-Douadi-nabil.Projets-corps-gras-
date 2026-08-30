@@ -32,6 +32,17 @@
             { l: "Code compétence", v: "C – Fabriquer un savon glycériné aromatisé selon un cahier des charges" },
             { l: "Effectif", v: "Travail individuel ou en binôme (groupes de 10 à 16 apprenants)" }
         ];
+        let objIdx = -1;
+        let objData = JSON.parse(localStorage.getItem('db_obj') || '[]') || [
+            "Identifier les matières premières nécessaires à la fabrication d'un savon glycériné artisanale.",
+            "Assimiler le rôle de la glycérine et de la cannelle dans la formulation du savon.",
+            "Appliquer les règles d'hygiène et de sécurité liées au travail de laboratoire."
+        ];
+        let prinIdx = -1;
+        let prinData = JSON.parse(localStorage.getItem('db_prin') || '[]') || [
+            "La fusion de la base glycérinée (« melt and pour ») permet un coulage facile et une conservation des propriétés hydratantes de la glycérine.",
+            "L'ajout de cannelle (poudre et huile essentielle) apporte une exfoliation douce et un parfum naturel au savon."
+        ];
         let mpIdx = -1;
         let mpData = [
             { n: "Base de savon glycérinée (« melt and pour »), transparente ou blanche", q: "500 g", o: "Découpée en cubes de 2 cm pour une fonte homogène" },
@@ -107,7 +118,7 @@
                 document.getElementById('nav-stg').style.display = "none";
                 document.getElementById('nav-grille').style.display = "none";
             }
-            showPage(p); renderGrille(); renderStg(); renderOilLib(); renderOilSelect(); renderRecipe(); renderProj(); fillStgSelect(); fillSoapSelect(); fillGrSelect(); fillQcmSelect(); toggleHeaderEdit(isAdmin); loadSubHeader(); runSoap(); renderSig(); renderMp(); renderMat2(); renderOp(); renderGrComp(); renderQst();
+            showPage(p); renderGrille(); renderStg(); renderOilLib(); renderOilSelect(); renderRecipe(); renderProj(); fillStgSelect(); fillSoapSelect(); fillGrSelect(); fillQcmSelect(); toggleHeaderEdit(isAdmin); loadSubHeader(); runSoap(); renderSig(); renderMp(); renderMat2(); renderOp(); renderObj(); renderPrin(); renderGrComp(); renderQst();
         }
 
         // --- NAVIGATION ---
@@ -761,6 +772,80 @@
             document.getElementById('sigLabel').focus();
         }
         function delSig(i) { sigData.splice(i,1); renderSig(); }
+        // --- OBJECTIFS DU TP ---
+        function renderObj() {
+            const list = document.getElementById('objList'); if(!list) return;
+            list.innerHTML = "";
+            const ol = document.createElement('ol');
+            ol.className = 'small mb-0';
+            objData.forEach((it, i) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${it}
+                    <span class="no-print float-end">
+                        <button onclick="editObj(${i})" class="btn btn-sm btn-warning p-0 px-1" title="Modifier"><i class="bi bi-pencil"></i></button>
+                        <button onclick="delObj(${i})" class="btn btn-sm btn-danger p-0 px-1" title="Supprimer">X</button>
+                    </span>`;
+                ol.appendChild(li);
+            });
+            list.appendChild(ol);
+            saveObjData();
+        }
+        function saveObjData() { localStorage.setItem('db_obj', JSON.stringify(objData)); }
+        function addObj() {
+            const inp = document.getElementById('objName');
+            const idx = parseInt(document.getElementById('objIdx').value);
+            const v = inp.value.trim();
+            if(!v) { alert("Saisissez un objectif"); return; }
+            if(idx == -1) objData.push(v); else objData[idx] = v;
+            document.getElementById('objIdx').value = "-1";
+            document.getElementById('btnObjSave').innerText = "Ajouter";
+            inp.value = "";
+            renderObj();
+        }
+        function editObj(i) {
+            document.getElementById('objName').value = objData[i];
+            document.getElementById('objIdx').value = i;
+            document.getElementById('btnObjSave').innerText = "Sauvegarder";
+            document.getElementById('objName').focus();
+        }
+        function delObj(i) { objData.splice(i,1); renderObj(); }
+        // --- PRINCIPE ---
+        function renderPrin() {
+            const list = document.getElementById('prinList'); if(!list) return;
+            list.innerHTML = "";
+            const ol = document.createElement('ol');
+            ol.className = 'small mb-0';
+            prinData.forEach((it, i) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${it}
+                    <span class="no-print float-end">
+                        <button onclick="editPrin(${i})" class="btn btn-sm btn-warning p-0 px-1" title="Modifier"><i class="bi bi-pencil"></i></button>
+                        <button onclick="delPrin(${i})" class="btn btn-sm btn-danger p-0 px-1" title="Supprimer">X</button>
+                    </span>`;
+                ol.appendChild(li);
+            });
+            list.appendChild(ol);
+            savePrinData();
+        }
+        function savePrinData() { localStorage.setItem('db_prin', JSON.stringify(prinData)); }
+        function addPrin() {
+            const inp = document.getElementById('prinName');
+            const idx = parseInt(document.getElementById('prinIdx').value);
+            const v = inp.value.trim();
+            if(!v) { alert("Saisissez un principe"); return; }
+            if(idx == -1) prinData.push(v); else prinData[idx] = v;
+            document.getElementById('prinIdx').value = "-1";
+            document.getElementById('btnPrinSave').innerText = "Ajouter";
+            inp.value = "";
+            renderPrin();
+        }
+        function editPrin(i) {
+            document.getElementById('prinName').value = prinData[i];
+            document.getElementById('prinIdx').value = i;
+            document.getElementById('btnPrinSave').innerText = "Sauvegarder";
+            document.getElementById('prinName').focus();
+        }
+        function delPrin(i) { prinData.splice(i,1); renderPrin(); }
         // --- MATIÈRES PREMIÈRES ---
         function renderMp() {
             const tb = document.getElementById('mpBody'); if(!tb) return;
