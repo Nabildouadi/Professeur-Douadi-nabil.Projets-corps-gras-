@@ -32,22 +32,42 @@ ACCES STAGIAIRE :
 PAGES / FONCTIONS
 -----------------
 1. GESTION STAGIAIRES : ajouter, modifier, supprimer les stagiaires.
+   (page réservée à l'admin - cachée pour les stagiaires)
 2. GRILLE ÉVALUATION : grille de compétences avec notes /100 et /20.
+   (page réservée à l'admin - cachée pour les stagiaires)
 3. CALCULATRICE SOAP : calcul de la soude (NaOH/KOH) et de l'eau
    pour la fabrication de savon (modèle type SoapCalc).
    - Bibliothèque d'huiles modifiable (ajouter/modifier/supprimer)
    - Recette : ajouter une huile, ajuster les %, boutons M/X
    - Réglages : soude, poids huiles, surgraissage, % eau
-4. FICHE PROJET : formulaire fiche technique + liste des projets
-   avec boutons Ajouter / Modifier / Supprimer / Télécharger.
+4. FICHE DE TP SAVON (GLYCÉRINE & CANNELLE) : affiche le modèle
+   complet de fiche de travaux pratiques (Approche Par Compétences) :
+   - 1. Fiche signalétique (liste modifiable : Ajouter/Modifier/Supprimer)
+   - 3. Compétences ciblées
+   - 7. Matières premières (liste modifiable : Ajouter/Modifier/Supprimer)
+   - 8. Matériel et équipements (liste modifiable : Ajouter/Modifier/Supprimer)
+   - 10. Mode opératoire (11 étapes)
+   La grille d'évaluation (C1 à C7) et les questions de synthèse ont été
+   déplacées dans la page GRILLE ÉVALUATION.
+   En-tête : choix du stagiaire (remplissage auto) + note /20.
+   Liste des fiches : Ajouter / Modifier / Supprimer / Voir /
+   Télécharger / Imprimer.
 5. CONFIG : changer les logos et les couleurs de l'interface,
    bouton Sauvegarder, thèmes rapides, réinitialisation.
+   Permet de modifier le texte et la taille de la bannière
+   (sous l'en-tête).
 
 PHOTOS DU HEADER (page d'accueil)
 ---------------------------------
 En mode ADMIN, cliquer sur l'icône caméra au-dessus des deux
 photos du haut permet de les changer directement.
 Autre possibilité : page CONFIG -> Logos & Documents.
+
+BANNIÈRE ET PIED DE PAGE
+------------------------
+- Bannière sous l'en-tête (texte + taille) modifiables dans CONFIG.
+- Bannière : "Les projets des stagiaires INSFP El Hidhab Sétif 2026"
+- Pied de page : "Tous droits réservés © Professeur Douadi Nabil 2026"
 
 SAUVEGARDE DES DONNÉES
 ----------------------

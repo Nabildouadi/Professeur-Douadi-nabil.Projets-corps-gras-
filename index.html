@@ -47,12 +47,14 @@
         <section id="page-login" class="section active text-center">
             <div class="row justify-content-center mt-5 gap-4">
                 <div class="col-md-4 card p-4 shadow">
-                    <h5 class="fw-bold mb-3">ACCÈS ADMIN</h5>
+                    <div class="text-center mb-2"><img src="profdouadi.jpg" alt="Photo du professeur" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #212529"></div>
+                    <h5 class="fw-bold mb-3">ACCÈS DU PROF</h5>
                     <input type="text" id="userAdmin" class="form-control mb-2 text-center" placeholder="Username">
                     <input type="password" id="passAdmin" class="form-control mb-3 text-center" placeholder="Password">
                     <button onclick="loginAdmin()" class="btn btn-dark w-100 fw-bold">CONNEXION</button>
                 </div>
                 <div class="col-md-4 card p-4 shadow border-success">
+                    <div class="text-center mb-2"><img src="iicon stajiare.png" alt="Icône stagiaire" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #28a745"></div>
                     <h5 class="fw-bold text-success mb-3">ACCÈS STAGIAIRE</h5>
                     <input type="text" id="userStg" class="form-control mb-2 text-center" placeholder="N° Téléphone">
                     <input type="password" id="passStg" class="form-control mb-3 text-center" placeholder="Mot de passe">
@@ -119,19 +121,52 @@
                 </div>
             </div>
             <div class="card p-3 shadow bg-white">
-                <h5 id="displayGTitle" class="text-center fw-bold border p-2 mb-3 bg-light">FABRICATION DE SAVON À BASE DE CITRONNELLE</h5>
                 <table class="table table-custom table-bordered align-middle text-center">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">N°</th><th rowspan="2">COMPÉTENCES</th><th rowspan="2">CRITÈRES</th><th colspan="4">NIVEAUX</th><th rowspan="2">/100</th><th rowspan="2">/20</th><th rowspan="2" class="no-print admin-only d-none">ACT</th>
-                        </tr>
-                        <tr class="small">
-                            <th class="bg-exc">Exc</th><th class="bg-bien">Bien</th><th class="bg-moy">Moy</th><th class="bg-ins">Ins</th>
-                        </tr>
-                    </thead>
                     <tbody id="tbodyGrille"></tbody>
-                    <tfoot class="fw-bold"><tr><td colspan="7" class="text-end">TOTAL :</td><td id="t100">0</td><td id="t20" class="text-danger">0</td><td class="no-print admin-only d-none"></td></tr></tfoot>
                 </table>
+            </div>
+            <div class="card p-3 shadow mt-3 bg-white">
+                <h5 class="text-center fw-bold border p-2 mb-3 bg-light">GRILLE D'ÉVALUATION PAR COMPÉTENCES (TP SAVON GLYCÉRINE & CANNELLE)</h5>
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4"><input type="text" id="grComp" class="form-control form-control-sm" placeholder="Critère (ex : C1 – ...)"></div>
+                    <div class="col-md-4"><input type="text" id="grIndic" class="form-control form-control-sm" placeholder="Indicateurs de réussite"></div>
+                    <div class="col-md-1"><input type="text" id="grBareme" class="form-control form-control-sm" placeholder="/X"></div>
+                    <div class="col-md-2"><input type="number" step="0.5" id="grNote" class="form-control form-control-sm" placeholder="Note"></div>
+                    <div class="col-md-1"><input type="hidden" id="grCompIdx" value="-1"><button class="btn btn-success btn-sm w-100" onclick="saveGrComp()" id="btnGrCompSave">Ajouter</button></div>
+                </div>
+                <table class="table table-custom table-sm">
+                    <thead><tr><th>Critère de compétence</th><th>Indicateurs de réussite observables</th><th>Barème</th><th>Note obtenue</th><th class="no-print">Actions</th></tr></thead>
+                    <tbody id="grCompBody"></tbody>
+                    <tfoot class="fw-bold"><tr><td class="fw-bold">TOTAL</td><td>Compétence jugée : acquise / en cours d'acquisition / non acquise</td><td class="fw-bold">/20</td><td id="grCompTotal">-</td><td class="no-print"></td></tr></tfoot>
+                </table>
+            </div>
+            <div class="card p-3 shadow mt-3 bg-white">
+                <h5 class="text-center fw-bold border p-2 mb-3 bg-light">QUESTIONS DE SYNTHÈSE ET PROLONGEMENT (QCM)</h5>
+                <div class="card-panel no-print mb-3 pb-2 bg-light p-2">
+                    <div class="row g-2">
+                        <div class="col-md-12"><input type="text" id="qstName" class="form-control form-control-sm" placeholder="Énoncé de la question..."></div>
+                        <div class="col-md-9 col-8"><input type="text" id="qstOpt" class="form-control form-control-sm" placeholder="Option (saisir puis Ajouter option)"></div>
+                        <div class="col-md-3 col-4"><button class="btn btn-secondary btn-sm w-100" onclick="addQstOpt()">+ Option</button></div>
+                        <div class="col-md-8 small" id="qstOptList"></div>
+                        <div class="col-md-4">
+                            <label class="small fw-bold">Bonne réponse :</label>
+                            <input type="text" id="qstGood" class="form-control form-control-sm mb-1" placeholder="Texte de la bonne réponse">
+                            <label class="small fw-bold">Barème (points) :</label>
+                            <input type="number" step="0.5" min="0" id="qstBareme" class="form-control form-control-sm mb-1" placeholder="ex : 2">
+                        </div>
+                        <div class="col-md-12 d-flex gap-2">
+                            <input type="hidden" id="qstIdx" value="-1">
+                            <button class="btn btn-success btn-sm" onclick="saveQst()" id="btnQstSave">Ajouter</button>
+                            <button class="btn btn-secondary btn-sm" onclick="resetQstForm()">Nouvelle</button>
+                            <button class="btn btn-outline-danger btn-sm ms-auto" onclick="resetAllQstAnswers()">Réinitialiser les réponses</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="qstList" class="mb-0 small"></div>
+                <div class="border-top pt-2 mt-3 d-flex justify-content-between align-items-center">
+                    <b>Résultat :</b>
+                    <span id="qstTotal" class="fw-bold fs-5 text-success">0 / 0</span>
+                </div>
             </div>
         </section>
 
@@ -232,97 +267,133 @@
         <!-- 4. FICHE PROJET -->
         <section id="page-proj" class="section">
             <div class="container card p-4 shadow border-0">
-                <h3 class="fw-bold text-success text-center">FICHE TECHNIQUE DU PROJET</h3>
-                <p class="text-center text-muted small">Affiche de présentation & fiche de fabrication - Dossier de l'élève</p>
+                <h3 class="fw-bold text-success text-center">FICHE DE TRAVAUX PRATIQUES (TP)</h3>
+                <p class="text-center text-muted small">Fabrication d'un savon à base de glycérine et de cannelle — Approche Par Compétences (APC)</p>
 
-                <div class="row g-4">
-                    <!-- Formulaire -->
-                    <div class="col-md-5">
+                <!-- En-tête de la fiche : stagiaire + enregistrement -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-12">
                         <div class="card-panel">
-                            <h6 class="fw-bold text-success border-bottom pb-2 mb-3">Formulaire Fiche Projet</h6>
-                            <input type="hidden" id="projEditIdx" value="-1">
-                            <label class="small fw-bold">Nom du produit :</label>
-                            <input type="text" id="projTitre" class="form-control form-control-sm mb-2" placeholder="Ex : Savon au Moringa">
-                            <label class="small fw-bold">Choisir le stagiaire (remplissage auto) :</label>
-                            <select id="projStgSel" class="form-select form-select-sm mb-2" onchange="fillStgProj()">
-                                <option value="-1">-- Sélectionner un stagiaire --</option>
-                            </select>
-                            <label class="small fw-bold">Stagiaire :</label>
-                            <input type="text" id="projStg" class="form-control form-control-sm mb-2" placeholder="Nom et Prénom du stagiaire" readonly>
-                            <div class="row g-2 mb-2">
-                                <div class="col-6">
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-4">
+                                    <label class="small fw-bold">Choisir le stagiaire (remplissage auto) :</label>
+                                    <select id="projStgSel" class="form-select form-select-sm" onchange="fillStgProj()">
+                                        <option value="-1">-- Sélectionner un stagiaire --</option>
+                                    </select>
+                                    <input type="text" id="projStg" class="form-control form-control-sm mt-1" placeholder="Nom et Prénom du stagiaire" readonly>
+                                </div>
+                                <div class="col-md-2">
                                     <label class="small fw-bold">Spécialité :</label>
-                                    <input type="text" id="projSpec" class="form-control form-control-sm" placeholder="Spécialité" readonly>
+                                    <input type="text" id="projSpec" class="form-control form-control-sm" readonly>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-md-2">
                                     <label class="small fw-bold">Groupe :</label>
-                                    <input type="text" id="projGrp" class="form-control form-control-sm" placeholder="Groupe">
+                                    <input type="text" id="projGrp" class="form-control form-control-sm">
                                 </div>
-                            </div>
-                            <div class="row g-2 mb-2">
-                                <div class="col-6">
+                                <div class="col-md-2">
                                     <label class="small fw-bold">Date :</label>
                                     <input type="date" id="projDate" class="form-control form-control-sm">
                                 </div>
-                                <div class="col-6">
-                                    <label class="small fw-bold">Quantité (g) :</label>
-                                    <input type="text" id="projQte" class="form-control form-control-sm" placeholder="Ex : 500 g">
+                                <div class="col-md-2">
+                                    <label class="small fw-bold">Note obtenue (/20) :</label>
+                                    <input type="text" id="projQte" class="form-control form-control-sm text-center" placeholder="Ex : 16">
                                 </div>
                             </div>
-                            <label class="small fw-bold">Ingrédients / Formulation :</label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="text" id="projIngInp" class="form-control" placeholder="Saisir un ingrédient (ex : huile de moringa)">
-                                <input type="hidden" id="projIngIdx" value="-1">
-                                <button class="btn btn-success" onclick="addIng()" id="btnIngSave">Ajouter</button>
-                            </div>
-                            <div id="projIngList" class="mb-2"></div>
-                            <label class="small fw-bold">Titre du procédé :</label>
-                            <input type="text" id="projProcTitre" class="form-control form-control-sm mb-2" placeholder="Ex : Procédé de fabrication du savon au Moringa">
-                            <label class="small fw-bold">Étapes de fabrication :</label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="text" id="projStep" class="form-control" placeholder="Saisir une étape...">
-                                <input type="hidden" id="projStepIdx" value="-1">
-                                <button class="btn btn-success" onclick="addStep()" id="btnStepSave">Ajouter</button>
-                            </div>
-                            <div id="projStepsList" class="mb-2"></div>
-                            <label class="small fw-bold">Matériel utilisé :</label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="text" id="projMatInp" class="form-control" placeholder="Saisir un matériel (ex : balance)">
-                                <input type="hidden" id="projMatIdx" value="-1">
-                                <button class="btn btn-success" onclick="addMat()" id="btnMatSave">Ajouter</button>
-                            </div>
-                            <div id="projMatList" class="mb-2"></div>
-                            <label class="small fw-bold">Présentation du produit (affiche) :</label>
-                            <textarea id="projDesc" class="form-control form-control-sm mb-2" rows="2" placeholder="Description, propriétés, utilisation du produit..."></textarea>
-                            <label class="small fw-bold">Photo du produit :</label>
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="file" id="projPhoto" accept="image/*" class="form-control" onchange="prevProjPhoto(this)">
-                                <button class="btn btn-outline-danger" onclick="removeProjPhoto()" title="Supprimer la photo"><i class="bi bi-trash"></i></button>
-                            </div>
-                            <div id="projPhotoPrev" class="mb-2 text-center d-none">
-                                <img id="projPhotoImg" src="" class="img-thumbnail" style="max-height:140px">
-                                <div><button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="removeProjPhoto()"><i class="bi bi-trash"></i> Supprimer la photo</button></div>
-                            </div>
-                            <label class="small fw-bold">Pièces jointes :</label>
-                            <input type="file" id="projFile" class="form-control form-control-sm mb-3" multiple>
-                            <div class="d-flex gap-2">
-                                <button onclick="saveProj()" id="btnProjSave" class="btn btn-success btn-sm w-100">Ajouter</button>
+                            <input type="hidden" id="projEditIdx" value="-1">
+                            <div class="d-flex gap-2 mt-2">
+                                <button onclick="saveProj()" id="btnProjSave" class="btn btn-success btn-sm w-100">Ajouter la fiche</button>
                                 <button onclick="clearProjForm()" class="btn btn-secondary btn-sm">Vider</button>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Liste des fiches -->
-                    <div class="col-md-7">
+                <!-- Contenu du modèle de TP -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-panel p-3">
+                            <!-- 1. Fiche signalétique -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">1. Fiche signalétique</h5>
+                            <div class="row g-2 mb-2">
+                                <div class="col-4">
+                                    <input type="text" id="sigLabel" class="form-control form-control-sm" placeholder="Libellé (ex : Filière)">
+                                </div>
+                                <div class="col-7">
+                                    <input type="text" id="sigValue" class="form-control form-control-sm" placeholder="Valeur (ex : Corps gras)">
+                                </div>
+                                <div class="col-1">
+                                    <input type="hidden" id="sigIdx" value="-1">
+                                    <button class="btn btn-success btn-sm w-100" onclick="addSig()" id="btnSigSave">Ajouter</button>
+                                </div>
+                            </div>
+                            <table class="table table-custom table-sm" id="sigTable">
+                                <thead><tr><th style="width:30%">Libellé</th><th>Valeur</th><th class="no-print" style="width:15%">Actions</th></tr></thead>
+                                <tbody id="sigBody"></tbody>
+                            </table>
+
+                            <!-- 3. Compétences ciblées -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">3. Compétences ciblées</h5>
+                            <p class="mb-1">Ce TP vise à développer chez l'apprenant la compétence globale suivante, déclinée en compétences spécifiques mobilisées et évaluées tout au long de la séance :</p>
+                            <p class="fw-bold mb-1">Compétence globale : Fabriquer un savon glycériné aromatisé à la cannelle, conforme à un cahier des charges, en autonomie et dans le respect des règles d'hygiène et de sécurité.</p>
+                            <ul class="mb-0 small">
+                                <li>C1 — Organiser son poste de travail conformément aux exigences d'un atelier de fabrication cosmétique.</li>
+                                <li>C2 — Appliquer les règles d'hygiène et de sécurité liées à la manipulation d'un corps gras chaud et d'une huile essentielle.</li>
+                                <li>C3 — Conduire une opération de fusion (« melt and pour ») en maîtrisant le paramètre température.</li>
+                                <li>C4 — Doser et incorporer des additifs (colorant, actif, parfum naturel) selon une formule donnée.</li>
+                                <li>C5 — Contrôler la qualité du produit fini au regard de critères esthétiques et sensoriels définis.</li>
+                                <li>C6 — Travailler avec autonomie, méthode et respect des délais.</li>
+                                <li>C7 — Rendre compte de sa pratique et justifier ses choix techniques.</li>
+                            </ul>
+
+                            <!-- 7. Matières premières -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">7. Matières premières</h5>
+                            <div class="row g-2 mb-2">
+                                <div class="col-4"><input type="text" id="mpName" class="form-control form-control-sm" placeholder="Désignation"></div>
+                                <div class="col-3"><input type="text" id="mpQte" class="form-control form-control-sm" placeholder="Quantité"></div>
+                                <div class="col-4"><input type="text" id="mpObs" class="form-control form-control-sm" placeholder="Observations"></div>
+                                <div class="col-1"><input type="hidden" id="mpIdx" value="-1"><button class="btn btn-success btn-sm w-100" onclick="addMp()" id="btnMpSave">Ajouter</button></div>
+                            </div>
+                            <table class="table table-custom table-sm" id="mpTable">
+                                <thead><tr><th>Désignation</th><th>Quantité</th><th>Observations</th><th class="no-print" style="width:15%">Actions</th></tr></thead>
+                                <tbody id="mpBody"></tbody>
+                            </table>
+
+                            <!-- 8. Matériel et équipements -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">8. Matériel et équipements</h5>
+                            <div class="row g-2 mb-2">
+                                <div class="col-10"><input type="text" id="mat2Name" class="form-control form-control-sm" placeholder="Saisir un matériel ou équipement"></div>
+                                <div class="col-2"><input type="hidden" id="mat2Idx" value="-1"><button class="btn btn-success btn-sm w-100" onclick="addMat2()" id="btnMat2Save">Ajouter</button></div>
+                            </div>
+                            <div id="mat2List" class="mb-2"></div>
+
+                            <!-- 10. Mode opératoire -->
+                            <h5 class="fw-bold text-success border-bottom pb-1 mb-2">10. Mode opératoire (protocole expérimental)</h5>
+                            <div class="input-group input-group-sm mb-1">
+                                <input type="text" id="opName" class="form-control" placeholder="Saisir une étape...">
+                                <input type="hidden" id="opIdx" value="-1">
+                                <button class="btn btn-success" onclick="addOp()" id="btnOpSave">Ajouter</button>
+                            </div>
+                            <div id="opList" class="mb-2"></div>
+                            </ol>
+
+                            <p class="fst-italic text-muted small border-top pt-2 mt-3 mb-0">Document pédagogique modifiable — à adapter au niveau, à l'effectif et au référentiel de compétences de l'établissement.</p>
+                        </div>
+                        <button class="btn btn-sm btn-secondary mt-2" onclick="printProj()"><i class="bi bi-printer"></i> Imprimer la fiche</button>
+                    </div>
+                </div>
+
+                <!-- Liste des fiches enregistrées -->
+                <div class="row mt-4">
+                    <div class="col-md-12">
                         <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-1">
-                            <h6 class="fw-bold text-success mb-0">Fiches Projet Enregistrées</h6>
+                            <h6 class="fw-bold text-success mb-0">Fiches TP Enregistrées</h6>
                             <div class="d-flex gap-1">
                                 <button class="btn btn-sm btn-dark" onclick="downloadAllProj()"><i class="bi bi-download"></i> Télécharger tout</button>
                                 <button class="btn btn-sm btn-secondary" onclick="printProj()"><i class="bi bi-printer"></i> Imprimer</button>
                             </div>
                         </div>
                         <table class="table table-custom table-sm shadow-sm">
-                            <thead><tr><th>Produit</th><th>Stagiaire</th><th>Quantité</th><th>Date</th><th class="no-print">Actions</th></tr></thead>
+                            <thead><tr><th>Stagiaire</th><th>Spécialité</th><th>Groupe</th><th>Date</th><th>Note /20</th><th class="no-print">Actions</th></tr></thead>
                             <tbody id="tbodyProj"></tbody>
                         </table>
                         <!-- Aperçu détaillé de la fiche sélectionnée -->

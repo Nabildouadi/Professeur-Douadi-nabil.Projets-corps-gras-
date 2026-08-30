@@ -23,6 +23,60 @@
         let projSteps = [];
         let projIngredients = [];
         let projMateriels = [];
+        let sigIdx = -1;
+        let sigData = [
+            { l: "Filière / Spécialité", v: "Corps gras (Chimie industrielle)" },
+            { l: "Module", v: "Fabrication de produits cosmétiques et savonnerie artisanale" },
+            { l: "Niveau", v: "À adapter selon le public (stagiaires, apprenants, lycée technique)" },
+            { l: "Durée", v: "2 heures (1 séance)" },
+            { l: "Code compétence", v: "C – Fabriquer un savon glycériné aromatisé selon un cahier des charges" },
+            { l: "Effectif", v: "Travail individuel ou en binôme (groupes de 10 à 16 apprenants)" }
+        ];
+        let mpIdx = -1;
+        let mpData = [
+            { n: "Base de savon glycérinée (« melt and pour »), transparente ou blanche", q: "500 g", o: "Découpée en cubes de 2 cm pour une fonte homogène" },
+            { n: "Cannelle en poudre", q: "1 à 2 c. à café (≈ 6 g)", o: "Effet exfoliant doux et coloration naturelle brun-orangé" },
+            { n: "Huile essentielle de cannelle (Cinnamomum verum)", q: "10 à 15 gouttes", o: "Dosage à respecter : irritante à forte concentration" },
+            { n: "Huile végétale nourrissante (amande douce, olive…)", q: "1 c. à café (≈ 5 mL)", o: "Surgraissage : améliore le confort d'usage" },
+            { n: "Colorant cosmétique (facultatif)", q: "Quelques gouttes / pincée", o: "Nuance ambrée, à ajouter progressivement" },
+            { n: "Alcool à 70° (vaporisateur)", q: "Q.S.", o: "Élimine les bulles d'air en surface après coulage" }
+        ];
+        let mat2Idx = -1;
+        let mat2Data = [
+            "Bain-marie (ou four à micro-ondes)","Bécher ou récipient résistant à la chaleur","Spatule / agitateur","Moules à savon (silicone)","Balance de précision (± 0,1 g)","Vaporisateur d'alcool","Thermomètre de cuisine (0–100 °C)","Gants de protection thermique","Lunettes de protection","Blouse de laboratoire","Gants à usage unique (nitrile)","Fiche de sécurité des matières premières (FDS)"
+        ];
+        let opIdx = -1;
+        let opData = [            "Préparer et vérifier le poste de travail : matériel, matières premières, EPI, fiche de suivi.",
+            "Découper la base de savon glycérinée en petits cubes réguliers d'environ 2 cm.",
+            "Faire fondre la base au bain-marie (ou par cycles courts au micro-ondes) en surveillant la température : ne pas dépasser 70 °C.",
+            "Une fois la base entièrement liquide, retirer du feu et laisser tiédir légèrement (environ 55–60 °C).",
+            "Incorporer la cannelle en poudre en remuant doucement pour obtenir une répartition homogène de la couleur et de la texture.",
+            "Ajouter l'huile essentielle de cannelle et l'huile végétale de surgraissage, puis mélanger sans fouetter (pour limiter les bulles d'air).",
+            "Vaporiser légèrement d'alcool à 70° la surface du mélange afin d'éliminer les bulles résiduelles.",
+            "Couler le mélange dans les moules en silicone préalablement vaporisés d'alcool.",
+            "Vaporiser à nouveau la surface, puis laisser refroidir à température ambiante pendant 1 à 2 heures (ou 30 minutes au réfrigérateur).",
+            "Démouler délicatement le savon une fois durci et vérifier son aspect général.",
+            "Nettoyer et ranger le poste de travail ; renseigner la fiche de suivi de fabrication."
+        ];
+        let grCompIdx = -1;
+        let grCompData = JSON.parse(localStorage.getItem('db_gr_comp')) || [
+            { comp: "C1 – Organisation du poste de travail", indic: "Poste préparé, matériel complet, tenue et EPI conformes avant le début du TP", bareme: "/2", note: "" },
+            { comp: "C2 – Respect des règles d'hygiène et de sécurité", indic: "Port des EPI, manipulation prudente du bain-marie et de l'HE de cannelle, gestion des déchets", bareme: "/3", note: "" },
+            { comp: "C3 – Maîtrise du protocole de fusion", indic: "Température de fonte contrôlée (≤ 70 °C), pas de surchauffe ni de brûlure de la base", bareme: "/3", note: "" },
+            { comp: "C4 – Dosage et incorporation des additifs", indic: "Quantités de cannelle et d'huile essentielle conformes à la fiche, incorporation homogène", bareme: "/4", note: "" },
+            { comp: "C5 – Qualité du produit fini", indic: "Savon homogène, sans bulles majeures, couleur et odeur régulières, démoulage réussi", bareme: "/4", note: "" },
+            { comp: "C6 – Autonomie et méthode", indic: "Suit les étapes dans l'ordre, sollicite l'aide à bon escient, respecte le temps imparti", bareme: "/2", note: "" },
+            { comp: "C7 – Compte rendu et analyse", indic: "Fiche de suivi renseignée, écarts justifiés, réponses aux questions de synthèse", bareme: "/2", note: "" }
+        ];
+        let qstIdx = -1;
+        let qstOpts = [];
+        let qstData = JSON.parse(localStorage.getItem('db_gr_qst')) || [
+            { q: "Pourquoi ne faut-il pas dépasser 70 °C lors de la fonte de la base glycérinée ?", opts: ["Éviter d'abîmer le moule", "Éviter la surchauffe et la brûlure de la base glycérinée", "Accélérer la prise du savon", "Diminuer le prix de revient"], good: "Éviter la surchauffe et la brûlure de la base glycérinée", bar: 2, sel: "", ans: false },
+            { q: "Quel est le rôle de la glycérine dans les propriétés hydratantes du savon obtenu ?", opts: ["Elle rend le savon plus dur", "Elle attire et retient l'eau sur la peau (humectant)", "Elle colore le savon", "Elle accélère la saponification"], good: "Elle attire et retient l'eau sur la peau (humectant)", bar: 2, sel: "", ans: false },
+            { q: "Quelles précautions justifient un dosage limité de l'huile essentielle de cannelle ?", opts: ["Elle est très coûteuse", "Elle peut irriter la peau à forte concentration", "Elle altère le démoulage", "Elle empêche la prise du savon"], good: "Elle peut irriter la peau à forte concentration", bar: 2, sel: "", ans: false },
+            { q: "Quelle variante de la formule permet d'obtenir un savon plus crémeux ?", opts: ["Ajouter de la cannelle en excès", "Augmenter le surgraissage (huile végétale nourrissante)", "Baisser la température de fonte", "Utiliser un colorant ambré"], good: "Augmenter le surgraissage (huile végétale nourrissante)", bar: 2, sel: "", ans: false },
+            { q: "Que faut-il faire pour éviter les bulles d'air en surface du savon ?", opts: ["Remuer vigoureusement", "Vaporiser de l'alcool à 70° sur la surface", "Chauffer au-delà de 80 °C", "Ajouter de l'eau"], good: "Vaporiser de l'alcool à 70° sur la surface", bar: 2, sel: "", ans: false }
+        ];
         let isAdmin = false;
 
         // --- AUTH ---
@@ -53,7 +107,7 @@
                 document.getElementById('nav-stg').style.display = "none";
                 document.getElementById('nav-grille').style.display = "none";
             }
-            showPage(p); renderGrille(); renderStg(); renderOilLib(); renderOilSelect(); renderRecipe(); renderProj(); fillStgSelect(); toggleHeaderEdit(isAdmin); loadSubHeader(); runSoap();
+            showPage(p); renderGrille(); renderStg(); renderOilLib(); renderOilSelect(); renderRecipe(); renderProj(); fillStgSelect(); toggleHeaderEdit(isAdmin); loadSubHeader(); runSoap(); renderSig(); renderMp(); renderMat2(); renderOp(); renderGrComp(); renderQst();
         }
 
         // --- NAVIGATION ---
@@ -94,7 +148,7 @@
         function updateGTitle(v) { mainT = v; localStorage.setItem('db_t', v); renderGrille(); }
         function renderGrille() {
             const tb = document.getElementById('tbodyGrille'); tb.innerHTML = "";
-            let s100 = 0; document.getElementById('displayGTitle').innerText = mainT;
+            let s100 = 0; const dgt = document.getElementById('displayGTitle'); if(dgt) dgt.innerText = mainT;
             grData.forEach((r, i) => {
                 s100 += parseFloat(r.note);
                 tb.innerHTML += `<tr><td>${i+1}</td><td class="fw-bold">${r.comp}</td><td>${r.crit}</td>
@@ -105,7 +159,8 @@
                 <button onclick="edGr(${i})" class="btn btn-sm btn-warning p-0 px-1">M</button>
                 <button onclick="grData.splice(${i},1);saveGr()" class="btn btn-sm btn-danger p-0 px-1">X</button></td></tr>`;
             });
-            document.getElementById('t100').innerText = s100; document.getElementById('t20').innerText = (s100/5).toFixed(2);
+            const t100 = document.getElementById('t100'); if(t100) t100.innerText = s100;
+            const t20 = document.getElementById('t20'); if(t20) t20.innerText = (s100/5).toFixed(2);
             document.querySelectorAll('.admin-only').forEach(el => isAdmin ? el.classList.remove('d-none') : el.classList.add('d-none'));
         }
         function upNote(i,v) { grData[i].note = v; saveGr(); }
@@ -120,6 +175,168 @@
             document.getElementById('inLevels').value = r.n.join(','); document.getElementById('editRowIdx').value = i;
         }
         function saveGr() { localStorage.setItem('db_g', JSON.stringify(grData)); renderGrille(); }
+        function grNote() {
+            let s = 0; grData.forEach(r => { const n = parseFloat(r.note) || 0; s += n; });
+            return (s/5).toFixed(2);
+        }
+        // --- GRILLE COMPÉTENCES TP (modifiable) ---
+        function renderGrComp() {
+            const tb = document.getElementById('grCompBody'); if(!tb) return; tb.innerHTML = "";
+            let total = 0;
+            grCompData.forEach((r, i) => {
+                const n = parseFloat(r.note) || 0; total += n;
+                tb.innerHTML += `<tr>
+                    <td class="fw-bold">${r.comp}</td><td>${r.indic}</td><td>${r.bareme}</td>
+                    <td class="text-center">${r.note || ''}</td>
+                    <td class="no-print">
+                        <button onclick="editGrComp(${i})" class="btn btn-sm btn-warning p-0 px-1" title="Modifier"><i class="bi bi-pencil"></i></button>
+                        <button onclick="delGrComp(${i})" class="btn btn-sm btn-danger p-0 px-1" title="Supprimer">X</button>
+                    </td></tr>`;
+            });
+            const tt = document.getElementById('grCompTotal'); if(tt) tt.innerText = (total/5).toFixed(2);
+            if(grCompData.length === 0) tb.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Aucun critère.</td></tr>`;
+        }
+        function saveGrComp() {
+            const comp = document.getElementById('grComp').value.trim();
+            const indic = document.getElementById('grIndic').value.trim();
+            const bareme = document.getElementById('grBareme').value.trim();
+            const note = document.getElementById('grNote').value;
+            const idx = parseInt(document.getElementById('grCompIdx').value);
+            if(!comp) { alert("Saisissez un critère de compétence"); return; }
+            const r = { comp: comp, indic: indic, bareme: bareme, note: note };
+            if(idx == -1) grCompData.push(r); else grCompData[idx] = r;
+            saveGrCompData();
+            document.getElementById('grCompIdx').value = "-1";
+            document.getElementById('btnGrCompSave').innerText = "Ajouter";
+            ['grComp','grIndic','grBareme','grNote'].forEach(id => document.getElementById(id).value = "");
+            renderGrComp();
+        }
+        function editGrComp(i) {
+            const r = grCompData[i];
+            document.getElementById('grComp').value = r.comp;
+            document.getElementById('grIndic').value = r.indic || "";
+            document.getElementById('grBareme').value = r.bareme || "";
+            document.getElementById('grNote').value = r.note || "";
+            document.getElementById('grCompIdx').value = i;
+            document.getElementById('btnGrCompSave').innerText = "Sauvegarder";
+            document.getElementById('grComp').focus();
+        }
+        function delGrComp(i) { grCompData.splice(i,1); saveGrCompData(); renderGrComp(); }
+        function saveGrCompData() { localStorage.setItem('db_gr_comp', JSON.stringify(grCompData)); }
+        // --- QUESTIONS DE SYNTHÈSE (QCM + correction auto + barème admin) ---
+        function renderQst() {
+            const list = document.getElementById('qstList'); if(!list) return; list.innerHTML = "";
+            let total = 0, max = 0;
+            const isProf = isAdmin;
+            qstData.forEach((q, i) => {
+                max += parseFloat(q.bar) || 0;
+                const bar = parseFloat(q.bar) || 0;
+                const optsHtml = q.opts.map(o => {
+                    const isGood = isProf && q.ans && o === q.good;
+                    const isBad = isProf && q.ans && q.sel === o && o !== q.good;
+                    let cls = 'form-check';
+                    if(isGood) cls += ' text-success fw-bold';
+                    if(isBad) cls += ' text-danger';
+                    const mark = isGood ? ' ✅' : (isBad ? ' ❌' : '');
+                    return `<div class="${cls}">
+                        <input class="form-check-input" type="radio" name="qst${i}" value="${o}"
+                            ${q.sel===o?'checked':''} ${q.ans?'disabled':''} onclick="pickQst(${i},this.value)">
+                        <label class="form-check-label">${o}${mark}</label>
+                    </div>`;
+                }).join('');
+                // pilote du statut différent selon prof/stagiaire
+                let statusHtml = '';
+                if(isProf) {
+                    if(q.ans) statusHtml = q.sel === q.good ? `<span class="badge bg-success">Bonne réponse ${bar} pt</span>` : `<span class="badge bg-danger">Fausse réponse (0/${bar})</span>`;
+                    else statusHtml = `<span class="badge bg-secondary">réponse attendue</span>`;
+                } else {
+                    statusHtml = q.ans ? `<span class="badge bg-secondary">réponse enregistrée</span>` : `<span class="badge bg-secondary">choisir une réponse</span>`;
+                }
+                const cardCls = isProf && q.ans ? (q.sel===q.good?'border-success':'border-danger') : '';
+                // boutons d'édition : seulement prof
+                const editBtns = isProf ? `<span class="no-print d-flex gap-1">
+                            <button onclick="editQst(${i})" class="btn btn-sm btn-warning p-0 px-1" title="Modifier"><i class="bi bi-pencil"></i></button>
+                            <button onclick="delQst(${i})" class="btn btn-sm btn-danger p-0 px-1" title="Supprimer">X</button>
+                        </span>` : '';
+                // boutons correction : seulement prof
+                const corrBtns = isProf ? `<span class="no-print">
+                            <button class="btn btn-sm btn-outline-success" onclick="correctQst(${i})">Corriger</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="resetQst(${i})">Réinitialiser</button>
+                        </span>` : '';
+                list.innerHTML += `<div class="card p-2 mb-2 ${cardCls}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <b>Q${i+1}.</b> <span class="flex-grow-1 ms-2">${q.q} <span class="text-muted">(${bar} pt)</span></span>
+                        ${editBtns}
+                    </div>
+                    <div class="mt-1">${optsHtml}</div>
+                    <div class="mt-1 d-flex justify-content-between align-items-center">
+                        <span class="small">${statusHtml}</span>
+                        ${corrBtns}
+                    </div>
+                </div>`;
+                if(isProf && q.ans && q.sel === q.good) total += bar;
+            });
+            const tt = document.getElementById('qstTotal'); if(tt) tt.innerText = isProf ? `${total} / ${max}` : 'Correction réservée au professeur';
+            if(qstData.length === 0) { list.innerHTML = `<div class="text-muted text-center">Aucune question.</div>`; const tt2 = document.getElementById('qstTotal'); if(tt2) tt2.innerText = '0 / 0'; }
+        }
+        function renderQstOpts() {
+            const div = document.getElementById('qstOptList'); if(!div) return;
+            div.innerHTML = qstOpts.map((o, i) =>
+                `<span class="badge bg-secondary me-1 mb-1">${i+1}. ${o} <a href="#" onclick="event.preventDefault();qstOpts.splice(${i},1);renderQstOpts();" class="text-white">&times;</a></span>`
+            ).join('');
+            if(qstOpts.length === 0) div.innerHTML = `<span class="text-muted">Options : aucune</span>`;
+        }
+        function addQstOpt() {
+            const inp = document.getElementById('qstOpt');
+            const v = inp.value.trim();
+            if(!v) return;
+            qstOpts.push(v); inp.value = ""; renderQstOpts();
+        }
+        function editQst(i) {
+            const q = qstData[i];
+            document.getElementById('qstName').value = q.q;
+            document.getElementById('qstBareme').value = q.bar;
+            document.getElementById('qstGood').value = q.good;
+            qstOpts = (q.opts || []).slice(); renderQstOpts();
+            document.getElementById('qstIdx').value = i;
+            document.getElementById('btnQstSave').innerText = "Sauvegarder";
+            document.getElementById('qstName').focus();
+        }
+        function resetQstForm() {
+            document.getElementById('qstName').value = "";
+            document.getElementById('qstOpt').value = "";
+            document.getElementById('qstBareme').value = "";
+            document.getElementById('qstGood').value = "";
+            document.getElementById('qstIdx').value = "-1";
+            document.getElementById('btnQstSave').innerText = "Ajouter";
+            qstOpts = []; renderQstOpts();
+        }
+        function saveQst() {
+            const name = document.getElementById('qstName').value.trim();
+            const bar = document.getElementById('qstBareme').value;
+            const good = document.getElementById('qstGood').value.trim();
+            const idx = parseInt(document.getElementById('qstIdx').value);
+            if(!name) { alert("Saisissez l'énoncé de la question"); return; }
+            if(qstOpts.length < 2) { alert("Ajoutez au moins 2 options"); return; }
+            if(!good) { alert("Indiquez la bonne réponse"); return; }
+            const rec = { q: name, opts: qstOpts.slice(), good: good, bar: parseFloat(bar) || 1, sel: "", ans: false };
+            if(idx == -1) qstData.push(rec); else qstData[idx] = rec;
+            saveQstData(); resetQstForm(); renderQst();
+        }
+        function delQst(i) { qstData.splice(i,1); saveQstData(); renderQst(); }
+        function saveQstData() { localStorage.setItem('db_gr_qst', JSON.stringify(qstData)); }
+        function pickQst(i, v) { qstData[i].sel = v; qstData[i].ans = false; renderQst(); }
+        function correctQst(i) {
+            const q = qstData[i];
+            if(!q.sel) { alert("Le stagiaire doit choisir une réponse avant la correction"); return; }
+            q.ans = true; saveQstData(); renderQst();
+        }
+        function resetQst(i) { qstData[i].sel = ""; qstData[i].ans = false; saveQstData(); renderQst(); }
+        function resetAllQstAnswers() {
+            if(!confirm("Réinitialiser toutes les réponses des stagiaires ?")) return;
+            qstData.forEach(q => { q.sel = ""; q.ans = false; });
+            saveQstData(); renderQst();
+        }
 
         // --- SOAP ---
         const SOAP_Q = [
@@ -295,17 +512,32 @@
         // --- FICHE PROJET ---
         function renderProj() {
             const tb = document.getElementById('tbodyProj'); if(!tb) return; tb.innerHTML = "";
+            let autoNote = null;
+            try { autoNote = grNote(); } catch(e) {}
             projData.forEach((pr, i) => {
+                const note = (pr.qte && pr.qte != '-') ? pr.qte : (autoNote != null ? autoNote : '-');
+                const saved = (pr.qte && pr.qte != '-') ? 'disabled' : '';
                 tb.innerHTML += `<tr>
-                    <td class="fw-bold">${pr.titre}</td><td>${pr.stg}</td><td>${pr.qte || '-'}</td><td>${pr.date || '-'}</td>
+                    <td class="fw-bold">${pr.stg || pr.stagiaire || '-'}</td><td>${pr.spec || '-'}</td><td>${pr.grp || '-'}</td><td>${pr.date || '-'}</td><td class="text-center">${note}</td>
                     <td class="no-print">
                         <button onclick="viewProj(${i})" class="btn btn-sm btn-info p-0 px-1" title="Voir"><i class="bi bi-eye"></i></button>
+                        <button onclick="saveProjNote(${i})" ${saved} class="btn btn-sm btn-success p-0 px-1" title="Sauvegarder la note (depuis la grille)"><i class="bi bi-save"></i></button>
+                        <button onclick="printOneProj(${i})" class="btn btn-sm btn-primary p-0 px-1" title="Imprimer la fiche"><i class="bi bi-printer"></i></button>
                         <button onclick="editProj(${i})" class="btn btn-sm btn-warning p-0 px-1" title="Modifier"><i class="bi bi-pencil"></i></button>
                         <button onclick="delProj(${i})" class="btn btn-sm btn-danger p-0 px-1" title="Supprimer">X</button>
                         <button onclick="downloadOneProj(${i})" class="btn btn-sm btn-dark p-0 px-1" title="Télécharger"><i class="bi bi-download"></i></button>
                     </td></tr>`;
             });
-            if(projData.length === 0) tb.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Aucune fiche enregistrée.</td></tr>`;
+            if(projData.length === 0) tb.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Aucune fiche enregistrée.</td></tr>`;
+        }
+        function saveProjNote(i) {
+            const pr = projData[i]; if(!pr) return;
+            let n = null; try { n = grNote(); } catch(e) {}
+            pr.qte = (n != null ? n : '');
+            localStorage.setItem('db_pr', JSON.stringify(projData));
+            const b = document.getElementById('projDetailBody');
+            if(pr.qte) alert("Note sauvegardée : " + pr.qte + " /20");
+            renderProj(); viewProj(i);
         }
         function fillStgSelect() {
             const sel = document.getElementById('projStgSel'); if(!sel) return;
@@ -399,6 +631,140 @@
             document.getElementById('projIngInp').focus();
         }
         function delIng(i) { projIngredients.splice(i,1); renderIng(); }
+        // --- FICHE SIGNALÉTIQUE ---
+        function renderSig() {
+            const tb = document.getElementById('sigBody'); if(!tb) return;
+            tb.innerHTML = "";
+            sigData.forEach((it, i) => {
+                tb.innerHTML += `<tr><td class="fw-bold">${it.l}</td><td>${it.v}</td>
+                    <td class="no-print">
+                        <button onclick="editSig(${i})" class="btn btn-sm btn-warning p-0 px-1" title="Modifier"><i class="bi bi-pencil"></i></button>
+                        <button onclick="delSig(${i})" class="btn btn-sm btn-danger p-0 px-1" title="Supprimer">X</button>
+                    </td></tr>`;
+            });
+            if(sigData.length === 0) tb.innerHTML = `<tr><td colspan="3" class="text-center text-muted">Aucune ligne.</td></tr>`;
+        }
+        function addSig() {
+            const l = document.getElementById('sigLabel').value.trim();
+            const v = document.getElementById('sigValue').value.trim();
+            const idx = parseInt(document.getElementById('sigIdx').value);
+            if(!l) { alert("Saisissez un libellé"); return; }
+            if(idx == -1) sigData.push({ l: l, v: v }); else sigData[idx] = { l: l, v: v };
+            document.getElementById('sigIdx').value = "-1";
+            document.getElementById('btnSigSave').innerText = "Ajouter";
+            document.getElementById('sigLabel').value = "";
+            document.getElementById('sigValue').value = "";
+            renderSig();
+        }
+        function editSig(i) {
+            document.getElementById('sigLabel').value = sigData[i].l;
+            document.getElementById('sigValue').value = sigData[i].v;
+            document.getElementById('sigIdx').value = i;
+            document.getElementById('btnSigSave').innerText = "Update";
+            document.getElementById('sigLabel').focus();
+        }
+        function delSig(i) { sigData.splice(i,1); renderSig(); }
+        // --- MATIÈRES PREMIÈRES ---
+        function renderMp() {
+            const tb = document.getElementById('mpBody'); if(!tb) return;
+            tb.innerHTML = "";
+            mpData.forEach((it, i) => {
+                tb.innerHTML += `<tr><td>${it.n}</td><td>${it.q}</td><td>${it.o}</td>
+                    <td class="no-print">
+                        <button onclick="editMp(${i})" class="btn btn-sm btn-warning p-0 px-1" title="Modifier"><i class="bi bi-pencil"></i></button>
+                        <button onclick="delMp(${i})" class="btn btn-sm btn-danger p-0 px-1" title="Supprimer">X</button>
+                    </td></tr>`;
+            });
+            if(mpData.length === 0) tb.innerHTML = `<tr><td colspan="4" class="text-center text-muted">Aucune matière première.</td></tr>`;
+        }
+        function addMp() {
+            const n = document.getElementById('mpName').value.trim();
+            const q = document.getElementById('mpQte').value.trim();
+            const o = document.getElementById('mpObs').value.trim();
+            const idx = parseInt(document.getElementById('mpIdx').value);
+            if(!n) { alert("Saisissez une désignation"); return; }
+            if(idx == -1) mpData.push({ n: n, q: q, o: o }); else mpData[idx] = { n: n, q: q, o: o };
+            document.getElementById('mpIdx').value = "-1";
+            document.getElementById('btnMpSave').innerText = "Ajouter";
+            document.getElementById('mpName').value = ""; document.getElementById('mpQte').value = ""; document.getElementById('mpObs').value = "";
+            renderMp();
+        }
+        function editMp(i) {
+            document.getElementById('mpName').value = mpData[i].n;
+            document.getElementById('mpQte').value = mpData[i].q;
+            document.getElementById('mpObs').value = mpData[i].o;
+            document.getElementById('mpIdx').value = i;
+            document.getElementById('btnMpSave').innerText = "Update";
+            document.getElementById('mpName').focus();
+        }
+        function delMp(i) { mpData.splice(i,1); renderMp(); }
+        // --- MATÉRIEL ---
+        function renderMat2() {
+            const list = document.getElementById('mat2List'); if(!list) return;
+            list.innerHTML = "";
+            mat2Data.forEach((it, i) => {
+                const div = document.createElement('div');
+                div.className = 'input-group input-group-sm mb-1';
+                div.innerHTML = `<span class="input-group-text">${i+1}</span>
+                    <input type="text" class="form-control" value="${it}" readonly>
+                    <button class="btn btn-warning" onclick="editMat2(${i})" title="Modifier"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-danger" onclick="delMat2(${i})" title="Supprimer">X</button>`;
+                list.appendChild(div);
+            });
+        }
+        function addMat2() {
+            const inp = document.getElementById('mat2Name');
+            const idx = parseInt(document.getElementById('mat2Idx').value);
+            const v = inp.value.trim();
+            if(!v) { alert("Saisissez un matériel"); return; }
+            if(idx == -1) mat2Data.push(v); else mat2Data[idx] = v;
+            document.getElementById('mat2Idx').value = "-1";
+            document.getElementById('btnMat2Save').innerText = "Ajouter";
+            inp.value = "";
+            renderMat2();
+        }
+        function editMat2(i) {
+            document.getElementById('mat2Name').value = mat2Data[i];
+            document.getElementById('mat2Idx').value = i;
+            document.getElementById('btnMat2Save').innerText = "Update";
+            document.getElementById('mat2Name').focus();
+        }
+        function delMat2(i) { mat2Data.splice(i,1); renderMat2(); }
+        // --- MODE OPÉRATOIRE ---
+        function renderOp() {
+            const list = document.getElementById('opList'); if(!list) return;
+            list.innerHTML = "";
+            const ol = document.createElement('ol');
+            ol.className = 'small mb-0';
+            opData.forEach((it, i) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${it}
+                    <span class="no-print float-end">
+                        <button onclick="editOp(${i})" class="btn btn-sm btn-warning p-0 px-1" title="Modifier"><i class="bi bi-pencil"></i></button>
+                        <button onclick="delOp(${i})" class="btn btn-sm btn-danger p-0 px-1" title="Supprimer">X</button>
+                    </span>`;
+                ol.appendChild(li);
+            });
+            list.appendChild(ol);
+        }
+        function addOp() {
+            const inp = document.getElementById('opName');
+            const idx = parseInt(document.getElementById('opIdx').value);
+            const v = inp.value.trim();
+            if(!v) { alert("Saisissez une étape du mode opératoire"); return; }
+            if(idx == -1) opData.push(v); else opData[idx] = v;
+            document.getElementById('opIdx').value = "-1";
+            document.getElementById('btnOpSave').innerText = "Ajouter";
+            inp.value = "";
+            renderOp();
+        }
+        function editOp(i) {
+            document.getElementById('opName').value = opData[i];
+            document.getElementById('opIdx').value = i;
+            document.getElementById('btnOpSave').innerText = "Sauvegarder";
+            document.getElementById('opName').focus();
+        }
+        function delOp(i) { opData.splice(i,1); renderOp(); }
         // --- MATÉRIEL ---
         function renderMat() {
             const list = document.getElementById('projMatList'); if(!list) return;
@@ -434,34 +800,17 @@
         function delMat(i) { projMateriels.splice(i,1); renderMat(); }
         function saveProj() {
             const idx = document.getElementById('projEditIdx').value;
+            const stg = document.getElementById('projStg').value;
             const pr = {
-                titre: document.getElementById('projTitre').value,
-                stg: document.getElementById('projStg').value,
+                titre: stg || "Fiche TP Savon Glycérine & Cannelle",
+                stg: stg,
                 spec: document.getElementById('projSpec').value,
                 grp: document.getElementById('projGrp').value,
                 date: document.getElementById('projDate').value,
-                qte: document.getElementById('projQte').value,
-                ing: projIngredients.slice(),
-                procTitre: document.getElementById('projProcTitre').value,
-                steps: projSteps.slice(),
-                mat: projMateriels.slice(),
-                desc: document.getElementById('projDesc').value
+                qte: document.getElementById('projQte').value
             };
-            if(!pr.titre) { alert("Le nom du produit est obligatoire"); return; }
-            pr.photo = projPhotoData || "";
-            // pièces jointes (document)
-            const f = document.getElementById('projFile');
-            if(f.files && f.files.length) {
-                const r = new FileReader();
-                r.onload = (e) => {
-                    pr.file = e.target.result; pr.fname = f.files[0].name;
-                    commitProj(idx, pr);
-                };
-                r.readAsDataURL(f.files[0]);
-            } else {
-                if(idx != "-1" && projData[idx]) { pr.file = projData[idx].file; pr.fname = projData[idx].fname; }
-                commitProj(idx, pr);
-            }
+            if(!pr.stg) { alert("Veuillez sélectionner un stagiaire"); return; }
+            commitProj(idx, pr);
         }
         function prevProjPhoto(input) {
             const file = input.files && input.files[0];
@@ -487,50 +836,21 @@
         }
         function editProj(i) {
             const pr = projData[i];
-            document.getElementById('projTitre').value = pr.titre || "";
             document.getElementById('projStg').value = pr.stg || "";
             document.getElementById('projSpec').value = pr.spec || "";
             document.getElementById('projGrp').value = pr.grp || "";
             document.getElementById('projDate').value = pr.date || "";
             document.getElementById('projQte').value = pr.qte || "";
-            projIngredients = (Array.isArray(pr.ing) ? pr.ing : [pr.ing]).filter(Boolean);
-            document.getElementById('projProcTitre').value = pr.procTitre || "";
-            projSteps = (pr.steps || []).slice();
-            projMateriels = (Array.isArray(pr.mat) ? pr.mat : [pr.mat]).filter(Boolean);
-            renderIng(); renderSteps(); renderMat();
-            // rendre le select en lisibilité
             if(pr.stg) { const f = stData.findIndex(s => s.nom === pr.stg); const sel = document.getElementById('projStgSel'); if(sel && f>=0) sel.value = f; }
-            document.getElementById('projDesc').value = pr.desc || "";
             document.getElementById('projEditIdx').value = i;
             document.getElementById('btnProjSave').innerText = "Update";
             document.getElementById('projDetail').classList.add('d-none');
-            // charger la photo existante
-            if(pr.photo) {
-                projPhotoData = pr.photo;
-                document.getElementById('projPhotoImg').src = pr.photo;
-                document.getElementById('projPhotoPrev').classList.remove('d-none');
-            } else {
-                removeProjPhoto();
-            }
         }
         function delProj(i) { projData.splice(i,1); localStorage.setItem('db_pr', JSON.stringify(projData)); renderProj(); }
         function clearProjForm() {
-            ['projTitre','projStg','projSpec','projGrp','projDate','projQte','projDesc','projFile','projPhoto','projStep','projIngInp','projMatInp','projProcTitre'].forEach(id => {
+            ['projStg','projSpec','projGrp','projDate','projQte'].forEach(id => {
                 const el = document.getElementById(id); if(el) el.value = "";
             });
-            projPhotoData = "";
-            projSteps = [];
-            projIngredients = [];
-            projMateriels = [];
-            document.getElementById('projStepIdx').value = "-1";
-            document.getElementById('btnStepSave').innerText = "Ajouter";
-            document.getElementById('projIngIdx').value = "-1";
-            document.getElementById('btnIngSave').innerText = "Ajouter";
-            document.getElementById('projMatIdx').value = "-1";
-            document.getElementById('btnMatSave').innerText = "Ajouter";
-            renderSteps(); renderIng(); renderMat();
-            document.getElementById('projPhotoPrev').classList.add('d-none');
-            document.getElementById('projPhotoImg').src = "";
             const psel = document.getElementById('projStgSel'); if(psel) psel.value = "-1";
             document.getElementById('projEditIdx').value = "-1";
             document.getElementById('btnProjSave').innerText = "Ajouter";
@@ -539,72 +859,26 @@
             const pr = projData[i];
             projDetailIdx = i;
             const b = document.getElementById('projDetailBody');
-            let stepsHtml = "";
-            if(pr.steps && pr.steps.length) {
-                stepsHtml = `<p><b>${pr.procTitre || 'Procédé de fabrication'} :</b><ol>`;
-                pr.steps.forEach(st => { stepsHtml += `<li>${st}</li>`; });
-                stepsHtml += `</ol></p>`;
-            }
-            let ingHtml = "";
-            if(Array.isArray(pr.ing) && pr.ing.length) {
-                ingHtml = `<p><b>Ingrédients / Formulation :</b><ul>`;
-                pr.ing.forEach(x => { ingHtml += `<li>${x}</li>`; });
-                ingHtml += `</ul></p>`;
-            }
-            let matHtml = "";
-            if(Array.isArray(pr.mat) && pr.mat.length) {
-                matHtml = `<p><b>Matériel utilisé :</b><ul>`;
-                pr.mat.forEach(x => { matHtml += `<li>${x}</li>`; });
-                matHtml += `</ul></p>`;
-            }
             b.innerHTML = `
-                ${pr.photo ? `<div class="text-center mb-2"><img src="${pr.photo}" class="img-thumbnail" style="max-height:200px"></div>` : ''}
-                <p><b>Produit :</b> ${pr.titre}</p>
+                <p><b>Fiche TP :</b> Fabrication d'un savon à base de glycérine et de cannelle</p>
                 <p><b>Stagiaire :</b> ${pr.stg || '-'} (<b>Spécialité :</b> ${pr.spec || '-'}, <b>Groupe :</b> ${pr.grp || '-'})</p>
-                <p><b>Date :</b> ${pr.date || '-'} &nbsp; <b>Quantité :</b> ${pr.qte || '-'}</p>
-                ${ingHtml}
-                ${stepsHtml}
-                ${matHtml}
-                ${pr.desc ? `<p><b>Présentation du produit :</b><br>${String(pr.desc).replace(/\n/g,'<br>')}</p>` : ''}
-                ${pr.file ? `<p><b>Pièce jointe :</b> ${pr.fname || 'document'}<br><img src="${pr.file}" class="img-fluid mt-1" style="max-height:180px"></p>` : ''}
+                <p><b>Date :</b> ${pr.date || '-'} &nbsp; <b>Note obtenue :</b> ${pr.qte || '-'} /20</p>
             `;
             document.getElementById('projDetail').classList.remove('d-none');
         }
         function ficheText(pr) {
-            let steps = "-";
-            if(pr.steps && pr.steps.length) {
-                steps = pr.steps.map((s, i) => `${i+1}. ${s}`).join("\n");
-            }
-            let ings = "-";
-            if(Array.isArray(pr.ing) && pr.ing.length) {
-                ings = pr.ing.map((x, i) => `${i+1}. ${x}`).join("\n");
-            }
-            let mats = "-";
-            if(Array.isArray(pr.mat) && pr.mat.length) {
-                mats = pr.mat.map((x, i) => `${i+1}. ${x}`).join("\n");
-            }
-            return `PROJET DE FORMATION - FICHE TECHNIQUE & AFFICHE
+            return `FICHE DE TRAVAUX PRATIQUES (TP)
+Fabrication d'un savon à base de glycérine et de cannelle
+Approche Par Compétences (APC)
 ============================================
-NOM DU PRODUIT : ${pr.titre}
-STAGIAIRE : ${pr.stg || '-'}
-SPÉCIALITÉ : ${pr.spec || '-'}    GROUPE : ${pr.grp || '-'}
+NOM DU STAGIAIRE : ${pr.stg || '-'}
+SPECIALITE : ${pr.spec || '-'}
+GROUPE : ${pr.grp || '-'}
 DATE : ${pr.date || '-'}
-QUANTITÉ : ${pr.qte || '-'}
+NOTE OBTENUE : ${pr.qte || '-'} /20
 
---------------------------------------------------------
-INGRÉDIENTS / FORMULATION :
-${ings}
---------------------------------------------------------
-${pr.procTitre || 'PROCÉDÉ DE FABRICATION'} :
-${steps}
---------------------------------------------------------
-MATÉRIEL UTILISÉ :
-${mats}
---------------------------------------------------------
-PRÉSENTATION DU PRODUIT :
-${pr.desc || '-'}
---------------------------------------------------------
-Pièce jointe : ${pr.fname || '-'}
+Document pédagogique modifiable - à adapter au niveau,
+à l'effectif et au référentiel de compétences de l'établissement.
 
 Généré le ${new Date().toLocaleString()}`;
         }
@@ -629,25 +903,22 @@ Généré le ${new Date().toLocaleString()}`;
         function printOneProj(i) {
             const pr = projData[i]; if(!pr) return;
             const w = window.open('', '_blank', 'width=800,height=600');
-            let steps = (pr.steps || []).map((s, n) => `<li>${s}</li>`).join('');
-            let ings = (Array.isArray(pr.ing) ? pr.ing : []).map((x, n) => `<li>${x}</li>`).join('');
-            let mats = (Array.isArray(pr.mat) ? pr.mat : []).map((x, n) => `<li>${x}</li>`).join('');
-            w.document.write(`<html><head><title>${pr.titre}</title><style>
-                body{font-family:Arial;margin:20px;color:#222}
-                h2{border-bottom:3px solid #006633;padding-bottom:5px;color:#006633}
-                img{max-height:180px;border:1px solid #ccc;padding:4px}
-                li{margin-bottom:4px}
+            w.document.write(`<html><head><title>Fiche TP - ${pr.stg}</title><style>
+                body{font-family:Arial;margin:20px;color:#222;line-height:1.6}
+                h2{border-bottom:3px solid #006633;padding-bottom:5px;color:#006633;margin-bottom:15px}
                 .lbl{font-weight:bold;color:#006633}
+                table{width:100%;border-collapse:collapse;margin-top:10px}
+                td,th{border:1px solid #333;padding:6px;text-align:left}
             </style></head><body>
-                ${pr.photo ? `<img src="${pr.photo}">` : ''}
-                <h2>FICHE PROJET - ${pr.titre}</h2>
-                <p><span class="lbl">Stagiaire :</span> ${pr.stg || '-'} &nbsp; <span class="lbl">Spécialité :</span> ${pr.spec || '-'} &nbsp; <span class="lbl">Groupe :</span> ${pr.grp || '-'}</p>
-                <p><span class="lbl">Date :</span> ${pr.date || '-'} &nbsp; <span class="lbl">Quantité :</span> ${pr.qte || '-'}</p>
-                ${ings ? `<h4>Ingrédients / Formulation</h4><ul>${ings}</ul>` : ''}
-                <h4>${pr.procTitre || 'Procédé de fabrication'}</h4><ol>${steps || '<li>-</li>'}</ol>
-                ${mats ? `<h4>Matériel utilisé</h4><ul>${mats}</ul>` : ''}
-                <h4>Présentation du produit</h4><p>${(pr.desc || '-').replace(/\n/g,'<br>')}</p>
-                <p><span class="lbl">Pièce jointe :</span> ${pr.fname || '-'}</p>
+                <h2>FICHE DE TRAVAUX PRATIQUES (TP)<br><span style="font-size:16px;color:#333;font-weight:normal">Fabrication d'un savon à base de glycérine et de cannelle — APC</span></h2>
+                <table>
+                    <tr><td class="lbl" style="width:30%">Stagiaire</td><td>${pr.stg || '-'}</td></tr>
+                    <tr><td class="lbl">Spécialité</td><td>${pr.spec || '-'}</td></tr>
+                    <tr><td class="lbl">Groupe</td><td>${pr.grp || '-'}</td></tr>
+                    <tr><td class="lbl">Date</td><td>${pr.date || '-'}</td></tr>
+                    <tr><td class="lbl">Note obtenue</td><td>${pr.qte || '-'} /20</td></tr>
+                </table>
+                <p style="margin-top:20px;font-style:italic">Document pédagogique modifiable - à adapter au niveau, à l'effectif et au référentiel de compétences de l'établissement.</p>
                 <p><small>Imprimé le ${new Date().toLocaleString()}</small></p>
             </body></html>`);
             w.document.close(); w.focus(); w.print();
